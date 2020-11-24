@@ -24,6 +24,10 @@ set( automaton_SRCS
   main.cpp
 )
 
+set( automaton_lib_SRCS 
+  Port.cpp
+)
+
 
 #--------------------------------------------------------------------------------
 # We need this to be able to include headers produced by uic in our code
@@ -64,7 +68,10 @@ add_definitions(
 #--------------------------------------------------------------------------------
 add_executable( automaton
   ${automaton_SRCS}
-  # ${minidb_HDRS}
+)
+
+add_library( auto STATIC
+  ${automaton_lib_SRCS}
 )
 
 #--------------------------------------------------------------------------------
