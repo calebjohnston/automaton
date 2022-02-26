@@ -1,6 +1,12 @@
 # Python working files
 __pycache__
 
+# Project files
+.vs
+.vscode
+.idea
+build
+
 # Prerequisites
 *.d
 .DS_Store
