@@ -2,9 +2,13 @@
 # Automaton CMake file
 #================================================================================
 
-cmake_minimum_required( VERSION 2.8 )
+cmake_minimum_required(VERSION 3.11)
 
-project( Automaton )
+#--------------------------------------------------------------------------------
+# basic definitions
+#--------------------------------------------------------------------------------
+
+project( automaton )
 
 set( TARGET_VERSION_MAJOR 0 )
 set( TARGET_VERSION_MINOR 1 )
@@ -23,14 +27,15 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
   set(CMAKE_VERBOSE_MAKEFILE ON)
 endif()
 
-# set( CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/ )
-set( AUTOMATON_BUILD_TESTS ON CACHE BOOL "Build docs")
-set( AUTOMATON_BUILD_DOCS OF CACHE BOOL "Build documentation")
-# set( USE_OLD_SOLVER OFF CACHE BOOL "Add -DUSE_OLD_SOLVER compiler flag" )
+set( AUTOMATON_BUILD_TESTS ON CACHE BOOL "Build tests")
+set( AUTOMATON_BUILD_DOCS OFF CACHE BOOL "Build documentation")
+
+#--------------------------------------------------------------------------------
+# Add subdirectories
+#--------------------------------------------------------------------------------
 
 add_subdirectory( src )
 # add_subdirectory( docs )
-# add_subdirectory( src/tinyxml )
 
 if(AUTOMATON_BUILD_TESTS)
   add_subdirectory( test )
