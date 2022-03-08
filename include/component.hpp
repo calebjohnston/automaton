@@ -5,51 +5,61 @@
 //  Copyright © 2022 Caleb Johnston. All rights reserved.
 //
 
+#include <array>
+#include <map>
 #include <string>
+#include <stdlib.h>
 
-class Component {
-public:
-	enum class System {
-		None,
-		Processing,
-		Electrical
-	};
-	enum class Type {
-		None,
-		Disk,
-		Memory,
-		Processor,
-		Network,
-		Battery,
-		Power
-	};
-	
+enum class Type {
+	Disk,
+	Memory,
+	Processor,
+	Network,
+	Battery,
+	Power,
+	None
+};
+
+class Device {
 public:
 	std::string name;
-	System system;
 	Type devtype;
 	float power;
-	float datarate;
-	float buffersize;
+	float frequency; // or datarate
 	int price;
-	int capacity; // does this work?
 	
-	Component() : name(""), system(System::None), devtype(Type::None), power(0), datarate(0),
-				  buffersize(0), price(0), capacity(0) {};
-	~Component() = default;
+	Device() : name(""), devtype(Type::None), power(0), frequency(0), price(0) {};
+	~Device() = default;
 	
-	bool operator ==(const Component& rhs) const {
-		return  name == rhs.name && system == rhs.system &&
-				devtype == rhs.devtype && power == rhs.power &&
-				datarate == rhs.datarate && buffersize == rhs.buffersize &&
-				price == rhs.price && capacity == rhs.capacity;
+	bool operator ==(const Device& rhs) const {
+		return  name == rhs.name && devtype == rhs.devtype && power == rhs.power &&
+				frequency == rhs.frequency && price == rhs.price;
 	}
 	
-	bool operator !=(const Component& rhs) const { return !(*this == rhs); }
-	bool operator <(const Component& rhs) const { return name < rhs.name; }
-	bool operator >(const Component& rhs) const { return name > rhs.name; }
+	bool operator !=(const Device& rhs) const { return !(*this == rhs); }
+	bool operator <(const Device& rhs) const { return name < rhs.name; }
+	bool operator >(const Device& rhs) const { return name > rhs.name; }
 	
 	operator bool() const {
-		return !name.empty() || (System::None != system && Type::None != devtype);
+		return !name.empty() || Type::None != devtype;
 	}
+};
+
+class Component : public Device {
+public:
+	float buffersize;
+	int capacity; // does this work?
+	
+	Component() : Device(), buffersize(0), capacity(0) {};
+	~Component() = default;
+};
+
+class Computer {
+public:
+	Component disk;
+	Component memory;
+	Component processor;
+	Component network;
+	Device battery;
+	Device power;
 };

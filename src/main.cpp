@@ -11,7 +11,7 @@
 #include <cstring>
 
 #include "component.hpp"
-#include "program.hpp"
+#include "data.hpp"
 
 int main(int argc, const char * argv[])
 {

@@ -6,6 +6,7 @@ __pycache__
 .vscode
 .idea
 build
+project/xcode/src/
 
 # Prerequisites
 *.d

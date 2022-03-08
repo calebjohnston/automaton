@@ -6,8 +6,34 @@
 //
 
 #include <string>
+#include <vector>
 
-class Software {
+class Data {
+public:
+	std::string name;
+	std::string description;
+	int size;
+	std::string access; // revise...
+	
+	bool operator ==(const Data& rhs) const {
+		return  name == rhs.name && description == rhs.description &&
+		size == rhs.size && access == rhs.access;
+	}
+	
+	bool operator !=(const Data& rhs) const { return !(*this == rhs); }
+	bool operator <(const Data& rhs) const { return name < rhs.name; }
+	bool operator >(const Data& rhs) const { return name > rhs.name; }
+	
+	operator bool() const {
+		return !name.empty();
+	}
+	
+protected:
+	Data() : name(""), description(""), size(1), access("") {};
+	virtual ~Data() = default;
+};
+
+class Software : public Data {
 public:
 	enum class Type {
 		None,
@@ -19,12 +45,8 @@ public:
 	};
 	
 public:
-	std::string name;
-	std::string description;
 	Type packet;
-	int size;
 	int version;
-	std::string access; // revise...
 	
 	bool operator ==(const Software& rhs) const {
 		return  name == rhs.name && description == rhs.description &&
@@ -41,7 +63,7 @@ public:
 	}
 	
 protected:
-	Software() : name(""), description(""), packet(Type::None), size(1), version(0), access("") {};
+	Software() : Data(), packet(Type::None), version(0) {};
 	virtual ~Software() = default;
 };
 
@@ -68,4 +90,14 @@ public:
 	
 	Daemon() : Software(), efficiency(1) {};
 	~Daemon() = default;
+};
+
+
+class Kernel {
+public:
+	std::string name;
+	std::string description;
+	std::vector<Daemon> daemons;
+	std::vector<Program> programs;
+	std::vector<Data> filesystem;
 };
