@@ -91,13 +91,3 @@ public:
 	Daemon() : Software(), efficiency(1) {};
 	~Daemon() = default;
 };
-
-
-class Kernel {
-public:
-	std::string name;
-	std::string description;
-	std::vector<Daemon> daemons;
-	std::vector<Program> programs;
-	std::vector<Data> filesystem;
-};

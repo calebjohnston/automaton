@@ -10,8 +10,28 @@
 #include <string>
 #include <cstring>
 
-#include "component.hpp"
-#include "data.hpp"
+#include "computer.h"
+#include "kernel.h"
+
+// STRUCTURE GUIDELINES
+//---------------------
+// create normal OOP type hierarchy
+	// base types must not have pure virtual members
+	// POD types have all public members
+	// classes with private members must completely OWN and totally HIDE those members
+// create comparators and null evaluator for each hierarchical base type
+// create class factory constructors for each type hierarchy
+// create variant collections for each hierarchical base type
+// manage variant collections with composable functions
+// create networks of variant collections using composable functions + shared_ptrs
+// query networks of variant collections using composable functions
+
+// CLI DESIGN NOTES
+//---------------------
+// Treat each program as processing its own inputs (as I have done below)
+// Create abstraction for this input processing that works for all programs
+// Process CLI input by finding the right program and supplying it the inputs
+// Take program outputs and process those through the host machine properties
 
 int main(int argc, const char * argv[])
 {

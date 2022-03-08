@@ -53,13 +53,3 @@ public:
 	Component() : Device(), buffersize(0), capacity(0) {};
 	~Component() = default;
 };
-
-class Computer {
-public:
-	Component disk;
-	Component memory;
-	Component processor;
-	Component network;
-	Device battery;
-	Device power;
-};
