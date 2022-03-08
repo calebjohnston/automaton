@@ -1,0 +1,372 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3CBE1FEC27D7945100529C38 /* port.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 426C516C96F64A469DBA902D /* port.cpp */; };
+		3CBE1FED27D7945100529C38 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC2516114ACB421CA44AF10F /* main.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3CBE200727D7963800529C38 /* port.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = port.h; path = include/port.h; sourceTree = "<group>"; };
+		3CBE200B27D7968B00529C38 /* component.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = component.hpp; path = include/component.hpp; sourceTree = "<group>"; };
+		3CBE201527D7A73000529C38 /* program.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = program.hpp; path = include/program.hpp; sourceTree = "<group>"; };
+		426C516C96F64A469DBA902D /* port.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = port.cpp; path = src/port.cpp; sourceTree = SOURCE_ROOT; };
+		E5D4017F8C2E497BA365ACC7 /* automaton */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = automaton; sourceTree = BUILT_PRODUCTS_DIR; };
+		FC2516114ACB421CA44AF10F /* main.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A91D8F0E56CC47C0A79B7103 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		23EBDEC433474227B1F800ED = {
+			isa = PBXGroup;
+			children = (
+				3CBE1FD927D7941600529C38 /* Headers */,
+				3CBE1FD827D793FD00529C38 /* Sources */,
+				458202B530F848C8B22FEA05 /* Products */,
+				B070ECFBFB6B405D91408B89 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		3CBE1FD827D793FD00529C38 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				426C516C96F64A469DBA902D /* port.cpp */,
+				FC2516114ACB421CA44AF10F /* main.cpp */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		3CBE1FD927D7941600529C38 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				3CBE201527D7A73000529C38 /* program.hpp */,
+				3CBE200B27D7968B00529C38 /* component.hpp */,
+				3CBE200727D7963800529C38 /* port.h */,
+			);
+			name = Headers;
+			sourceTree = "<group>";
+		};
+		458202B530F848C8B22FEA05 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E5D4017F8C2E497BA365ACC7 /* automaton */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B070ECFBFB6B405D91408B89 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0E55C042F0B742B8B5661793 /* automaton */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FBD1F4C1C9AA4485B203B4CA /* Build configuration list for PBXNativeTarget "automaton" */;
+			buildPhases = (
+				CFB564151A8D4D75810ACCC0 /* Sources */,
+				A91D8F0E56CC47C0A79B7103 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = automaton;
+			productName = automaton;
+			productReference = E5D4017F8C2E497BA365ACC7 /* automaton */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7D4EC3332636446BBED33215 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1230;
+			};
+			buildConfigurationList = 2BACB3F1D6804D69A43B8306 /* Build configuration list for PBXProject "automaton" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 23EBDEC433474227B1F800ED;
+			projectDirPath = ../../;
+			projectRoot = "";
+			targets = (
+				0E55C042F0B742B8B5661793 /* automaton */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CFB564151A8D4D75810ACCC0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3CBE1FEC27D7945100529C38 /* port.cpp in Sources */,
+				3CBE1FED27D7945100529C38 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		13E7EB78050E4D83A812DAFC /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/include";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SYMROOT = "${SOURCE_ROOT}/project/xcode/build";
+			};
+			name = MinSizeRel;
+		};
+		3D2F99FCE3CA469B8C383F60 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"'CMAKE_TARGET_VERSION=1'",
+					"'TARGET_VERSION_MAJOR=0'",
+					"'TARGET_VERSION_MINOR=1'",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${SOURCE_ROOT}/project/xcode/src",
+					"${SOURCE_ROOT}/lib/FTXUI/include",
+				);
+				INSTALL_PATH = "";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DNDEBUG",
+					"'-std=gnu++14'",
+				);
+				OTHER_LDFLAGS = (
+					"-Wl,-search_paths_first",
+					"-Wl,-headerpad_max_install_names",
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = automaton;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "${SOURCE_ROOT}/project/xcode/src";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Release;
+		};
+		448271137E8D4356B5C03E32 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/include";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SYMROOT = "${SOURCE_ROOT}/project/xcode/build";
+			};
+			name = Debug;
+		};
+		88EE58AC25274F63B6A6E120 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/include";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SYMROOT = "${SOURCE_ROOT}/project/xcode/build";
+			};
+			name = Release;
+		};
+		93C57C9DCC39444292592364 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"'CMAKE_TARGET_VERSION=1'",
+					"'TARGET_VERSION_MAJOR=0'",
+					"'TARGET_VERSION_MINOR=1'",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${SOURCE_ROOT}/project/xcode/src",
+					"${SOURCE_ROOT}/lib/FTXUI/include",
+				);
+				INSTALL_PATH = "";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DNDEBUG",
+					"'-std=gnu++14'",
+				);
+				OTHER_LDFLAGS = (
+					"-Wl,-search_paths_first",
+					"-Wl,-headerpad_max_install_names",
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = automaton;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "${SOURCE_ROOT}/project/xcode/src";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = MinSizeRel;
+		};
+		A293BE4A14E64260967415F9 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"'CMAKE_TARGET_VERSION=1'",
+					"'TARGET_VERSION_MAJOR=0'",
+					"'TARGET_VERSION_MINOR=1'",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${SOURCE_ROOT}/project/xcode/src",
+					"${SOURCE_ROOT}/lib/FTXUI/include",
+				);
+				INSTALL_PATH = "";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_CPLUSPLUSFLAGS = (
+					"-DNDEBUG",
+					"'-std=gnu++14'",
+				);
+				OTHER_LDFLAGS = (
+					"-Wl,-search_paths_first",
+					"-Wl,-headerpad_max_install_names",
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = automaton;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "${SOURCE_ROOT}/project/xcode/src";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = RelWithDebInfo;
+		};
+		DB8A898B463B436D83E9DC5A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",
+					"'CMAKE_TARGET_VERSION=1'",
+					"'TARGET_VERSION_MAJOR=0'",
+					"'TARGET_VERSION_MINOR=1'",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"${SOURCE_ROOT}/project/xcode/src",
+					"${SOURCE_ROOT}/lib/FTXUI/include",
+				);
+				INSTALL_PATH = "";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				OTHER_CPLUSPLUSFLAGS = "   '-std=gnu++14' ";
+				OTHER_LDFLAGS = (
+					"-Wl,-search_paths_first",
+					"-Wl,-headerpad_max_install_names",
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = automaton;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "${SOURCE_ROOT}/project/xcode/src";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = "$(inherited)";
+			};
+			name = Debug;
+		};
+		E9B117C9B81F405BA05DA2C0 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/include";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SYMROOT = "${SOURCE_ROOT}/project/xcode/build";
+			};
+			name = RelWithDebInfo;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2BACB3F1D6804D69A43B8306 /* Build configuration list for PBXProject "automaton" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				448271137E8D4356B5C03E32 /* Debug */,
+				88EE58AC25274F63B6A6E120 /* Release */,
+				13E7EB78050E4D83A812DAFC /* MinSizeRel */,
+				E9B117C9B81F405BA05DA2C0 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FBD1F4C1C9AA4485B203B4CA /* Build configuration list for PBXNativeTarget "automaton" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB8A898B463B436D83E9DC5A /* Debug */,
+				3D2F99FCE3CA469B8C383F60 /* Release */,
+				93C57C9DCC39444292592364 /* MinSizeRel */,
+				A293BE4A14E64260967415F9 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7D4EC3332636446BBED33215 /* Project object */;
+}

@@ -10,6 +10,9 @@
 #include <string>
 #include <cstring>
 
+#include "component.hpp"
+#include "program.hpp"
+
 int main(int argc, const char * argv[])
 {
 	// collect command line arguments
@@ -33,7 +36,7 @@ int main(int argc, const char * argv[])
 	std::string input_filepath = commandLineArgs.front(); commandLineArgs.pop_front();
 	std::string output_location = commandLineArgs.front(); commandLineArgs.pop_front();
 	char last_char = output_location.back();
-	if(0 != std::strncmp("/", &last_char, 1)){
+	if (0 != std::strncmp("/", &last_char, 1)) {
 		output_location += "/";
 	}
 	
