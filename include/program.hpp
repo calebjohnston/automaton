@@ -49,6 +49,7 @@ public:
 public:
 	Type packet;
 	int version;
+	std::string command;	// used to match the CLI input
 	
 protected:
 	Software() : Data(), packet(Type::None), version(0) {};
