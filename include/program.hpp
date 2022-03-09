@@ -5,6 +5,8 @@
 //  Copyright © 2022 Caleb Johnston. All rights reserved.
 //
 
+#pragma once
+
 #include <string>
 #include <vector>
 
@@ -17,7 +19,7 @@ public:
 	
 	bool operator ==(const Data& rhs) const {
 		return  name == rhs.name && description == rhs.description &&
-		size == rhs.size && access == rhs.access;
+				size == rhs.size && access == rhs.access;
 	}
 	
 	bool operator !=(const Data& rhs) const { return !(*this == rhs); }
@@ -25,12 +27,12 @@ public:
 	bool operator >(const Data& rhs) const { return name > rhs.name; }
 	
 	operator bool() const {
-		return !name.empty();
+		return !name.empty() && size > 0;
 	}
 	
 protected:
 	Data() : name(""), description(""), size(1), access("") {};
-	virtual ~Data() = default;
+	
 };
 
 class Software : public Data {
@@ -48,23 +50,9 @@ public:
 	Type packet;
 	int version;
 	
-	bool operator ==(const Software& rhs) const {
-		return  name == rhs.name && description == rhs.description &&
-				packet == rhs.packet && size == rhs.size &&
-				version == rhs.version && access == rhs.access;
-	}
-	
-	bool operator !=(const Software& rhs) const { return !(*this == rhs); }
-	bool operator <(const Software& rhs) const { return name < rhs.name; }
-	bool operator >(const Software& rhs) const { return name > rhs.name; }
-	
-	operator bool() const {
-		return !name.empty() || Type::None != packet;
-	}
-	
 protected:
 	Software() : Data(), packet(Type::None), version(0) {};
-	virtual ~Software() = default;
+	
 };
 
 class Program : public Software {
@@ -81,7 +69,6 @@ public:
 	int cycles;
 	
 	Program() : Software(), crypto(Encryption::None), cycles(1) {};
-	virtual ~Program() = default;
 };
 
 class Daemon : public Software {
@@ -89,5 +76,4 @@ public:
 	float efficiency;
 	
 	Daemon() : Software(), efficiency(1) {};
-	~Daemon() = default;
 };

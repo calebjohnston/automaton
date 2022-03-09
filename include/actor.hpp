@@ -5,10 +5,35 @@
 //  Copyright © 2022 Caleb Johnston. All rights reserved.
 //
 
+#pragma once
+
+#include <memory>
 #include <string>
+#include <vector>
 
 #include "component.hpp"
 #include "program.hpp"
+
+enum class Status {
+	Active,
+	Inactive,
+	Busy,
+	None
+};
+enum class Class {
+	Electronics,
+	Monitor,
+	Sentry,
+	Worm,
+	Virus,
+	Simulation,
+	Agent,
+	Automaton,
+	None
+};
+
+using HostRef = std::shared_ptr<class Host>;
+using NetworkRef = std::shared_ptr<class Network>;
 
 class Host {
 public:
@@ -16,6 +41,9 @@ public:
 	std::string description;
 	Computer machine;
 	Kernel system;
+	
+	std::vector<HostRef> peers;
+	NetworkRef network;
 	
 	bool operator ==(const Host& rhs) const {
 		return  name == rhs.name && description == rhs.description;
@@ -29,41 +57,14 @@ public:
 	
 protected:
 	Host() : name(""), description("") {};
-	virtual ~Host() = default;
 };
 
-/*
-class Software : public Data {
+class Actor : public Host {
 public:
-	enum class Type {
-		None,
-		Ping,
-		Inference,
-		Reflection,
-		Symplex,
-		Autoregression
-	};
-	
-public:
-	Type packet;
-	int version;
-	
-	bool operator ==(const Software& rhs) const {
-		return  name == rhs.name && description == rhs.description &&
-				packet == rhs.packet && size == rhs.size &&
-				version == rhs.version && access == rhs.access;
-	}
-	
-	bool operator !=(const Software& rhs) const { return !(*this == rhs); }
-	bool operator <(const Software& rhs) const { return name < rhs.name; }
-	bool operator >(const Software& rhs) const { return name > rhs.name; }
-	
-	operator bool() const {
-		return !name.empty() || Type::None != packet;
-	}
+	Status status;
+	Class type;
 	
 protected:
-	Software() : Data(), packet(Type::None), version(0) {};
-	virtual ~Software() = default;
+	Actor() : Host(), status(Status::None), type(Class::None) {};
 };
-*/
+

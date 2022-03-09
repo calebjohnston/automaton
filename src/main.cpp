@@ -12,6 +12,7 @@
 
 #include "computer.h"
 #include "kernel.h"
+#include "network.hpp"
 
 // STRUCTURE GUIDELINES
 //---------------------

@@ -18,6 +18,7 @@
 		3CBE200727D7963800529C38 /* port.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = port.h; path = include/port.h; sourceTree = "<group>"; };
 		3CBE200B27D7968B00529C38 /* component.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = component.hpp; path = include/component.hpp; sourceTree = "<group>"; };
 		3CBE201527D7A73000529C38 /* program.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = program.hpp; path = include/program.hpp; sourceTree = "<group>"; };
+		3CC5B6DA27D8E0CC00F9AE44 /* network.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = network.hpp; path = include/network.hpp; sourceTree = "<group>"; };
 		426C516C96F64A469DBA902D /* port.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = port.cpp; path = src/port.cpp; sourceTree = SOURCE_ROOT; };
 		E5D4017F8C2E497BA365ACC7 /* automaton */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = automaton; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC2516114ACB421CA44AF10F /* main.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
@@ -60,6 +61,7 @@
 				3CBE200B27D7968B00529C38 /* component.hpp */,
 				3CAF3E0C27D7FAB400E4D5CA /* computer.h */,
 				3CAF3E0D27D7FAB400E4D5CA /* kernel.h */,
+				3CC5B6DA27D8E0CC00F9AE44 /* network.hpp */,
 				3CBE200727D7963800529C38 /* port.h */,
 				3CBE201527D7A73000529C38 /* program.hpp */,
 			);

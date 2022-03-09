@@ -5,6 +5,8 @@
 //  Copyright © 2022 Caleb Johnston. All rights reserved.
 //
 
+#pragma once
+
 #include <array>
 #include <map>
 #include <string>
@@ -29,7 +31,6 @@ public:
 	int price;
 	
 	Device() : name(""), devtype(Type::None), power(0), frequency(0), price(0) {};
-	~Device() = default;
 	
 	bool operator ==(const Device& rhs) const {
 		return  name == rhs.name && devtype == rhs.devtype && power == rhs.power &&
@@ -51,5 +52,4 @@ public:
 	int capacity; // does this work?
 	
 	Component() : Device(), buffersize(0), capacity(0) {};
-	~Component() = default;
 };

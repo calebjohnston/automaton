@@ -5,6 +5,8 @@
 //  Copyright © 2022 Caleb Johnston. All rights reserved.
 //
 
+#pragma once
+
 #include <string>
 #include <vector>
 
