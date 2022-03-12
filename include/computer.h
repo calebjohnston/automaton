@@ -23,3 +23,4 @@ public:
 	Device battery;
 	Device power;
 };
+

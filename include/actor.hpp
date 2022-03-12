@@ -56,7 +56,7 @@ public:
 	operator bool() const { return !name.empty(); }
 	
 protected:
-	Host() : name(""), description("") {};
+//	Host() : name(""), description("") {};
 };
 
 class Actor : public Host {
@@ -67,4 +67,5 @@ public:
 protected:
 	Actor() : Host(), status(Status::None), type(Class::None) {};
 };
+
 

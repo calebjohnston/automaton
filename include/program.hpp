@@ -78,3 +78,4 @@ public:
 	
 	Daemon() : Software(), efficiency(1) {};
 };
+

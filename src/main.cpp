@@ -5,10 +5,11 @@
 //  Copyright © 2020 Caleb Johnston. All rights reserved.
 //
 
-#include <iostream>
-#include <deque>
-#include <string>
 #include <cstring>
+#include <deque>
+#include <iostream>
+#include <memory>
+#include <string>
 
 #include "computer.h"
 #include "kernel.h"
@@ -33,6 +34,86 @@
 // Create abstraction for this input processing that works for all programs
 // Process CLI input by finding the right program and supplying it the inputs
 // Take program outputs and process those through the host machine properties
+/*
+enum EnumT1 {
+	Active,
+	Inactive,
+	Busy,
+	None
+};
+
+class DataT1 {
+	std::string prop1;
+	float prop2;
+	int prop3;
+	EnumT1 state;
+	
+	
+};
+
+struct DataT2 : public DataT1 {
+	std::string prop3;
+	std::string prop4;
+//	std::vector<int> nums;
+};
+*/
+
+void create_world()
+{
+//	DataT1 obj1 = { "prop1", 1.0f, 1, Active };
+//	DataT2 obj2 = { "prop3", "prop4", "prop1", 0.0f, 1, Active };
+	
+	// attempt 1
+	Component cpu;
+	Component disk;
+	Component memory;
+	Component nic;
+	Device battery;
+	Device power;
+	Computer host = { cpu, disk, memory, nic, battery, power };
+	
+//	std::string name;
+//	std::string description;
+//	std::vector<Daemon> daemons;
+//	std::vector<Program> programs;
+//	std::vector<Data> filesystem;
+	Kernel sys = { "name", "desc" };
+	
+	HostRef node = std::make_shared<Host>();
+	node->name = "name";
+	node->description = "desc";
+	node->machine = host;
+	node->system = sys;
+	
+	// attempt 2
+	/*
+	 auto cpu = MakeComponent(...bunch of details...)
+	 auto disk = MakeComponent(...bunch of details...)
+	 auto computer = MakeComputer(cpu, disk, ...)
+	 
+	 auto program = MakeProgram(...bunch of details...)
+	 auto daemon = MakeDaemon(...bunch of details...)
+	 auto file = MakeDaemon(...bunch of details...)
+	 auto system = MakeSystem(...bunch of details...)
+	 system.add(program)
+	 system.add(daemon)
+	 system.add(file)
+	 
+	 auto host1 = MakeHost( name, descr, computer1, system1 );
+	 auto host2 = MakeHost( name, descr, computer2, system2 );
+	 
+	 auto network = MakeNetwork( name, descr )
+	 network.add(host1)
+	 network.add(host2)
+	*/
+	
+	// attempt 3
+	/*
+	 
+	 cpu > disk >
+	 
+	 */
+}
 
 int main(int argc, const char * argv[])
 {

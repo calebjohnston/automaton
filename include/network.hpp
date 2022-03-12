@@ -17,7 +17,7 @@
 using HostRef = std::shared_ptr<Host>;
 using NetworkRef = std::shared_ptr<class Network>;
 using InternetworkRef = std::shared_ptr<class Internetwork>;
-using InternetworkLink = std::pair<InternetworkRef,HostRef>;
+//using InternetworkLink = std::pair<InternetworkRef,HostRef>;
 
 enum class NetworkType {
 	Hub,
@@ -35,11 +35,11 @@ public:
 	std::string description;
 	NetworkType type;
 	
-	InternetworkLink inetLink;
+//	InternetworkLink inetLink;
 	std::vector<HostRef> nodes;
 	
 	bool operator ==(const Network& rhs) const {
-		return  name == rhs.name && description == rhs.description;
+		return name == rhs.name && description == rhs.description;
 	}
 	
 	bool operator !=(const Network& rhs) const { return !(*this == rhs); }
@@ -55,12 +55,11 @@ protected:
 	
 };
 
-
 class Internetwork {
 public:
 	std::string name;
 	std::string description;
 	
-	std::vector<InternetworkLink> internets;
+//	std::vector<InternetworkLink> internets;
 	std::vector<NetworkRef> networks;
 };
