@@ -13,7 +13,7 @@
 
 #include "computer.h"
 #include "kernel.h"
-#include "network.hpp"
+#include "network.h"
 
 // STRUCTURE GUIDELINES
 //---------------------
@@ -34,57 +34,9 @@
 // Create abstraction for this input processing that works for all programs
 // Process CLI input by finding the right program and supplying it the inputs
 // Take program outputs and process those through the host machine properties
-/*
-enum EnumT1 {
-	Active,
-	Inactive,
-	Busy,
-	None
-};
-
-class DataT1 {
-	std::string prop1;
-	float prop2;
-	int prop3;
-	EnumT1 state;
-	
-	
-};
-
-struct DataT2 : public DataT1 {
-	std::string prop3;
-	std::string prop4;
-//	std::vector<int> nums;
-};
-*/
 
 void create_world()
 {
-//	DataT1 obj1 = { "prop1", 1.0f, 1, Active };
-//	DataT2 obj2 = { "prop3", "prop4", "prop1", 0.0f, 1, Active };
-	
-	// attempt 1
-	Component cpu;
-	Component disk;
-	Component memory;
-	Component nic;
-	Device battery;
-	Device power;
-	Computer host = { cpu, disk, memory, nic, battery, power };
-	
-//	std::string name;
-//	std::string description;
-//	std::vector<Daemon> daemons;
-//	std::vector<Program> programs;
-//	std::vector<Data> filesystem;
-	Kernel sys = { "name", "desc" };
-	
-	HostRef node = std::make_shared<Host>();
-	node->name = "name";
-	node->description = "desc";
-	node->machine = host;
-	node->system = sys;
-	
 	// attempt 2
 	/*
 	 auto cpu = MakeComponent(...bunch of details...)

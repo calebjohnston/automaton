@@ -7,19 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3CBE1FEC27D7945100529C38 /* port.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 426C516C96F64A469DBA902D /* port.cpp */; };
+		3CA95A9B27DD77390015AB3C /* network.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CA95A9827DD77380015AB3C /* network.cpp */; };
+		3CA95A9C27DD77390015AB3C /* agent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CA95A9927DD77380015AB3C /* agent.cpp */; };
+		3CA95A9D27DD77390015AB3C /* kernel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CA95A9A27DD77390015AB3C /* kernel.cpp */; };
 		3CBE1FED27D7945100529C38 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC2516114ACB421CA44AF10F /* main.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3CAF3E0A27D7C78200E4D5CA /* actor.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = actor.hpp; path = include/actor.hpp; sourceTree = "<group>"; };
+		3CA95A8E27DD23440015AB3C /* data.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = data.h; path = include/data.h; sourceTree = "<group>"; };
+		3CA95A9427DD2EB20015AB3C /* command.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = command.h; path = include/command.h; sourceTree = "<group>"; };
+		3CA95A9627DD53460015AB3C /* table.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = table.hpp; path = include/table.hpp; sourceTree = "<group>"; };
+		3CA95A9827DD77380015AB3C /* network.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = network.cpp; path = src/network.cpp; sourceTree = "<group>"; };
+		3CA95A9927DD77380015AB3C /* agent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = agent.cpp; path = src/agent.cpp; sourceTree = "<group>"; };
+		3CA95A9A27DD77390015AB3C /* kernel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = kernel.cpp; path = src/kernel.cpp; sourceTree = "<group>"; };
+		3CAF3E0A27D7C78200E4D5CA /* agent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = agent.h; path = include/agent.h; sourceTree = "<group>"; };
 		3CAF3E0C27D7FAB400E4D5CA /* computer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = computer.h; path = include/computer.h; sourceTree = "<group>"; };
 		3CAF3E0D27D7FAB400E4D5CA /* kernel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = kernel.h; path = include/kernel.h; sourceTree = "<group>"; };
-		3CBE200727D7963800529C38 /* port.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = port.h; path = include/port.h; sourceTree = "<group>"; };
-		3CBE200B27D7968B00529C38 /* component.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = component.hpp; path = include/component.hpp; sourceTree = "<group>"; };
-		3CBE201527D7A73000529C38 /* program.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = program.hpp; path = include/program.hpp; sourceTree = "<group>"; };
-		3CC5B6DA27D8E0CC00F9AE44 /* network.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = network.hpp; path = include/network.hpp; sourceTree = "<group>"; };
-		426C516C96F64A469DBA902D /* port.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = port.cpp; path = src/port.cpp; sourceTree = SOURCE_ROOT; };
+		3CBE200B27D7968B00529C38 /* component.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = component.h; path = include/component.h; sourceTree = "<group>"; };
+		3CBE201527D7A73000529C38 /* program.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = program.h; path = include/program.h; sourceTree = "<group>"; };
+		3CC5B6DA27D8E0CC00F9AE44 /* network.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = network.h; path = include/network.h; sourceTree = "<group>"; };
 		E5D4017F8C2E497BA365ACC7 /* automaton */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = automaton; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC2516114ACB421CA44AF10F /* main.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -48,7 +54,9 @@
 		3CBE1FD827D793FD00529C38 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				426C516C96F64A469DBA902D /* port.cpp */,
+				3CA95A9927DD77380015AB3C /* agent.cpp */,
+				3CA95A9A27DD77390015AB3C /* kernel.cpp */,
+				3CA95A9827DD77380015AB3C /* network.cpp */,
 				FC2516114ACB421CA44AF10F /* main.cpp */,
 			);
 			name = Sources;
@@ -57,13 +65,15 @@
 		3CBE1FD927D7941600529C38 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
-				3CAF3E0A27D7C78200E4D5CA /* actor.hpp */,
-				3CBE200B27D7968B00529C38 /* component.hpp */,
+				3CAF3E0A27D7C78200E4D5CA /* agent.h */,
+				3CA95A9427DD2EB20015AB3C /* command.h */,
+				3CBE200B27D7968B00529C38 /* component.h */,
 				3CAF3E0C27D7FAB400E4D5CA /* computer.h */,
+				3CA95A8E27DD23440015AB3C /* data.h */,
 				3CAF3E0D27D7FAB400E4D5CA /* kernel.h */,
-				3CC5B6DA27D8E0CC00F9AE44 /* network.hpp */,
-				3CBE200727D7963800529C38 /* port.h */,
-				3CBE201527D7A73000529C38 /* program.hpp */,
+				3CC5B6DA27D8E0CC00F9AE44 /* network.h */,
+				3CBE201527D7A73000529C38 /* program.h */,
+				3CA95A9627DD53460015AB3C /* table.hpp */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -132,8 +142,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3CBE1FEC27D7945100529C38 /* port.cpp in Sources */,
+				3CA95A9D27DD77390015AB3C /* kernel.cpp in Sources */,
+				3CA95A9B27DD77390015AB3C /* network.cpp in Sources */,
 				3CBE1FED27D7945100529C38 /* main.cpp in Sources */,
+				3CA95A9C27DD77390015AB3C /* agent.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,6 +156,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
 				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/include";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				ONLY_ACTIVE_ARCH = YES;
@@ -155,6 +169,7 @@
 		3D2F99FCE3CA469B8C383F60 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COMBINE_HIDPI_IMAGES = YES;
 				EXECUTABLE_PREFIX = "";
 				EXECUTABLE_SUFFIX = "";
@@ -176,10 +191,6 @@
 				);
 				INSTALL_PATH = "";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				OTHER_CPLUSPLUSFLAGS = (
-					"-DNDEBUG",
-					"'-std=gnu++14'",
-				);
 				OTHER_LDFLAGS = (
 					"-Wl,-search_paths_first",
 					"-Wl,-headerpad_max_install_names",
@@ -197,6 +208,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
 				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/include";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				ONLY_ACTIVE_ARCH = YES;
@@ -209,6 +222,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
 				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/include";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				ONLY_ACTIVE_ARCH = YES;
@@ -220,6 +235,7 @@
 		93C57C9DCC39444292592364 /* MinSizeRel */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COMBINE_HIDPI_IMAGES = YES;
 				EXECUTABLE_PREFIX = "";
 				EXECUTABLE_SUFFIX = "";
@@ -241,10 +257,6 @@
 				);
 				INSTALL_PATH = "";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				OTHER_CPLUSPLUSFLAGS = (
-					"-DNDEBUG",
-					"'-std=gnu++14'",
-				);
 				OTHER_LDFLAGS = (
 					"-Wl,-search_paths_first",
 					"-Wl,-headerpad_max_install_names",
@@ -261,6 +273,7 @@
 		A293BE4A14E64260967415F9 /* RelWithDebInfo */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COMBINE_HIDPI_IMAGES = YES;
 				EXECUTABLE_PREFIX = "";
 				EXECUTABLE_SUFFIX = "";
@@ -282,10 +295,6 @@
 				);
 				INSTALL_PATH = "";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				OTHER_CPLUSPLUSFLAGS = (
-					"-DNDEBUG",
-					"'-std=gnu++14'",
-				);
 				OTHER_LDFLAGS = (
 					"-Wl,-search_paths_first",
 					"-Wl,-headerpad_max_install_names",
@@ -302,6 +311,7 @@
 		DB8A898B463B436D83E9DC5A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LIBRARY = "compiler-default";
 				COMBINE_HIDPI_IMAGES = YES;
 				EXECUTABLE_PREFIX = "";
 				EXECUTABLE_SUFFIX = "";
@@ -323,7 +333,6 @@
 				);
 				INSTALL_PATH = "";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				OTHER_CPLUSPLUSFLAGS = "   '-std=gnu++14' ";
 				OTHER_LDFLAGS = (
 					"-Wl,-search_paths_first",
 					"-Wl,-headerpad_max_install_names",
@@ -341,6 +350,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_CXX_LIBRARY = "libc++";
 				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/include";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				ONLY_ACTIVE_ARCH = YES;
