@@ -109,3 +109,49 @@ private:
 	std::map<RowType,size_t> _index;
 	std::vector<RowType> _storage;
 };
+
+class DataController {
+public:
+	DataController(size_t limit = 0) : _capacity(limit), _consumed(0) {}
+	
+	const std::vector<DataRef>& data() const { return _data; }
+	
+	int64_t load(DataRef record)
+	{
+		if (record && _capacity - _consumed < record->size) return -1;
+		
+		size_t index = _data.size();
+		_data.push_back( record );
+		return index + 1;
+	}
+	
+	DataRef at(int64_t record)
+	{
+		if (record < 0 || record >= _data.size()) return std::make_shared<Data>(DataAttribs());
+		
+		return _data.at(record);
+	}
+	
+	bool unload(int64_t record)
+	{
+		if (record < 0 || record >= _data.size()) return false;
+		
+		_data.erase(_data.begin() + record);
+		return true;
+	}
+	
+	bool unload(DataRef record)
+	{
+		auto iter = std::find(begin(_data), end(_data), record);
+		if (iter == _data.end()) return false;
+		
+		_data.erase(iter);
+		return true;
+	}
+	
+private:
+	size_t _capacity;
+	size_t _consumed;
+	std::vector<DataRef> _data;
+};
+

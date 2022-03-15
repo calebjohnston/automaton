@@ -12,14 +12,16 @@
 
 #include "data.h"
 
-typedef std::shared_ptr<class Data> SoftwareRef;
+typedef std::shared_ptr<class Software> SoftwareRef;
+typedef std::shared_ptr<class Program> ProgramRef;
+typedef std::shared_ptr<class Daemon> DaemonRef;
 
 class Software : public Data {
 public:
 	DataPacket type;
 	int version;
 	
-	Software(const DataAttribs& attribs) : Data(attribs), type(attribs.type), version(attribs.version) {};
+	Software(const DataAttribs attribs) : Data(attribs), type(attribs.type), version(attribs.version) {};
 };
 
 class Program : public Software {
@@ -28,13 +30,13 @@ public:
 	Encryption crypto;
 	std::string command;	// used to match the CLI input
 	
-	Program(const DataAttribs& attribs) : Software(attribs), crypto(attribs.crypto), cycles(attribs.cycles), command(command) {};
+	Program(const DataAttribs attribs) : Software(attribs), crypto(attribs.crypto), cycles(attribs.cycles), command(command) {};
 };
 
 class Daemon : public Software {
 public:
 	float efficiency;
 	
-	Daemon(const DataAttribs& attribs) : Software(attribs), efficiency(attribs.efficiency) {};
+	Daemon(const DataAttribs attribs) : Software(attribs), efficiency(attribs.efficiency) {};
 };
 

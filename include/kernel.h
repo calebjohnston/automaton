@@ -23,58 +23,6 @@ using ComputerRef = std::shared_ptr<class Computer>;
 using NetworkRef = std::shared_ptr<class Network>;
 typedef std::shared_ptr<class Kernel> KernelRef;
 
-class Subsystem {
-//public:
-//	typedef std::function<void(DataRef)> Predicate;
-	
-public:
-	Subsystem(size_t limit = 0) : _capacity(limit), _consumed(0) {}
-	
-	bool load(DataRef record)
-	{
-		if (record && _capacity - _consumed < record->size) return false;
-		
-		_data.insert(record);
-		_consumed += record->size;
-		return true;
-	}
-	
-	bool unload(DataRef record)
-	{
-		if (!record) return false;
-		int size = record->size;
-		
-		bool removed = _data.remove(record);
-		_consumed -= removed ? size : 0;
-		return removed;
-	}
-	
-	bool loaded()
-	{
-		std::function<bool(DataRef)> filter = [](DataRef record) {
-			return record && record->size > 2;
-		};
-//		int idx = 0;
-//		std::function<std::tuple<std::string,std::string>(DataRef)> trans = [](DataRef record) {
-//			return std::make_tuple(record->name, record->description);
-//		};
-//		
-//		auto results = _data.filter<std::tuple<std::string,std::string>>(_data.query(filter), trans);
-	}
-	
-//	template<typename T, typename Predicate>
-//	auto loaded(Predicate filter) {
-//		std::vector<T> results;
-//		std::copy_if(std::begin(_data), std::end(_data), std::back_inserter(results), filter);
-//		return results;
-//	}
-	
-private:
-	size_t _capacity;
-	size_t _consumed;
-	Table<DataRef> _data;
-};
-
 class Kernel {
 public:
 	Kernel(const std::string& name, const std::string& descr, ComputerRef computer);
@@ -84,12 +32,16 @@ public:
 	std::string description() const { return _description; }
 	std::string host() const;
 	
-	bool install(SoftwareRef software) { return _registry.load(software); }
-	bool uninstall(SoftwareRef software) { return _registry.unload(software); }
-	std::vector<SoftwareRef> installedSoftware() const;
+	bool install(ProgramRef program) { return _programRegistry.load(program); }
+	bool uninstall(ProgramRef program) { return _programRegistry.unload(program); }
+	std::vector<ProgramRef> installedPrograms() const;
 	
-	bool load(DataRef data) { return _registry.load(data); }
-	bool unload(DataRef data) { return _registry.unload(data); }
+	bool install(DaemonRef daemon) { return _daemonRegistry.load(daemon); }
+	bool uninstall(DaemonRef daemon) { return _daemonRegistry.unload(daemon); }
+	std::vector<DaemonRef> installedDaemons() const;
+	
+	bool load(DataRef data) { return _filesystem.load(data); }
+	bool unload(DataRef data) { return _filesystem.unload(data); }
 	std::vector<DataRef> loadedData() const;
 	
 	bool trust(AgentRef agent) { return _group.ensure(agent); }
@@ -109,6 +61,7 @@ protected:
 	
 	Table<AgentRef> _group;
 	
-	Subsystem _filesystem;
-	Subsystem _registry;
+	DataController _filesystem;
+	DataController _programRegistry;
+	DataController _daemonRegistry;
 };

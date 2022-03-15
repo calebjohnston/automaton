@@ -6,8 +6,9 @@ Kernel::Kernel(const std::string& name, const std::string& descr, ComputerRef co
 : _name(name), _description(descr), _machine(computer)
 {
 	if (_machine) {
-		_registry = Subsystem(_machine->memory.capacity);
-		_filesystem = Subsystem(_machine->storage.capacity);
+		_programRegistry = DataController(_machine->memory.capacity/2);
+		_daemonRegistry = DataController(_machine->memory.capacity/2);
+		_filesystem = DataController(_machine->storage.capacity);
 	}
 }
 
@@ -16,9 +17,13 @@ std::string Kernel::host() const
 	return _machine ? _machine->name : "None";
 }
 
-std::vector<SoftwareRef> Kernel::installedSoftware() const
+std::vector<ProgramRef> Kernel::installedPrograms() const
 {
 //	_registry
+}
+
+std::vector<DaemonRef> Kernel::installedDaemons() const
+{
 }
 
 std::vector<DataRef> Kernel::loadedData() const

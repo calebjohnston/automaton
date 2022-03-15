@@ -49,8 +49,8 @@ public:
 	std::string description;
 	int size;
 	std::byte access; // revise...
-
-	Data(const DataAttribs& attribs) : name(attribs.name), description(attribs.description), size(attribs.size), access(attribs.access) {};
+	
+	Data(const DataAttribs attribs) : name(attribs.name), description(attribs.description), size(attribs.size), access(attribs.access) {};
 	
 };
 
@@ -58,5 +58,5 @@ class File : public Data {
 public:
 	std::string contents;
 	
-	File(const DataAttribs& attribs) : Data(attribs), contents(attribs.contents) {};
+	File(const DataAttribs attribs) : Data(attribs), contents(attribs.contents) {};
 };
