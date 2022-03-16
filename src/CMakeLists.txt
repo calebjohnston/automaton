@@ -8,24 +8,19 @@ cmake_minimum_required(VERSION 3.11)
 # This is the list of source files that need to be compiled
 #--------------------------------------------------------------------------------
 
-set( automaton_SRCS
-  main.cpp
-)
+file(GLOB SOURCES "*.cpp")
+set(automaton_SRCS ${SOURCES})
 
-set( automaton_lib_SRCS
-  Port.cpp
-)
+# remove CLI from library
+list(FILTER SOURCES EXCLUDE REGEX "main\.cpp")
+set(automaton_lib_SRCS ${SOURCES})
 
 #--------------------------------------------------------------------------------
 # Associate source and header dependencies to target(s).
 #--------------------------------------------------------------------------------
-add_executable( automaton
-  ${automaton_SRCS}
-)
+add_executable(automaton ${automaton_SRCS})
 
-add_library( auto STATIC
-  ${automaton_lib_SRCS}
-)
+add_library(auto STATIC ${automaton_lib_SRCS})
 
 #--------------------------------------------------------------------------------
 # We need this to be able to include headers produced by uic in our code
@@ -33,7 +28,7 @@ add_library( auto STATIC
 #  works just like INCLUDEPATH from qmake
 #--------------------------------------------------------------------------------
 include_directories (
-  # Look in the cmake build directory (some generated headers could be there)
+  ${PROJECT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_BINARY_DIR}
   # ${Boost_INCLUDE_DIRS}
   # ${PROJECT_SOURCE_DIR}/include

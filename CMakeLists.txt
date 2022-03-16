@@ -13,6 +13,9 @@ project( automaton )
 set( TARGET_VERSION_MAJOR 0 )
 set( TARGET_VERSION_MINOR 1 )
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 set(CMAKE_BUILD_TYPE Debug CACHE STRING "Set the build configuration")
 
 # if("${CMAKE_GENERATOR}" STREQUAL "Xcode")
