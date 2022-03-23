@@ -2,6 +2,10 @@
 #include "kernel.h"
 #include "computer.h"
 
+//---------------------
+#include "agent.h"
+//---------------------
+
 Kernel::Kernel(const std::string& name, const std::string& descr, ComputerRef computer)
 : _name(name), _description(descr), _machine(computer)
 {
@@ -40,7 +44,7 @@ std::vector<AgentRef> Kernel::trustedAgents() const
 std::vector<AgentRef> Kernel::networkedAgents() const
 {
 }
-	
+
 //	ComputerRef _machine;
 //	NetworkRef _network;
 //
@@ -48,3 +52,24 @@ std::vector<AgentRef> Kernel::networkedAgents() const
 //
 //	Subsystem _filesystem;
 //	Subsystem _registry;
+
+//---------------------
+void Kernel::addAgents() {
+	_group.insert(AgentRef(new Agent({})));
+	_group.insert(AgentRef(new Agent({})));
+}
+
+KernelRef Kernel::updateTest(KernelRef obj, const int val)
+{
+	if (!obj || val < 0) return obj; // no-op
+
+	obj->_test = val;
+
+	return obj;
+}
+
+int Kernel::test(KernelRef obj)
+{
+	return obj->_test;
+}
+//---------------------

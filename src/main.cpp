@@ -7,6 +7,7 @@
 
 #include <cstring>
 #include <deque>
+#include <functional>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -14,6 +15,31 @@
 #include "computer.h"
 #include "kernel.h"
 #include "network.h"
+
+//---------------------
+#include <variant>
+#include "composition.hpp"
+
+auto twice = [](const auto& f)
+{
+    return [&f](int x) {
+        return f(f(x));
+    };
+};
+
+auto plus_three = [](int i)
+{
+    return i + 3;
+};
+
+void test_hof()
+{
+    auto g = twice(plus_three);
+
+    std::cout << "g(7) == " << g(7) << std::endl; // 13
+}
+
+//---------------------
 
 // STRUCTURE GUIDELINES
 //---------------------
@@ -42,7 +68,7 @@ void create_world()
 	 auto cpu = MakeComponent(...bunch of details...)
 	 auto disk = MakeComponent(...bunch of details...)
 	 auto computer = MakeComputer(cpu, disk, ...)
-	 
+
 	 auto program = MakeProgram(...bunch of details...)
 	 auto daemon = MakeDaemon(...bunch of details...)
 	 auto file = MakeDaemon(...bunch of details...)
@@ -50,31 +76,61 @@ void create_world()
 	 system.add(program)
 	 system.add(daemon)
 	 system.add(file)
-	 
+
 	 auto host1 = MakeHost( name, descr, computer1, system1 );
 	 auto host2 = MakeHost( name, descr, computer2, system2 );
-	 
+
 	 auto network = MakeNetwork( name, descr )
 	 network.add(host1)
 	 network.add(host2)
 	*/
-	
+
 	// attempt 3
 	/*
-	 
+
 	 cpu > disk >
-	 
+
 	 */
+
+	 // METHOD 1
+	 KernelRef test_computer1 = KernelRef(new Kernel("comp1"));
+
+	 test_computer1 | setTest10 | addTest10;
+
+	 std::cout << "case: " + test_computer1->name() + ".test = " << test_computer1->test() << std::endl;
+
+	 KernelFunction infosec = operator|(applySecurity, policy); // works
+	 // KernelFunction infosec = applySecurity | policy; // does not work 🤔
+
+	 KernelRef test_computer2 = KernelRef(new Kernel("comp2"));
+	 KernelRef test_computer3 = KernelRef(new Kernel("comp3"));
+	 test_computer3->addAgents();
+	 std::vector<KernelRef> input = { test_computer1, test_computer2, test_computer3 };
+	 std::vector<KernelRef> output;
+	 std::transform(input.begin(), input.end(), std::back_inserter(output), infosec);
+	 std::for_each(output.begin(), output.end(), [](auto kernel){ std::cout << kernel->name() << ": " << kernel->test() << std::endl; });
+
+	 // METHOD 2
+	 // KernelRef test_computer2 = KernelRef(new Kernel("comp2"));
+	 // MaybeKernelRef maybe_computer = test_computer2;
+	 //
+	 // maybe_computer | setTest10 | subtractTest20 | addTest10 | addTest10;
+	 //
+ 	 // std::cout << "case: " + std::get<KernelRef>(maybe_computer)->name() + ".test = " << std::get<KernelRef>(maybe_computer)->test() << std::endl;
+
 }
 
 int main(int argc, const char * argv[])
 {
+// test_hof();
+create_world();
+
 	// collect command line arguments
 	std::deque<std::string> commandLineArgs;
 	for (int arg = 0; arg < argc; ++arg ) {
 		commandLineArgs.push_back( std::string( argv[arg] ) );
 	}
-	
+
 	// verify command line inputs
 	if (commandLineArgs.size() < 3) {
 		std::cout << "Usage: " << commandLineArgs.at(0) << " [input csv] [output location] (OPTIONS)" << std::endl;
@@ -84,7 +140,7 @@ int main(int argc, const char * argv[])
 		std::cout << "    -b  specify number of records per file; enables file output batching" << std::endl;
 		return -1;
 	}
-	
+
 	// parse command line inputs
 	commandLineArgs.pop_front(); // skip program name
 	std::string input_filepath = commandLineArgs.front(); commandLineArgs.pop_front();
@@ -93,7 +149,7 @@ int main(int argc, const char * argv[])
 	if (0 != std::strncmp("/", &last_char, 1)) {
 		output_location += "/";
 	}
-	
+
 	bool ignore_header = false;
 	bool collect_metrics = false;
 	int batch_size = 0;
@@ -121,7 +177,6 @@ int main(int argc, const char * argv[])
 		}
 		commandLineArgs.pop_front();
 	}
-	
+
     return 0;
 }
-
