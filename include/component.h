@@ -12,6 +12,11 @@
 #include <string>
 #include <stdlib.h>
 
+#include "node.h"
+
+typedef std::shared_ptr<class Device> DeviceRef;
+typedef std::shared_ptr<class Component> ComponentRef;
+
 enum class Type {
 	Disk,
 	Memory,
@@ -28,25 +33,36 @@ struct DeviceAttribs {
 	float power = 0;
 	float freq = 0;
 	int size = 0;
-	int capacity = 0;
 };
 
-class Device {
+class Device : public GridNode {
 public:
+	static DeviceRef create(const DeviceAttribs& attribs);
+
+	virtual int add(GridNodeRef child) override { return -1; }
+
+	virtual bool remove(size_t index) override { return false; }
+
+	Type type() const { return _type; }
+	float freq() const { return _frequency; }
+
+protected:
 	Device(const DeviceAttribs& attribs)
-		: name(attribs.name), devtype(attribs.type), power(attribs.power), frequency(attribs.freq) {}
-	
-	std::string name;
-	Type devtype;
-	float power;
-	float frequency; // or datarate
+		: GridNode(attribs.power, {}, attribs.name), _type(attribs.type), _frequency(attribs.freq) {}
+
+	Type _type;
+	float _frequency; // or datarate
 };
 
 class Component : public Device {
 public:
-	Component(const DeviceAttribs& attribs)
-		: Device(attribs), buffersize(attribs.size), capacity(attribs.capacity) {}
+	static ComponentRef create(const DeviceAttribs& attribs);
 
-	int buffersize;
-	int capacity;
+	int size() const { return _buffersize; }
+
+protected:
+	Component(const DeviceAttribs& attribs)
+		: Device(attribs), _buffersize(attribs.size) {}
+
+	int _buffersize;
 };

@@ -14,6 +14,7 @@
 #include "computer.h"
 #include "kernel.h"
 #include "network.h"
+#include "node.h"
 
 // STRUCTURE GUIDELINES
 //---------------------
@@ -42,7 +43,7 @@ void create_world()
 	 auto cpu = MakeComponent(...bunch of details...)
 	 auto disk = MakeComponent(...bunch of details...)
 	 auto computer = MakeComputer(cpu, disk, ...)
-	 
+
 	 auto program = MakeProgram(...bunch of details...)
 	 auto daemon = MakeDaemon(...bunch of details...)
 	 auto file = MakeDaemon(...bunch of details...)
@@ -50,20 +51,20 @@ void create_world()
 	 system.add(program)
 	 system.add(daemon)
 	 system.add(file)
-	 
+
 	 auto host1 = MakeHost( name, descr, computer1, system1 );
 	 auto host2 = MakeHost( name, descr, computer2, system2 );
-	 
+
 	 auto network = MakeNetwork( name, descr )
 	 network.add(host1)
 	 network.add(host2)
 	*/
-	
+
 	// attempt 3
 	/*
-	 
+
 	 cpu > disk >
-	 
+
 	 */
 }
 
@@ -74,7 +75,7 @@ int main(int argc, const char * argv[])
 	for (int arg = 0; arg < argc; ++arg ) {
 		commandLineArgs.push_back( std::string( argv[arg] ) );
 	}
-	
+
 	// verify command line inputs
 	if (commandLineArgs.size() < 3) {
 		std::cout << "Usage: " << commandLineArgs.at(0) << " [input csv] [output location] (OPTIONS)" << std::endl;
@@ -84,7 +85,7 @@ int main(int argc, const char * argv[])
 		std::cout << "    -b  specify number of records per file; enables file output batching" << std::endl;
 		return -1;
 	}
-	
+
 	// parse command line inputs
 	commandLineArgs.pop_front(); // skip program name
 	std::string input_filepath = commandLineArgs.front(); commandLineArgs.pop_front();
@@ -93,7 +94,7 @@ int main(int argc, const char * argv[])
 	if (0 != std::strncmp("/", &last_char, 1)) {
 		output_location += "/";
 	}
-	
+
 	bool ignore_header = false;
 	bool collect_metrics = false;
 	int batch_size = 0;
@@ -121,7 +122,6 @@ int main(int argc, const char * argv[])
 		}
 		commandLineArgs.pop_front();
 	}
-	
+
     return 0;
 }
-

@@ -12,7 +12,10 @@
 #include <cstddef>
 #include <bitset>
 
+#include "node.h"
+
 typedef std::shared_ptr<class Data> DataRef;
+typedef std::shared_ptr<class File> FileRef;
 
 enum class DataPacket {
 	Ping,
@@ -43,20 +46,37 @@ struct DataAttribs {
 	float efficiency = 0;
 };
 
-class Data {
+class Data : public GraphNode {
 public:
-	std::string name;
-	std::string description;
-	int size;
-	std::byte access; // revise...
-	
-	Data(const DataAttribs attribs) : name(attribs.name), description(attribs.description), size(attribs.size), access(attribs.access) {};
-	
+	static DataRef create(const DataAttribs& attribs);
+
+	virtual int add(GraphNodeRef child) override { return -1; }
+
+	virtual bool remove(size_t index) override { return false; }
+
+	std::string description() const { return _description; }
+
+	int size() const { return _size; }
+
+	std::byte access() const { return _access; }
+
+protected:
+	Data(const DataAttribs& attribs) : GraphNode({}, attribs.name), _description(attribs.description), _size(attribs.size), _access(attribs.access) {};
+
+	std::string _description;
+	int _size;
+	std::byte _access; // revise...
 };
+
 
 class File : public Data {
 public:
-	std::string contents;
-	
-	File(const DataAttribs attribs) : Data(attribs), contents(attribs.contents) {};
+	static FileRef create(const DataAttribs& attribs);
+
+	std::string contents() const { return _contents; }
+
+protected:
+	File(const DataAttribs& attribs) : Data(attribs), _contents(attribs.contents) {};
+
+	std::string _contents;
 };

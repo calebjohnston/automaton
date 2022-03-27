@@ -5,6 +5,11 @@
 
 using namespace std;
 
+GridNodeRef GridNode::create(int power, vector<GridNodeRef> children, string name)
+{
+	return GridNodeRef(new GridNode(power, children, name));
+}
+
 int GridNode::add(GridNodeRef child)
 {
 	if (!child) return -1;
@@ -28,6 +33,11 @@ bool GridNode::remove(size_t index)
 }
 
 
+
+GraphNodeRef GraphNode::create(vector<GraphNodeRef> children, string name)
+{
+	return GraphNodeRef(new GraphNode(children, name));
+}
 
 int GraphNode::add(GraphNodeRef child)
 {

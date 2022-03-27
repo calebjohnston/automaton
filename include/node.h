@@ -9,10 +9,8 @@ typedef std::shared_ptr<class GraphNode> GraphNodeRef;
 
 class GridNode {
 public:
-	GridNode(int power = 0, std::string name = "")
-	 	: _power(power), _name(std::move(name)) {}
-	GridNode(int power, std::vector<GridNodeRef> children, std::string name = "")
-	 	: _power(power), _children(std::move(children)), _name(std::move(name)) {}
+	static GridNodeRef create(int power = 0, std::vector<GridNodeRef> children = {}, std::string name = "");
+
 	virtual ~GridNode() = default;
 
 	int power() const { return _power; }
@@ -30,6 +28,9 @@ public:
 	size_t size() const { return _children.size(); }
 
 protected:
+	GridNode(int power, std::vector<GridNodeRef> children, std::string name)
+	 	: _power(power), _children(std::move(children)), _name(std::move(name)) {}
+
 	int _power;
 	std::string _name;
 	std::vector<GridNodeRef> _children;
@@ -37,17 +38,15 @@ protected:
 
 class GraphNode {
 public:
-	GraphNode(std::string name = "")
-	 	: _name(std::move(name)) {}
-	GraphNode(std::vector<GraphNodeRef> children, std::string name = "")
-	 	: _children(std::move(children)), _name(std::move(name)) {}
+	static GraphNodeRef create(std::vector<GraphNodeRef> children = {}, std::string name = "");
+
 	virtual ~GraphNode() = default;
 
 	std::string name() const { return _name; }
 
 	const std::vector<GraphNodeRef>& children() const { return _children; }
 
-	virtual void connect(GridNodeRef grid) { _grid = grid; }
+	virtual void connect(GridNodeRef grid) { _gridNode = grid; }
 
 	virtual int add(GraphNodeRef child);
 
@@ -58,7 +57,10 @@ public:
 	size_t size() const { return _children.size(); }
 
 protected:
+	GraphNode(std::vector<GraphNodeRef> children, std::string name)
+	 	: _children(std::move(children)), _name(std::move(name)) {}
+
 	std::string _name;
 	std::vector<GraphNodeRef> _children;
-	GridNodeRef _grid;
+	GridNodeRef _gridNode;
 };
