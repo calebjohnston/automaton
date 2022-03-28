@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <map>
 #include <memory>
 #include <string>
 #include <stdlib.h>
@@ -34,19 +35,19 @@ public:
 
 	virtual bool remove(size_t index) override;
 
-	void disk(ComponentRef device) 		{ _children[_diskIdx] = device; }
-	void memory(ComponentRef device) 	{ _children[_memoryIdx] = device; }
-	void processor(ComponentRef device) { _children[_processorIdx] = device; }
-	void uplink(ComponentRef device) 	{ _children[_uplinkIdx] = device; }
-	void battery(DeviceRef device) 		{ _children[_batteryIdx] = device; }
-	void powerUnit(DeviceRef device) 	{ _children[_powerIdx] = device; }
+	void disk(ComponentRef device) 		{ _children[DiskIdx] = device; }
+	void memory(ComponentRef device) 	{ _children[MemoryIdx] = device; }
+	void processor(ComponentRef device) { _children[ProcessorIdx] = device; }
+	void uplink(ComponentRef device) 	{ _children[UplinkIdx] = device; }
+	void battery(DeviceRef device) 		{ _children[BatteryIdx] = device; }
+	void powerUnit(DeviceRef device) 	{ _children[PowerIdx] = device; }
 
-	ComponentRef disk() const 		{ return std::dynamic_pointer_cast<Component>(_children[_diskIdx]); }
-	ComponentRef memory() const		{ return std::dynamic_pointer_cast<Component>(_children[_memoryIdx]); }
-	ComponentRef processor() const	{ return std::dynamic_pointer_cast<Component>(_children[_processorIdx]); }
-	ComponentRef uplink() const		{ return std::dynamic_pointer_cast<Component>(_children[_uplinkIdx]); }
-	DeviceRef battery() const		{ return std::dynamic_pointer_cast<Device>(_children[_batteryIdx]); }
-	DeviceRef powerUnit() const		{ return std::dynamic_pointer_cast<Device>(_children[_powerIdx]); }
+	ComponentRef disk() const 		{ return std::dynamic_pointer_cast<Component>(_children[DiskIdx]); }
+	ComponentRef memory() const		{ return std::dynamic_pointer_cast<Component>(_children[MemoryIdx]); }
+	ComponentRef processor() const	{ return std::dynamic_pointer_cast<Component>(_children[ProcessorIdx]); }
+	ComponentRef uplink() const		{ return std::dynamic_pointer_cast<Component>(_children[UplinkIdx]); }
+	DeviceRef battery() const		{ return std::dynamic_pointer_cast<Device>(_children[BatteryIdx]); }
+	DeviceRef powerUnit() const		{ return std::dynamic_pointer_cast<Device>(_children[PowerIdx]); }
 
 private:
 	Computer(const ComputerAttribs& attribs);
@@ -54,11 +55,13 @@ private:
 	std::string _serial;
 	std::string _manufacturer;
 
-	const size_t _diskIdx = 0;
-	const size_t _memoryIdx = 1;
-	const size_t _processorIdx = 2;
-	const size_t _uplinkIdx = 3;
-	const size_t _batteryIdx = 4;
-	const size_t _powerIdx = 5;
-	const size_t _maxChildren = 6;
+	const static size_t DiskIdx = 0;
+	const static size_t MemoryIdx = 1;
+	const static size_t ProcessorIdx = 2;
+	const static size_t UplinkIdx = 3;
+	const static size_t BatteryIdx = 4;
+	const static size_t PowerIdx = 5;
+	const static size_t MaxChildren = 6;
+
+	const static std::map<Type,int> ComponentIndexMap;
 };

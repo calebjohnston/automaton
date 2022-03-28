@@ -28,6 +28,8 @@ class Controller : public GraphNode {
 public:
 	static ControllerRef create(ComponentRef component, std::string name = "");
 
+	virtual void connect(GridNodeRef grid) override;
+
 	virtual int add(GraphNodeRef child) override;
 
 	virtual bool remove(size_t index) override;
@@ -44,6 +46,8 @@ public:
 
 	std::string description() const { return _description; }
 	std::string host() const;
+
+	virtual void connect(GridNodeRef grid) override;
 
 	virtual int add(GraphNodeRef child) override;
 
@@ -76,10 +80,10 @@ protected:
 
 	// Table<AgentRef> _group;
 
-	const size_t _diskCtrlIdx = 0;
-	const size_t _memCtrlIdx = 1;
-	const size_t _procCtrlIdx = 2;
-	const size_t _connCtrlIdx = 3;
-	const size_t _agentsCtrlIdx = 4;
-	const size_t _maxChildren = 5;
+	const static size_t DiskCtrlIdx = 0;
+	const static size_t MemCtrlIdx = 1;
+	const static size_t ProcCtrlIdx = 2;
+	const static size_t ConnCtrlIdx = 3;
+	const static size_t AgentsCtrlIdx = 4;
+	const static size_t MaxChildren = 5;
 };

@@ -13,9 +13,15 @@ Controller::Controller(ComponentRef component, const std::string& name)
 	: GraphNode({}, name)
 {
 	// static_assert(computer)
-	_gridNode = component;
+	connect(component);
+}
 
+void Controller::connect(GridNodeRef grid)
+{
+	ComponentRef component = dynamic_pointer_cast<Component>(grid);
+	_gridNode = component;
 	_capacity = _gridNode->size();
+	_children.clear();
 }
 
 int Controller::add(GraphNodeRef child)
@@ -55,18 +61,24 @@ Kernel::Kernel(ComputerRef computer, const std::string& name, const std::string&
 : GraphNode({}, name), _description(descr)
 {
 	// static_assert(computer)
-	_gridNode = computer;
-
-	_children[_diskCtrlIdx] = Controller::create(computer->disk());
-	_children[_memCtrlIdx] = Controller::create(computer->memory());
-	_children[_procCtrlIdx] = Controller::create(computer->processor());
-	_children[_connCtrlIdx] = Controller::create(computer->uplink());
-	_children[_agentsCtrlIdx] = GraphNodeRef(nullptr);
+	connect(computer);
 }
 
 std::string Kernel::host() const
 {
 	return _gridNode ? _gridNode->name() : "None";
+}
+
+void Kernel::connect(GridNodeRef grid)
+{
+	ComputerRef computer = dynamic_pointer_cast<Computer>(grid);
+	_gridNode = computer;
+
+	_children[Kernel::DiskCtrlIdx] = Controller::create(computer->disk());
+	_children[Kernel::MemCtrlIdx] = Controller::create(computer->memory());
+	_children[Kernel::ProcCtrlIdx] = Controller::create(computer->processor());
+	_children[Kernel::ConnCtrlIdx] = Controller::create(computer->uplink());
+	_children[Kernel::AgentsCtrlIdx] = GraphNodeRef(nullptr);
 }
 
 int Kernel::add(GraphNodeRef child)

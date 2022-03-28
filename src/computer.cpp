@@ -5,6 +5,15 @@
 
 using namespace std;
 
+const map<Type,int> Computer::ComponentIndexMap = {
+    { Type::Disk, Computer::DiskIdx },
+    { Type::Memory, Computer::MemoryIdx },
+    { Type::Processor, Computer::ProcessorIdx },
+    { Type::Network, Computer::UplinkIdx },
+    { Type::Battery, Computer::BatteryIdx },
+    { Type::Power, Computer::PowerIdx }
+};
+
 ComputerRef Computer::create(const ComputerAttribs& attribs)
 {
     return ComputerRef(new Computer(attribs));
@@ -26,42 +35,17 @@ int Computer::add(GridNodeRef child)
 	DeviceRef component = dynamic_pointer_cast<Device>(child);
 	if (!component) return -1;
 
-	int idx;
-	switch (component->type()) {
-		case Type::Disk:
-			idx = _diskIdx;
-			_children[idx] = child;
-			break;
-		case Type::Memory:
-			idx = _memoryIdx;
-			_children[idx] = child;
-			break;
-		case Type::Processor:
-			idx = _processorIdx;
-			_children[idx] = child;
-			break;
-		case Type::Network:
-			idx = _uplinkIdx;
-			_children[idx] = child;
-			break;
-		case Type::Battery:
-			idx = _batteryIdx;
-			_children[idx] = child;
-			break;
-		case Type::Power:
-			idx = _powerIdx;
-			_children[idx] = child;
-			break;
-		default:
-			idx = -1;
-	}
+    auto search = ComponentIndexMap.find(component->type());
+    if (search == ComponentIndexMap.end()) return -1;
 
-	return idx;
+    int idx = search->second;
+    _children[idx] = child;
+    return idx;
 }
 
 bool Computer::remove(size_t index)
 {
-	if (index >= _maxChildren) return false;
+	if (index >= Computer::MaxChildren) return false;
 
 	if (index < 4)
 		_children[index] = ComponentRef(nullptr);
