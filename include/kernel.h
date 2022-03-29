@@ -17,6 +17,7 @@
 #include "network.h"
 #include "node.h"
 #include "program.h"
+#include "slot.hpp"
 
 using AgentRef = std::shared_ptr<class Agent>;
 using ComputerRef = std::shared_ptr<class Computer>;
@@ -79,6 +80,7 @@ protected:
 	std::string _description;
 
 	// Table<AgentRef> _group;
+	Slot<Controller,GraphNode,0> _diskController;
 
 	const static size_t DiskCtrlIdx = 0;
 	const static size_t MemCtrlIdx = 1;

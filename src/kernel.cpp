@@ -1,15 +1,16 @@
+#include <type_traits>
 
 #include "kernel.h"
 #include "computer.h"
 
 using namespace std;
 
-ControllerRef Controller::create(ComponentRef component, std::string name)
+ControllerRef Controller::create(ComponentRef component, string name)
 {
 	return ControllerRef(new Controller(component, std::move(name)));
 }
 
-Controller::Controller(ComponentRef component, const std::string& name)
+Controller::Controller(ComponentRef component, const string& name)
 	: GraphNode({}, name)
 {
 	// static_assert(computer)
@@ -52,16 +53,17 @@ bool Controller::remove(size_t index)
 	return result;
 }
 
-KernelRef Kernel::create(ComputerRef computer, std::string name, std::string descr)
+KernelRef Kernel::create(ComputerRef computer, string name, string descr)
 {
 	return KernelRef(new Kernel(std::move(computer), std::move(name), std::move(descr)));
 }
 
-Kernel::Kernel(ComputerRef computer, const std::string& name, const std::string& descr)
-: GraphNode({}, name), _description(descr)
+Kernel::Kernel(ComputerRef computer, const string& name, const string& descr)
+: GraphNode({}, name), _diskController(_children), _description(descr)
 {
-	// static_assert(computer)
 	connect(computer);
+
+	_diskController->size();
 }
 
 std::string Kernel::host() const
@@ -84,6 +86,8 @@ void Kernel::connect(GridNodeRef grid)
 int Kernel::add(GraphNodeRef child)
 {
 	// NOT IMPLEMENTED
+	ControllerRef controller = dynamic_pointer_cast<Controller>(child);
+	_diskController = controller;
 
 	return -1;
 }
