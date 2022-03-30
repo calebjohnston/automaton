@@ -1,8 +1,27 @@
 
+#include <algorithm>
+#include <memory>
+
 #include "kernel.h"
 #include "computer.h"
 
 using namespace std;
+
+template<typename T, typename U>
+auto convert(const std::vector<std::shared_ptr<U>>& input)
+{
+	struct DynamicCaster {
+		std::shared_ptr<T> operator()(std::shared_ptr<U> value) const {
+			return std::dynamic_pointer_cast<T>(value);
+		}
+	};
+
+    std::vector<std::shared_ptr<T>> result;
+    std::transform(input.begin(), input.end(), result.begin(), DynamicCaster());
+
+	return result;
+}
+
 
 ControllerRef Controller::create(ComponentRef component, std::string name)
 {
@@ -95,6 +114,30 @@ bool Kernel::remove(size_t index)
 	return false;
 }
 
+vector<DataRef> Kernel::filesystem() const
+{
+	return convert<Data, GraphNode>(_children[DiskCtrlIdx]->children());
+}
+
+vector<DaemonRef> Kernel::daemons() const
+{
+	return convert<Daemon, GraphNode>(_children[MemCtrlIdx]->children());
+}
+
+vector<ProgramRef> Kernel::programs() const
+{
+	return convert<Program, GraphNode>(_children[ProcCtrlIdx]->children());
+}
+
+vector<KernelRef> Kernel::connections() const
+{
+	return convert<Kernel, GraphNode>(_children[ConnCtrlIdx]->children());
+}
+
+vector<AgentRef> Kernel::users() const
+{
+	return convert<Agent, GraphNode>(_children[AgentsCtrlIdx]->children());
+}
 
 /*
 std::vector<ProgramRef> Kernel::installedPrograms() const

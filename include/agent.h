@@ -14,9 +14,11 @@
 #include "component.h"
 #include "kernel.h"
 #include "program.h"
+#include "node.h"
 
 using KernelRef = std::shared_ptr<class Kernel>;
 typedef std::shared_ptr<class Agent> AgentRef;
+typedef std::shared_ptr<class Actor> ActorRef;
 
 enum class Status {
 	Active,
@@ -43,45 +45,44 @@ enum class Class {
 struct AgentAttribs {
 	std::string name = "";
 	std::string description = "";
-	KernelRef host;
 	Status status = Status::None;
 	Class type = Class::None;
 };
 
-class Agent {
+class Agent : public GraphNode {
 public:
-	Agent(const AgentAttribs& attribs) : _name(attribs.name), _descr(attribs.description), _host(attribs.host) {}
-	
-	std::string name() const { return _name; }
+	static AgentRef create(KernelRef host, const AgentAttribs& attribs);
+
 	std::string description() const { return _descr; }
-	std::string host() const;
-	
+	std::string hostname() const;
+
 protected:
-	std::string _name;
+	Agent(KernelRef host, const AgentAttribs& attribs);
+
 	std::string _descr;
-	KernelRef _host;
-	
+
 };
 
 class Actor : public Agent {
 public:
-	Actor(const AgentAttribs& attribs) : Agent(attribs), _status(attribs.status), _type(attribs.type) {};
-	
+	static ActorRef create(KernelRef host, const AgentAttribs& attribs);
+
 protected:
+	Actor(KernelRef host, const AgentAttribs& attribs);
+
 	Status _status;
 	Class _type;
-	
+
 };
 
 /*
 class Automaton : public Actor {
 public:
 	Automaton(const std::string& name, const std::string& descr, KernelRef host, Status status = Status::None, Class type = Class::None) : Actor(name, descr, host, status, type) {};
-	
+
 private:
 	Intelligence mind;
 	Drive motivation;
 	Model model;
 };
 */
-

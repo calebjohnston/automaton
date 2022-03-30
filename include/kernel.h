@@ -52,33 +52,37 @@ public:
 	virtual int add(GraphNodeRef child) override;
 
 	virtual bool remove(size_t index) override;
-/*
-	bool install(ProgramRef program) { return _programRegistry.load(program); }
-	bool uninstall(ProgramRef program) { return _programRegistry.unload(program); }
-	std::vector<ProgramRef> installedPrograms() const;
 
-	bool install(DaemonRef daemon) { return _daemonRegistry.load(daemon); }
-	bool uninstall(DaemonRef daemon) { return _daemonRegistry.unload(daemon); }
-	std::vector<DaemonRef> installedDaemons() const;
+	std::vector<DataRef> filesystem() const;
+	std::vector<DaemonRef> daemons() const;
+	std::vector<ProgramRef> programs() const;
+	std::vector<KernelRef> connections() const;
+	std::vector<AgentRef> users() const;
 
-	bool load(DataRef data) { return _filesystem.load(data); }
-	bool unload(DataRef data) { return _filesystem.unload(data); }
-	std::vector<DataRef> loadedData() const;
+	bool load(ProgramRef program) { return _children[ProcCtrlIdx]->add(program); }
+	bool unload(size_t index) { return _children[ProcCtrlIdx]->remove(index); }
+	// std::vector<ProgramRef> installedPrograms() const;
 
-	bool trust(AgentRef agent) { return _group.ensure(agent); }
-	bool distrust(AgentRef agent) { return _group.remove(agent); }
-	std::vector<AgentRef> trustedAgents() const;
-*/
-	// bool connect(NetworkRef network) { _network = network; return _network.get(); }
-	// bool disconnect() { _network.reset(); return true; }
-	// std::vector<AgentRef> networkedAgents() const;
+	bool install(DaemonRef daemon) { return _children[MemCtrlIdx]->add(daemon); }
+	bool uninstall(size_t index) { return _children[MemCtrlIdx]->remove(index); }
+	// std::vector<DaemonRef> installedDaemons() const;
+
+	bool copy(DataRef data) { return _children[DiskCtrlIdx]->add(data); }
+	bool erase(size_t index) { return _children[DiskCtrlIdx]->remove(index); }
+	// std::vector<DataRef> loadedData() const;
+
+	// bool trust(AgentRef agent) { return _children[AgentsCtrlIdx]->add(agent); }
+	// bool distrust(size_t index) { return _children[AgentsCtrlIdx]->remove(index); }
+	// std::vector<AgentRef> group() const;
+
+	bool connect(KernelRef agent) { return _children[ConnCtrlIdx]->add(agent); }
+	bool disconnect(size_t index) { return _children[ConnCtrlIdx]->remove(index); }
+	// std::vector<KernelRef> connections() const;
 
 protected:
 	Kernel(ComputerRef computer, const std::string& name, const std::string& descr);
 
 	std::string _description;
-
-	// Table<AgentRef> _group;
 
 	const static size_t DiskCtrlIdx = 0;
 	const static size_t MemCtrlIdx = 1;
