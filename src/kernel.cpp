@@ -134,9 +134,15 @@ vector<KernelRef> Kernel::connections() const
 	return convert<Kernel, GraphNode>(_children[ConnCtrlIdx]->children());
 }
 
-vector<AgentRef> Kernel::users() const
+vector<AgentRef> Kernel::group() const
 {
 	return convert<Agent, GraphNode>(_children[AgentsCtrlIdx]->children());
+}
+
+
+bool Kernel::trust(AgentRef agent)
+{
+	return _children[AgentsCtrlIdx]->add(agent) >= 0;
 }
 
 /*

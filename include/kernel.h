@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 
+#include "agent.h"
 #include "data.h"
 #include "network.h"
 #include "node.h"
@@ -53,31 +54,25 @@ public:
 
 	virtual bool remove(size_t index) override;
 
-	std::vector<DataRef> filesystem() const;
-	std::vector<DaemonRef> daemons() const;
-	std::vector<ProgramRef> programs() const;
-	std::vector<KernelRef> connections() const;
-	std::vector<AgentRef> users() const;
-
-	bool load(ProgramRef program) { return _children[ProcCtrlIdx]->add(program); }
+	bool load(ProgramRef program) { return _children[ProcCtrlIdx]->add(program) >= 0; }
 	bool unload(size_t index) { return _children[ProcCtrlIdx]->remove(index); }
-	// std::vector<ProgramRef> installedPrograms() const;
+	std::vector<ProgramRef> programs() const;
 
-	bool install(DaemonRef daemon) { return _children[MemCtrlIdx]->add(daemon); }
+	bool install(DaemonRef daemon) { return _children[MemCtrlIdx]->add(daemon) >= 0; }
 	bool uninstall(size_t index) { return _children[MemCtrlIdx]->remove(index); }
-	// std::vector<DaemonRef> installedDaemons() const;
+	std::vector<DaemonRef> daemons() const;
 
-	bool copy(DataRef data) { return _children[DiskCtrlIdx]->add(data); }
+	bool copy(DataRef data) { return _children[DiskCtrlIdx]->add(data) >= 0; }
 	bool erase(size_t index) { return _children[DiskCtrlIdx]->remove(index); }
-	// std::vector<DataRef> loadedData() const;
+	std::vector<DataRef> filesystem() const;
 
-	// bool trust(AgentRef agent) { return _children[AgentsCtrlIdx]->add(agent); }
-	// bool distrust(size_t index) { return _children[AgentsCtrlIdx]->remove(index); }
-	// std::vector<AgentRef> group() const;
+	bool trust(AgentRef agent); // impl in cpp to resolve compiler error with incomplete type AgentRef (from "using" declaration above)
+	bool distrust(size_t index) { return _children[AgentsCtrlIdx]->remove(index); }
+	std::vector<AgentRef> group() const;
 
-	bool connect(KernelRef agent) { return _children[ConnCtrlIdx]->add(agent); }
+	bool connect(KernelRef host) { return _children[ConnCtrlIdx]->add(host) >= 0; }
 	bool disconnect(size_t index) { return _children[ConnCtrlIdx]->remove(index); }
-	// std::vector<KernelRef> connections() const;
+	std::vector<KernelRef> connections() const;
 
 protected:
 	Kernel(ComputerRef computer, const std::string& name, const std::string& descr);
