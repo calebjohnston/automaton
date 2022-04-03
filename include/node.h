@@ -61,6 +61,6 @@ protected:
 	 	: _children(std::move(children)), _name(std::move(name)) {}
 
 	std::string _name;
-	std::vector<GraphNodeRef> _children;
+	std::vector<GraphNodeRef> _children;	// may need to separate egress from ingress for peer Kernel connections
 	GridNodeRef _gridNode;
 };
