@@ -124,10 +124,10 @@ vector<DaemonRef> Kernel::daemons() const
 	return convert<Daemon, GraphNode>(_children[MemCtrlIdx]->children());
 }
 
-vector<ProgramRef> Kernel::programs() const
-{
-	return convert<Program, GraphNode>(_children[ProcCtrlIdx]->children());
-}
+// vector<ProgramRef> Kernel::programs() const
+// {
+// 	return convert<Program, GraphNode>(_children[ProcCtrlIdx]->children());
+// }
 
 vector<KernelRef> Kernel::connections() const
 {

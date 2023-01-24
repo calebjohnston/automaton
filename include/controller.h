@@ -14,6 +14,7 @@
 using KernelRef = std::shared_ptr<class Kernel>;
 using ComputerRef = std::shared_ptr<class Computer>;
 typedef std::shared_ptr<class Controller> ControllerRef;
+typedef std::shared_ptr<class ProgramController> ProgramControllerRef;
 
 class Controller : public GraphNode {
 public:

@@ -38,7 +38,7 @@ public:
 	virtual bool remove(size_t index) override;
 
 	// acts as command processor but delegates command execution to controllers
-
+	// @TODO updates required here...
 	// bool load(ProgramRef program) { return _children[ProcCtrlIdx]->add(program) >= 0; }
 	// bool unload(size_t index) { return _children[ProcCtrlIdx]->remove(index); }
 	// std::vector<ProgramRef> programs() const;
@@ -67,7 +67,9 @@ public:
 
 	std::vector<KernelRef> connections() const;
 
+	// @TODO: create command processor structure here...
 	// processCommand() -> switch/match against handler functions
+	/*
 	class Command {
 		AgentRef sender;
 		CommandType type;
@@ -77,10 +79,11 @@ public:
 	void receive(Command); // -> copy Command(?) from open connection and then invoke process?
 	void dispatch(Command,KernelRef); // -> send through connection
 
-	void process(Packet); // -> for Daemons only
-	void receive(Packet); // -> copy to daemon?
-	void dispatch(Packet,KernelRef); // -> for Programs only
+	void process(DataPacket); // -> for Daemons only
+	void receive(DataPacket); // -> copy to daemon?
+	void dispatch(DataPacket,KernelRef); // -> for Programs only
 
+	*/
 protected:
 	Kernel(ComputerRef computer, const std::string& name, const std::string& descr);
 

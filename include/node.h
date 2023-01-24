@@ -7,7 +7,7 @@
 typedef std::shared_ptr<class GridNode> GridNodeRef;
 typedef std::shared_ptr<class GraphNode> GraphNodeRef;
 
-class GridNode {
+class GridNode : public std::enable_shared_from_this<GridNode> {
 public:
 	static GridNodeRef create(int power = 0, std::vector<GridNodeRef> children = {}, std::string name = "");
 
@@ -36,7 +36,7 @@ protected:
 	std::vector<GridNodeRef> _children;
 };
 
-class GraphNode {
+class GraphNode : public std::enable_shared_from_this<GridNode> {
 public:
 	static GraphNodeRef create(std::vector<GraphNodeRef> children = {}, std::string name = "");
 
