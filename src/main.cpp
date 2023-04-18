@@ -99,8 +99,10 @@ void create_world()
 
 	 std::cout << "case: " + test_computer1->name() + ".test = " << test_computer1->test() << std::endl;
 
-	 KernelFunction infosec = operator|(applySecurity, policy); // works
-	 // KernelFunction infosec = applySecurity | policy; // does not work 🤔
+	//  KernelFunction infosec = operator|(applySecurity, policy); // works
+	KernelFunction _policy = policy;
+
+	 KernelFunction infosec = applySecurity | _policy; // does not work 🤔
 
 	 KernelRef test_computer2 = KernelRef(new Kernel("comp2"));
 	 KernelRef test_computer3 = KernelRef(new Kernel("comp3"));
