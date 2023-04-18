@@ -11,11 +11,11 @@ typedef enum port_io_t {
 class Port
 {
 public:
-    Port();
+    Port() {};
 
 	std::string getAddress() const { return mAddress; }
 
-	void setAddress(const std::string& addr);
+	void setAddress(const std::string& addr) { mAddress = addr; } 
 
 private:
 	std::string mAddress;
