@@ -26,6 +26,7 @@
 		3CBE200B27D7968B00529C38 /* component.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = component.h; path = include/component.h; sourceTree = "<group>"; };
 		3CBE201527D7A73000529C38 /* program.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = program.h; path = include/program.h; sourceTree = "<group>"; };
 		3CC5B6DA27D8E0CC00F9AE44 /* network.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = network.h; path = include/network.h; sourceTree = "<group>"; };
+		3CFEEAFA29EEBF9E000F308E /* composition.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = composition.hpp; path = include/composition.hpp; sourceTree = "<group>"; };
 		E5D4017F8C2E497BA365ACC7 /* automaton */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = automaton; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC2516114ACB421CA44AF10F /* main.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -68,6 +69,7 @@
 				3CAF3E0A27D7C78200E4D5CA /* agent.h */,
 				3CA95A9427DD2EB20015AB3C /* command.h */,
 				3CBE200B27D7968B00529C38 /* component.h */,
+				3CFEEAFA29EEBF9E000F308E /* composition.hpp */,
 				3CAF3E0C27D7FAB400E4D5CA /* computer.h */,
 				3CA95A8E27DD23440015AB3C /* data.h */,
 				3CAF3E0D27D7FAB400E4D5CA /* kernel.h */,
