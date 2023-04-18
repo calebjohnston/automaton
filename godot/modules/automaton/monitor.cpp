@@ -4,6 +4,7 @@
 #include "editor/editor_scale.h"
 #include "editor/editor_settings.h"
 #include "main/performance.h"
+#include "scene/gui/label.h"
 #include "scene/2d/canvas_item.h"
 
 Monitor::Monitor() {
@@ -11,6 +12,13 @@ Monitor::Monitor() {
 	// set_clip_contents(true);
 	
 	set_mouse_filter(MOUSE_FILTER_STOP);
+	
+	Label* info_message = memnew(Label);
+	info_message->set_text(TTR("Whatever"));
+	info_message->set_align(Label::ALIGN_CENTER);
+	info_message->set_valign(Label::VALIGN_CENTER);
+	info_message->set_anchors_and_margins_preset(Control::PRESET_WIDE, Control::PRESET_MODE_KEEP_SIZE, 8 * EDSCALE);
+	add_child(info_message);
 
 	// connect("draw", this, "_draw");
 	// connect("gui_input", this, "_gui_input");
@@ -116,7 +124,7 @@ void Monitor::_draw() {
 
 	rect.position += graph_style_box->get_offset();
 	rect.size -= graph_style_box->get_minimum_size();
-	Color draw_color = get_color(StringName("accent_color"), StringName("Editor"));
+	Color draw_color = get_color("accent_color", "Editor");
 	draw_color.set_hsv(Math::fmod(hue_shift, 0.9f), draw_color.get_s() * 0.9f, draw_color.get_v() * value_multiplier, 0.6f);
 	draw_string(graph_font, rect.position + Point2(0, graph_font->get_ascent()), name, draw_color);
 
