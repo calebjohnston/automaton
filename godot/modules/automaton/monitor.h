@@ -30,6 +30,7 @@ protected:
 
 public:
 	String name;
+	float amplitude;
 	// String base;
 	List<float> history;
 	float max = 0.0f;
@@ -41,6 +42,18 @@ public:
 	void update_value(float p_value);
 	void set_name(String p_name);
 	void set_my_prop(int p_val) { my_test_prop = p_val; }
+	
+	void set_amplitude(float p_value) {
+		amplitude = p_value;
+		if (amplitude > 0.5f) {
+			emit_signal("amplitude_changed", this, amplitude);
+		}
+	}
+	
+	float get_amplitude() const {
+		return amplitude;
+	}
+	
 	void reset();
 };
 

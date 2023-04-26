@@ -11,6 +11,11 @@
 		3CA95A9C27DD77390015AB3C /* agent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CA95A9927DD77380015AB3C /* agent.cpp */; };
 		3CA95A9D27DD77390015AB3C /* kernel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CA95A9A27DD77390015AB3C /* kernel.cpp */; };
 		3CBE1FED27D7945100529C38 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC2516114ACB421CA44AF10F /* main.cpp */; };
+		3CCAB8C129EF885B007F872E /* component.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CCAB8BC29EF885B007F872E /* component.cpp */; };
+		3CCAB8C229EF885B007F872E /* data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CCAB8BD29EF885B007F872E /* data.cpp */; };
+		3CCAB8C329EF885B007F872E /* computer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CCAB8BE29EF885B007F872E /* computer.cpp */; };
+		3CCAB8C429EF885B007F872E /* node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CCAB8BF29EF885B007F872E /* node.cpp */; };
+		3CCAB8C529EF885B007F872E /* program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CCAB8C029EF885B007F872E /* program.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +31,11 @@
 		3CBE200B27D7968B00529C38 /* component.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = component.h; path = include/component.h; sourceTree = "<group>"; };
 		3CBE201527D7A73000529C38 /* program.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = program.h; path = include/program.h; sourceTree = "<group>"; };
 		3CC5B6DA27D8E0CC00F9AE44 /* network.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = network.h; path = include/network.h; sourceTree = "<group>"; };
+		3CCAB8BC29EF885B007F872E /* component.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = component.cpp; path = src/component.cpp; sourceTree = "<group>"; };
+		3CCAB8BD29EF885B007F872E /* data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = data.cpp; path = src/data.cpp; sourceTree = "<group>"; };
+		3CCAB8BE29EF885B007F872E /* computer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = computer.cpp; path = src/computer.cpp; sourceTree = "<group>"; };
+		3CCAB8BF29EF885B007F872E /* node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = node.cpp; path = src/node.cpp; sourceTree = "<group>"; };
+		3CCAB8C029EF885B007F872E /* program.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = program.cpp; path = src/program.cpp; sourceTree = "<group>"; };
 		E5D4017F8C2E497BA365ACC7 /* automaton */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = automaton; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC2516114ACB421CA44AF10F /* main.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -54,6 +64,11 @@
 		3CBE1FD827D793FD00529C38 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				3CCAB8BC29EF885B007F872E /* component.cpp */,
+				3CCAB8BE29EF885B007F872E /* computer.cpp */,
+				3CCAB8BD29EF885B007F872E /* data.cpp */,
+				3CCAB8BF29EF885B007F872E /* node.cpp */,
+				3CCAB8C029EF885B007F872E /* program.cpp */,
 				3CA95A9927DD77380015AB3C /* agent.cpp */,
 				3CA95A9A27DD77390015AB3C /* kernel.cpp */,
 				3CA95A9827DD77380015AB3C /* network.cpp */,
@@ -142,10 +157,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3CCAB8C129EF885B007F872E /* component.cpp in Sources */,
+				3CCAB8C529EF885B007F872E /* program.cpp in Sources */,
 				3CA95A9D27DD77390015AB3C /* kernel.cpp in Sources */,
 				3CA95A9B27DD77390015AB3C /* network.cpp in Sources */,
 				3CBE1FED27D7945100529C38 /* main.cpp in Sources */,
+				3CCAB8C329EF885B007F872E /* computer.cpp in Sources */,
 				3CA95A9C27DD77390015AB3C /* agent.cpp in Sources */,
+				3CCAB8C229EF885B007F872E /* data.cpp in Sources */,
+				3CCAB8C429EF885B007F872E /* node.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,12 +175,12 @@
 		13E7EB78050E4D83A812DAFC /* MinSizeRel */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/include";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
 				SYMROOT = "${SOURCE_ROOT}/project/xcode/build";
 			};
@@ -207,12 +227,12 @@
 		448271137E8D4356B5C03E32 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/include";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
 				SYMROOT = "${SOURCE_ROOT}/project/xcode/build";
 			};
@@ -221,12 +241,12 @@
 		88EE58AC25274F63B6A6E120 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/include";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
 				SYMROOT = "${SOURCE_ROOT}/project/xcode/build";
 			};
@@ -349,12 +369,12 @@
 		E9B117C9B81F405BA05DA2C0 /* RelWithDebInfo */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/include";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
 				SYMROOT = "${SOURCE_ROOT}/project/xcode/build";
 			};

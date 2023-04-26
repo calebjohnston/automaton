@@ -9,6 +9,7 @@
 void register_automaton_types() {
     ClassDB::register_class<Agent>();
     ClassDB::register_class<Monitor>();
+
 }
 
 void unregister_automaton_types() {

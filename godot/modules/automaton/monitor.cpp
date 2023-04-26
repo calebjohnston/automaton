@@ -1,6 +1,7 @@
 #include "monitor.h"
 
 #include "core/math/random_number_generator.h"
+#include "core/variant.h"
 #include "editor/editor_scale.h"
 #include "editor/editor_settings.h"
 #include "main/performance.h"
@@ -57,10 +58,14 @@ void Monitor::_notification(int p_what) {
 }
 
 void Monitor::_bind_methods() {
-    // ClassDB::bind_method(D_METHOD("set_name", "name"), &Monitor::set_name);
 	ClassDB::bind_method(D_METHOD("set_my_prop", "val"), &Monitor::set_my_prop);
-	// ClassDB::bind_method(D_METHOD("_draw"), &Monitor::_draw);
 	ClassDB::bind_method(D_METHOD("_gui_input"), &Monitor::_gui_input);
+	
+	ClassDB::bind_method(D_METHOD("get_amplitude"), &Monitor::get_amplitude);
+	ClassDB::bind_method(D_METHOD("set_amplitude", "p_value"), &Monitor::set_amplitude);
+	
+	ADD_PROPERTY(PropertyInfo(Variant::REAL, "amplitude"), "set_amplitude", "get_amplitude");
+	ADD_SIGNAL(MethodInfo("amplitude_changed", PropertyInfo(Variant::OBJECT, "node"), PropertyInfo(Variant::REAL, "new_amp")));
 }
 
 void Monitor::set_name(String p_name) {
