@@ -18,11 +18,16 @@
 
 namespace Auto {
 
+#pragma game model state
+
 struct Command {
 	std::string function;
-	std::string target;
+	Agent* target;
 	std::vector<std::string> arguments;
 };
+// examples:
+//	ps
+// 	ps load/unload <targ>
 
 struct Action {
 	std::function<Result()> function;
@@ -36,7 +41,18 @@ struct GameState {
 	// GUI placeholder...
 };
 
-Command make_decision(Agent& agent)
+#pragma utility functions
+
+Command parse(std::string& user_input, Agent* user_agent)
+{
+	// parse first token
+	// parse arguments
+	return { "", user_agent, {} };
+}
+
+#pragma game lifecycle operations
+
+Command decide(Agent& agent)
 {
 	Command cmd;
 	if (agent.type != Class::Player) {
@@ -44,12 +60,14 @@ Command make_decision(Agent& agent)
 	}
 	else if (agent.type == Class::Player) {
 		// cmd = solicit input from the player and conver it to a command
+		cmd = { "ps", &agent, {} };
+//		cmd = { "ps", &agent, { "unload", "_program_" } };
 	}
 	
 	return cmd;
 };
 
-Action process_command(Command& cmd)
+Action process(Command& cmd)
 {
 	Action axn;
 	
@@ -59,10 +77,15 @@ Action process_command(Command& cmd)
 	return axn;
 }
 
-Result execute_action(Action& action)
+Result execute(Action& action)
 {
 	return action.function();
 };
+
+void render(Result& result)
+{
+	// TBD
+}
 
 GameState the_game;
 
@@ -73,14 +96,16 @@ void load_gamestate()
 
 void gameplay_loop()
 {
-	for (Agent& agent : the_game.agents) {
-		Command command = make_decision(agent);
-		Action action = process_command(command);
-		Result result = execute_action(action);
-		if (agent.type == Class::Player) {
-			// Render results using GUI
+	bool game_over = false;
+	while (!game_over) {
+		for (Agent& agent : the_game.agents) {
+			Command command = decide(agent);
+			Action action = process(command);
+			Result result = execute(action);
+			if (agent.type == Class::Player)
+				render(result);
 		}
-		// Test for game termination condition...
+		// game_over = check for game termination condition...
 	}
 };
 

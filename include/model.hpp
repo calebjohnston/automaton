@@ -14,6 +14,20 @@
 #include <string>
 #include <vector>
 
+/*
+ * Architecture and design considerations:
+ * 	- POD types must have pointers if they are to have bidirectional references between child/parents
+ *		- consider the scenario in which you have a computer but you want to know what kernel is running on it, currently impossible
+ *	- POD types could benefit from convenience functions for comparators, string IO, (de)serialization support, etc.
+ * 	- POD types might need an umambiguous way to be empty or null which is currently ill defined
+ *		- consider the scenario in which you want to determine if a specific instance of software is already installed
+ *	- POD types might have nasty memory allocation issues
+ *	- POD types don't provide base types which are required for writing generic (aka DRY) code
+ *	- a class factory pattern that vends typesafe ID handles will be required to perform reliable conversion from commands to actions
+ *		- its also required so that you can maintain references to targets that are passed between scopes
+ *		- furthermore, the class factories should maintain a table/list of objects where each object stores its own lookup ID (maybe?)
+ */
+
 namespace Auto {
 
 enum class Packet {
@@ -125,6 +139,10 @@ struct Result {
 	std::string message;
 };
 
+typedef std::vector<Result> ResultSet;
+
+#pragma utility functions
+
 int computer_power_draw(Computer& computer)
 {
 	return computer.disk.power + computer.memory.power + computer.processor.power + computer.uplink.power;
@@ -147,6 +165,55 @@ int device_power_draw(Computer& computer, Component type)
 		case Component::None: return 0;
 	}
 	return 0;
+}
+
+int capacity_for_type(Kernel& kernel, Component type)
+{
+	int total_size = 0;
+	int total_capacity = 0;
+	switch (type) {
+		case Component::Disk:
+			total_size = std::accumulate(kernel.files.begin(), kernel.files.end(), 0, [](int acc, const File& file){ return acc += file.size; });
+			total_capacity = kernel.computer.disk.capacity;
+			
+		case Component::Memory:
+			total_size = std::accumulate(kernel.daemons.begin(), kernel.daemons.end(), 0, [](int acc, const Software& daemon){ return acc += daemon.size; });
+			total_capacity = kernel.computer.memory.capacity;
+			
+		case Component::Processor:
+			total_size = std::accumulate(kernel.programs.begin(), kernel.programs.end(), 0, [](int acc, const Software& prog){ return acc += prog.size; });
+			total_capacity = kernel.computer.processor.capacity;
+			
+		case Component::Network:
+			total_size = static_cast<int>(kernel.connections.size());
+			total_capacity = kernel.computer.uplink.capacity;
+			
+		default: return 0;
+	}
+	return total_capacity - total_size;
+}
+
+#pragma transformation functions
+
+Result install_kernel(Kernel& kernel, const Computer& computer)
+{
+	Result res = { 0, "success" };
+	
+	// input validation
+	int total_file_size = std::accumulate(kernel.files.begin(), kernel.files.end(), 0, [](int acc, const File& file){ return acc += file.size; });
+	int disk_requirement = computer.disk.capacity - total_file_size;
+	int total_mem_size = std::accumulate(kernel.daemons.begin(), kernel.daemons.end(), 0, [](int acc, const Software& daemon){ return acc += daemon.size; });
+	int mem_requirement = computer.memory.capacity - total_mem_size;
+	int total_proc_size = std::accumulate(kernel.programs.begin(), kernel.programs.end(), 0, [](int acc, const Software& prog){ return acc += prog.size; });
+	int proc_requirement = computer.processor.capacity - total_proc_size;
+	int conn_requirement = computer.uplink.capacity - static_cast<int>(kernel.connections.size());
+	if (disk_requirement < 0 || mem_requirement < 0 || proc_requirement < 0 || conn_requirement < 0) {
+		return { 1, "computer has insufficient capacity to install kernel" };
+	}
+	
+	kernel.computer = computer;
+	
+	return res;
 }
 
 Result install_device(Computer& computer, const Device& device)
@@ -192,39 +259,13 @@ Result uninstall_device(Computer& computer, Component type)
 	return res;
 }
 
-int kernel_capacity_for_type(Kernel& kernel, Component type)
-{
-	int total_size = 0;
-	int total_capacity = 0;
-	switch (type) {
-		case Component::Disk:
-			total_size = std::accumulate(kernel.files.begin(), kernel.files.end(), 0, [](int acc, const File& file){ return acc += file.size; });
-			total_capacity = kernel.computer.disk.capacity;
-			
-		case Component::Memory:
-			total_size = std::accumulate(kernel.daemons.begin(), kernel.daemons.end(), 0, [](int acc, const Software& daemon){ return acc += daemon.size; });
-			total_capacity = kernel.computer.memory.capacity;
-			
-		case Component::Processor:
-			total_size = std::accumulate(kernel.programs.begin(), kernel.programs.end(), 0, [](int acc, const Software& prog){ return acc += prog.size; });
-			total_capacity = kernel.computer.processor.capacity;
-			
-		case Component::Network:
-			total_size = static_cast<int>(kernel.connections.size());
-			total_capacity = kernel.computer.uplink.capacity;
-			
-		default: return 0;
-	}
-	return total_capacity - total_size;
-}
-
 Result install_program(Kernel& kernel, const Software& sw)
 {
 	Result res = { 0, "success" };
 
 	if (Binary::Program != sw.exec_type) return { 2, "specified software is not a program" };
 	
-	int capacity = kernel_capacity_for_type(kernel, Component::Processor);
+	int capacity = capacity_for_type(kernel, Component::Processor);
 	if (capacity > sw.size) {
 		kernel.programs.push_back(sw);
 	}
@@ -239,7 +280,7 @@ Result install_daemon(Kernel& kernel, const Software& sw)
 	
 	if (Binary::Daemon != sw.exec_type) return { 2, "specified software is not a daemon" };
 	
-	int capacity = kernel_capacity_for_type(kernel, Component::Memory);
+	int capacity = capacity_for_type(kernel, Component::Memory);
 	if (capacity > sw.size) {
 		kernel.daemons.push_back(sw);
 	}
@@ -252,7 +293,7 @@ Result copy_file(Kernel& kernel, const File& file)
 {
 	Result res = { 0, "success" };
 	
-	int capacity = kernel_capacity_for_type(kernel, Component::Disk);
+	int capacity = capacity_for_type(kernel, Component::Disk);
 	if (capacity > file.size) {
 		kernel.files.push_back(file);
 	}
@@ -265,7 +306,7 @@ Result connect_to(Kernel& kernel, Kernel& target)
 {
 	Result res = { 0, "success" };
 	
-	int capacity = kernel_capacity_for_type(kernel, Component::Network);
+	int capacity = capacity_for_type(kernel, Component::Network);
 	if (capacity > 0) {
 		kernel.connections.push_back(target);
 	}
@@ -308,6 +349,65 @@ Result disconnect(Kernel& kernel, uint index)
 	kernel.connections.erase(kernel.connections.begin() + index);
 	
 	return { 0, "success" };
+}
+
+#pragma readonly functions
+
+Result info(const Computer& computer)
+{
+	return { 0, "Computer: #" + computer.serial + " " + computer.manufacturer };
+}
+
+Result info(const Software& software)
+{
+	std::string label;
+	if (Binary::Daemon == software.exec_type) label = "Daemon";
+	else if (Binary::Program == software.exec_type) label = "Program";
+	
+	return { 0, label + ": " + software.name + " " + std::to_string(software.size) + " " + std::to_string(software.version) + " " + std::to_string(software.cycles) + " " + software.description };
+}
+
+Result info(const File& file)
+{
+	return { 0, "File: " + file.name + " " + std::to_string(file.size) + " " + std::to_string(file.version) + " " + file.description };
+}
+
+Result info(const Kernel& kernel)
+{
+	return { 0, "Kernel: " + kernel.hostname + " " + std::to_string(kernel.version) + " " + std::to_string(kernel.programs.size()) + " " + std::to_string(kernel.daemons.size()) + " " + std::to_string(kernel.files.size()) + " " + kernel.computer.manufacturer };
+}
+
+template<typename T>
+ResultSet to_results(const std::vector<T>& list)
+{
+	ResultSet out;
+	for (int i = 0; i < list.size(); i++) {
+		Result res = info(list[i]);
+		res.status = i;
+		out.push_back(res);
+	}
+	
+	return out;
+}
+
+ResultSet list_programs(const Kernel& kernel)
+{
+	return to_results<Software>(kernel.programs);
+}
+
+ResultSet list_daemons(const Kernel& kernel)
+{
+	return to_results<Software>(kernel.daemons);
+}
+
+ResultSet list_files(const Kernel& kernel)
+{
+	return to_results<File>(kernel.files);
+}
+
+ResultSet list_connections(const Kernel& kernel)
+{
+	return to_results<Kernel>(kernel.connections);
 }
 
 }	// namespace Auto

@@ -73,8 +73,11 @@ void create_world()
 int main(int argc, const char * argv[])
 {
 	Auto::Device dev;
+	Auto::Agent agent = { "name", "description", Auto::Status::Active, Auto::Class::Automaton, 1 };
 	Auto::Computer comp = { "serial", "manufacturer", dev, dev, dev, dev, dev, dev };
-	Auto::Command com = { "", "", {} };
+	Auto::Kernel system = { "hostname", {}, {}, {}, {}, 1, comp };
+	Auto::Command com = { "", &agent, {} };
+	list_programs(system);
 	
 	// collect command line arguments
 	std::deque<std::string> commandLineArgs;
