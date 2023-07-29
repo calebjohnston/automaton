@@ -132,6 +132,7 @@ struct Agent {
 	Status status;
 	Class type;
 	int version;
+	Kernel kernel;
 };
 
 struct Result {
