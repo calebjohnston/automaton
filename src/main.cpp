@@ -15,6 +15,8 @@
 #include "kernel.h"
 #include "network.h"
 #include "node.h"
+#include "model.hpp"
+#include "game.hpp"
 
 // STRUCTURE GUIDELINES
 //---------------------
@@ -70,6 +72,10 @@ void create_world()
 
 int main(int argc, const char * argv[])
 {
+	Auto::Device dev;
+	Auto::Computer comp = { "serial", "manufacturer", dev, dev, dev, dev, dev, dev };
+	Auto::Command com = { "", "", {} };
+	
 	// collect command line arguments
 	std::deque<std::string> commandLineArgs;
 	for (int arg = 0; arg < argc; ++arg ) {
