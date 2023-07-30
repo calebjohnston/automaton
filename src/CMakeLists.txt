@@ -54,4 +54,4 @@ target_compile_features(automaton PRIVATE cxx_std_14)
 #--------------------------------------------------------------------------------
 # Associate linker dependencies to target(s).
 #--------------------------------------------------------------------------------
-target_link_libraries( automaton )
+target_link_libraries( automaton screen dom component )

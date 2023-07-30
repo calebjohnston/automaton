@@ -16,7 +16,12 @@
 #include <iostream>
 #include <vector>
 
+#include "ftxui/component/component.hpp"
+#include "ftxui/component/screen_interactive.hpp"
+#include "ftxui/component/loop.hpp"
+
 #include "model.hpp"
+#include "render.hpp"
 
 namespace Auto {
 
@@ -58,10 +63,11 @@ private:
 
 struct GameState {
 	std::vector<Agent> agents;
-	std::vector<Command> commands;
-	std::vector<Action> actions;
-	std::vector<Result> results;
-	// GUI placeholder...
+//	std::vector<Command> commands;
+//	std::vector<Action> actions;
+//	std::vector<Result> results;
+	
+//	ftxui::ScreenInteractive screen;
 };
 
 #pragma utility functions
@@ -99,12 +105,12 @@ Command decide(Agent& agent)
 
 Action* process(Command& cmd)
 {
-	using namespace std::placeholders;
-	
-	std::deque<std::string> commands;
-	std::deque<std::string> options;
-	std::vector<std::string> command_params = {"", "load", "unload", "install", "uninstall"};
-	std::vector<std::string> option_params = {"-i", "--input", "-o", "--output", "-c", "--config", "-v", "--verbose", "-d", "--default"};
+//	using namespace std::placeholders;
+//
+//	std::deque<std::string> commands;
+//	std::deque<std::string> options;
+//	std::vector<std::string> command_params = {"", "load", "unload", "install", "uninstall"};
+//	std::vector<std::string> option_params = {"-i", "--input", "-o", "--output", "-c", "--config", "-v", "--verbose", "-d", "--default"};
 	if ("ps" == cmd.function) {
 		if (cmd.arguments.empty()) {
 			return new ProgramsAction(cmd.target);
@@ -132,11 +138,6 @@ ResultSet execute(Action& action)
 	return action.execute();
 };
 
-void render(ResultSet& results)
-{
-	std::for_each(results.cbegin(), results.cend(), [](const Result& r){ std::cout << r.status << " " << r.message << std::endl; });
-}
-
 #pragma the game itself
 
 GameState the_game;
@@ -154,6 +155,11 @@ void load_gamestate()
 
 void gameplay_loop()
 {
+	std::string cmd_str;
+	auto gui = ftxui::Container::Vertical({ftxui::Input(&cmd_str, "_")});
+	auto screen = ftxui::ScreenInteractive::TerminalOutput();
+	ftxui::Loop loop(&screen, gui);
+	
 	bool game_over = false;
 	while (!game_over) {
 		for (Agent& agent : the_game.agents) {
@@ -161,7 +167,7 @@ void gameplay_loop()
 			Action* action = process(command);
 			ResultSet results = execute(*action);
 			if (agent.type == Class::Player)
-				render(results);
+				render(results); // loop.RunOnce(); // <-- I think this needs to be split in half
 		}
 		game_over = true;
 		// game_over = check for game termination condition...

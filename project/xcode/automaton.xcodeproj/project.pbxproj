@@ -11,6 +11,9 @@
 		3CA95A9C27DD77390015AB3C /* agent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CA95A9927DD77380015AB3C /* agent.cpp */; };
 		3CA95A9D27DD77390015AB3C /* kernel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CA95A9A27DD77390015AB3C /* kernel.cpp */; };
 		3CBE1FED27D7945100529C38 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FC2516114ACB421CA44AF10F /* main.cpp */; };
+		3CC78D622A7616010053CF4E /* libftxui-component.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CC78D5F2A7616010053CF4E /* libftxui-component.a */; };
+		3CC78D632A7616010053CF4E /* libftxui-screen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CC78D602A7616010053CF4E /* libftxui-screen.a */; };
+		3CC78D642A7616010053CF4E /* libftxui-dom.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CC78D612A7616010053CF4E /* libftxui-dom.a */; };
 		3CCAB8C129EF885B007F872E /* component.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CCAB8BC29EF885B007F872E /* component.cpp */; };
 		3CCAB8C229EF885B007F872E /* data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CCAB8BD29EF885B007F872E /* data.cpp */; };
 		3CCAB8C329EF885B007F872E /* computer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CCAB8BE29EF885B007F872E /* computer.cpp */; };
@@ -19,6 +22,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3C43743E2A744B78009C7263 /* node.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = node.h; path = include/node.h; sourceTree = "<group>"; };
+		3C4DBD742A7490CE00B878FD /* model.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = model.hpp; path = include/model.hpp; sourceTree = "<group>"; };
+		3C4DBD752A749E2C00B878FD /* game.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = game.hpp; path = include/game.hpp; sourceTree = "<group>"; };
 		3CA95A8E27DD23440015AB3C /* data.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = data.h; path = include/data.h; sourceTree = "<group>"; };
 		3CA95A9427DD2EB20015AB3C /* command.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = command.h; path = include/command.h; sourceTree = "<group>"; };
 		3CA95A9627DD53460015AB3C /* table.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = table.hpp; path = include/table.hpp; sourceTree = "<group>"; };
@@ -31,6 +37,10 @@
 		3CBE200B27D7968B00529C38 /* component.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = component.h; path = include/component.h; sourceTree = "<group>"; };
 		3CBE201527D7A73000529C38 /* program.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = program.h; path = include/program.h; sourceTree = "<group>"; };
 		3CC5B6DA27D8E0CC00F9AE44 /* network.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = network.h; path = include/network.h; sourceTree = "<group>"; };
+		3CC78D582A75EE3D0053CF4E /* render.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = render.hpp; path = include/render.hpp; sourceTree = "<group>"; };
+		3CC78D5F2A7616010053CF4E /* libftxui-component.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libftxui-component.a"; path = "lib/FTXUI/build/libftxui-component.a"; sourceTree = "<group>"; };
+		3CC78D602A7616010053CF4E /* libftxui-screen.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libftxui-screen.a"; path = "lib/FTXUI/build/libftxui-screen.a"; sourceTree = "<group>"; };
+		3CC78D612A7616010053CF4E /* libftxui-dom.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libftxui-dom.a"; path = "lib/FTXUI/build/libftxui-dom.a"; sourceTree = "<group>"; };
 		3CCAB8BC29EF885B007F872E /* component.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = component.cpp; path = src/component.cpp; sourceTree = "<group>"; };
 		3CCAB8BD29EF885B007F872E /* data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = data.cpp; path = src/data.cpp; sourceTree = "<group>"; };
 		3CCAB8BE29EF885B007F872E /* computer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = computer.cpp; path = src/computer.cpp; sourceTree = "<group>"; };
@@ -45,6 +55,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3CC78D622A7616010053CF4E /* libftxui-component.a in Frameworks */,
+				3CC78D632A7616010053CF4E /* libftxui-screen.a in Frameworks */,
+				3CC78D642A7616010053CF4E /* libftxui-dom.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -87,6 +100,10 @@
 				3CA95A8E27DD23440015AB3C /* data.h */,
 				3CAF3E0D27D7FAB400E4D5CA /* kernel.h */,
 				3CC5B6DA27D8E0CC00F9AE44 /* network.h */,
+				3C4DBD752A749E2C00B878FD /* game.hpp */,
+				3CC78D582A75EE3D0053CF4E /* render.hpp */,
+				3C4DBD742A7490CE00B878FD /* model.hpp */,
+				3C43743E2A744B78009C7263 /* node.h */,
 				3CBE201527D7A73000529C38 /* program.h */,
 				3CA95A9627DD53460015AB3C /* table.hpp */,
 			);
@@ -104,6 +121,9 @@
 		B070ECFBFB6B405D91408B89 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3CC78D5F2A7616010053CF4E /* libftxui-component.a */,
+				3CC78D612A7616010053CF4E /* libftxui-dom.a */,
+				3CC78D602A7616010053CF4E /* libftxui-screen.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -179,8 +199,8 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/include";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				ONLY_ACTIVE_ARCH = NO;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SYMROOT = "${SOURCE_ROOT}/project/xcode/build";
 			};
@@ -210,7 +230,10 @@
 					"${SOURCE_ROOT}/lib/FTXUI/include",
 				);
 				INSTALL_PATH = "";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/lib/FTXUI/build",
+				);
 				OTHER_LDFLAGS = (
 					"-Wl,-search_paths_first",
 					"-Wl,-headerpad_max_install_names",
@@ -231,8 +254,8 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/include";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				ONLY_ACTIVE_ARCH = NO;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SYMROOT = "${SOURCE_ROOT}/project/xcode/build";
 			};
@@ -245,8 +268,8 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/include";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				ONLY_ACTIVE_ARCH = NO;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SYMROOT = "${SOURCE_ROOT}/project/xcode/build";
 			};
@@ -276,7 +299,10 @@
 					"${SOURCE_ROOT}/lib/FTXUI/include",
 				);
 				INSTALL_PATH = "";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/lib/FTXUI/build",
+				);
 				OTHER_LDFLAGS = (
 					"-Wl,-search_paths_first",
 					"-Wl,-headerpad_max_install_names",
@@ -314,7 +340,10 @@
 					"${SOURCE_ROOT}/lib/FTXUI/include",
 				);
 				INSTALL_PATH = "";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/lib/FTXUI/build",
+				);
 				OTHER_LDFLAGS = (
 					"-Wl,-search_paths_first",
 					"-Wl,-headerpad_max_install_names",
@@ -352,7 +381,10 @@
 					"${SOURCE_ROOT}/lib/FTXUI/include",
 				);
 				INSTALL_PATH = "";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/lib/FTXUI/build",
+				);
 				OTHER_LDFLAGS = (
 					"-Wl,-search_paths_first",
 					"-Wl,-headerpad_max_install_names",
@@ -373,8 +405,8 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				HEADER_SEARCH_PATHS = "${SOURCE_ROOT}/include";
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				ONLY_ACTIVE_ARCH = NO;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SYMROOT = "${SOURCE_ROOT}/project/xcode/build";
 			};

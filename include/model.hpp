@@ -26,6 +26,7 @@
  *	- a class factory pattern that vends typesafe ID handles will be required to perform reliable conversion from commands to actions
  *		- its also required so that you can maintain references to targets that are passed between scopes
  *		- furthermore, the class factories should maintain a table/list of objects where each object stores its own lookup ID (maybe?)
+ *	- the Result and ResultSet types need to be revisited because they mix two semantics: mutation status, and data queries
  */
 
 namespace Auto {
