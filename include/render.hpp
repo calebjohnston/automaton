@@ -23,9 +23,15 @@
 
 namespace Auto {
 
-void render(ResultSet& results)
+void render_stdio(ResultSet& results)
 {
 	std::for_each(results.cbegin(), results.cend(), [](const Result& r){ std::cout << r.status << " " << r.message << std::endl; });
+}
+
+std::string render_str(ResultSet& results)
+{
+	std::string out = "";
+	return std::accumulate(results.begin(), results.end(), out, [](std::string& acc, const Result& res){ return acc += res.message; });
 }
 
 void render_1(ResultSet& results)
@@ -55,5 +61,7 @@ void render_1(ResultSet& results)
 //	ftxui::Loop loop(&screen, component);
 //	loop.RunOnce();
 }
+
+
 
 }

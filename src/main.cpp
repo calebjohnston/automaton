@@ -73,12 +73,9 @@ void create_world()
 int main(int argc, const char * argv[])
 {	
 	Auto::load_gamestate();
+	Auto::gameplay_loop_0();
+//	Auto::gameplay_loop_1();
 //	Auto::gameplay_loop();
-	Auto::ResultSet rs;
-	Auto::render_1(rs);
-	
-//	std::string input;
-//	std::cin >> input;
 	
 	return 0;
 	

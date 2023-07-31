@@ -155,10 +155,10 @@ void load_gamestate()
 
 void gameplay_loop()
 {
-	std::string cmd_str;
-	auto gui = ftxui::Container::Vertical({ftxui::Input(&cmd_str, "_")});
-	auto screen = ftxui::ScreenInteractive::TerminalOutput();
-	ftxui::Loop loop(&screen, gui);
+//	std::string cmd_str;
+//	auto gui = ftxui::Container::Vertical({ftxui::Input(&cmd_str, "_")});
+//	auto screen = ftxui::ScreenInteractive::TerminalOutput();
+//	ftxui::Loop loop(&screen, gui);
 	
 	bool game_over = false;
 	while (!game_over) {
@@ -167,11 +167,112 @@ void gameplay_loop()
 			Action* action = process(command);
 			ResultSet results = execute(*action);
 			if (agent.type == Class::Player)
-				render(results); // loop.RunOnce(); // <-- I think this needs to be split in half
+				render_stdio(results); // loop.RunOnce(); // <-- I think this needs to be split in half
 		}
 		game_over = true;
 		// game_over = check for game termination condition...
 	}
 };
+
+void gameplay_loop_0()
+{
+	std::string cmd_str;
+	std::string input_str;
+	std::string output_str;
+	
+	ResultSet results;
+	auto screen = ftxui::ScreenInteractive::TerminalOutput();
+	auto input_option = ftxui::InputOption();
+	input_option.on_enter = [&] {
+		cmd_str = input_str;
+		Command cmd = parse(cmd_str, &the_game.agents[0]); // <-- GAaah
+		Action* action = process(cmd);
+		results = execute(*action);
+		input_str = "";
+		output_str = render_str(results);
+	};
+	auto input_command = ftxui::Input(&input_str, "_", input_option);
+	auto component = ftxui::Container::Vertical({ input_command });
+	auto renderer = ftxui::Renderer(component, [&] {
+		return ftxui::vbox({
+			ftxui::text(output_str),
+			ftxui::separator(),
+			input_command->Render(),
+		}) | ftxui::border;
+	});
+	
+	ftxui::Loop loop(&screen, renderer);
+	
+	bool game_over = false;
+	while (!game_over) {
+		for (Agent& agent : the_game.agents) {
+			if (agent.type == Class::Player) {
+				loop.RunOnce();
+			}
+		}
+	}
+	
+//	screen.Loop(renderer);
+}
+
+void gameplay_loop_1()
+{
+	std::string reset_position;
+	
+	std::string cmd_str;
+	std::string input_str;
+	std::string output_str;
+	
+	// fetch the player agent ...
+	Agent* player_agent;
+	for (Agent& agent : the_game.agents) {
+		if (agent.type == Class::Player) {
+			player_agent = &agent;
+		}
+	}
+	
+	// configure GUI ...
+	ResultSet results;
+	auto input_option = ftxui::InputOption();
+	input_option.on_enter = [&] {
+		cmd_str = input_str;
+		Command cmd = parse(cmd_str, player_agent);
+		Action* action = process(cmd);
+		results = execute(*action);
+		input_str = "";
+		output_str = render_str(results);
+	};
+	auto input_command = ftxui::Input(&input_str, "_", input_option);
+	auto component = ftxui::Container::Vertical({ input_command });
+	auto renderer = ftxui::Renderer(component, [&] {
+		return ftxui::vbox({
+			ftxui::text(output_str),
+			ftxui::separator(),
+			input_command->Render(),
+		}) | ftxui::border;
+	});
+	
+	// game loop ...
+	bool game_over = false;
+	while (!game_over) {
+		for (Agent& agent : the_game.agents) {
+			if (agent.type != Class::Player) {
+				Command command = decide(agent);
+				Action* action = process(command);
+				ResultSet results = execute(*action);
+				continue;
+			}
+		
+			// doesn't work because its not interactive :(
+			auto document = renderer->Render();
+			auto screen = ftxui::ScreenInteractive::FixedSize(80, 25);
+			ftxui::Render(screen, document);
+			std::cout << reset_position;
+			screen.Print();
+			reset_position = screen.ResetPosition();
+		}
+		// game_over = check for game termination condition...
+	}
+}
 
 }
