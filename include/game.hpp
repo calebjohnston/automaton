@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <functional>
 #include <iterator>
 #include <memory>
@@ -22,6 +23,8 @@
 
 #include "model.hpp"
 #include "render.hpp"
+#include "EventQueue.h"
+#include "EventDispatcher.h"
 
 namespace Auto {
 
@@ -61,10 +64,17 @@ private:
 	int _idx;
 };
 
+class ActionProcessor;
+
 struct GameState {
 	std::vector<Agent> agents;
+	
+	Messenger* msgr;
+	ActionProcessor* action_proc;
+	EventDispatcher evt_dp;
 //	std::vector<Command> commands;
-//	std::vector<Action> actions;
+	std::vector<Action*> actions;
+	std::string axn_results;
 //	std::vector<Result> results;
 	
 //	ftxui::ScreenInteractive screen;
@@ -142,6 +152,46 @@ ResultSet execute(Action& action)
 
 GameState the_game;
 
+typedef std::shared_ptr<class ActionEvent> ActionEventRef;
+
+class ActionEvent : public Event {
+public:
+	static const EventId ACTION;
+	
+public:
+	static ActionEventRef create( const EventId id, Action* action ) {
+		return ActionEventRef( new ActionEvent(id, action) );
+	}
+	
+	virtual ~ActionEvent() {};
+	
+	Action* getAction() const { return _action; }
+	
+protected:
+	explicit ActionEvent( const EventId id, Action* action )
+		: Event(id, 0), _action(action) {}
+	
+private:
+	Action* _action;
+};
+
+class ActionProcessor {
+public:
+	void handler(const EventRef event) {
+		auto action_evt = std::dynamic_pointer_cast<ActionEvent>(event);
+		if (action_evt) {
+			_action = action_evt->getAction();
+			the_game.actions.push_back(_action);
+		}
+	}
+	
+private:
+	Action* _action;
+};
+
+std::hash<std::string> str_hash;
+const EventId ActionEvent::ACTION = str_hash( "ActionProcessorEvent" );
+
 void load_gamestate()
 {
 	// the human game player...
@@ -159,6 +209,13 @@ void load_gamestate()
 	Kernel system2 = { "hostname", { inf }, {}, {}, {}, 1, comp2 };
 	Agent ai_player = { "wintermute", "descr", Auto::Status::Active, Auto::Class::Automaton, 1, system2 };
 	the_game.agents.push_back(ai_player);
+	
+	// connect game threads with observer pattern
+	using namespace std::placeholders;
+	the_game.action_proc = new ActionProcessor();
+//	the_game.msgr = Messenger::instance();
+//	the_game.msgr->addListener(std::bind(&ActionProcessor::handler, the_game.action_proc, _1), ActionEvent::ACTION);
+	the_game.evt_dp.addListener(std::bind(&ActionProcessor::handler, the_game.action_proc, _1), ActionEvent::ACTION);
 };
 
 
@@ -347,5 +404,67 @@ void gameplay_loop_2()
 	
 	screen.Loop(renderer);
 }
+
+/**
+ This version splits off the GUI renderer onto its own thread
+ The renderer should then just handle re-rendering model changes in an MVC pattern where
+	the renderer is the view, the action processor is the controller, and the game_state is the model
+ */
+void gameplay_loop_3()
+{
+	bool game_over = false;
+	auto screen = ftxui::ScreenInteractive::TerminalOutput();
+	
+	std::thread gui([&] {
+		while (!game_over) {
+			for (Agent& agent : the_game.agents) {
+				if (agent.type != Class::Player) {
+					Command command = decide(agent);
+					Action* action = process(command);
+					ResultSet results = execute(*action);
+				}
+				else if (agent.type == Class::Player) {
+					while (the_game.actions.empty()) {
+						using namespace std::chrono_literals;
+						std::this_thread::sleep_for(0.1s);
+//						the_game.msgr->update();
+					}
+					for (Action* axn_ptr : the_game.actions) {
+						ResultSet results = execute(*axn_ptr);
+						the_game.axn_results = results[0].message;
+						screen.RequestAnimationFrame();
+						// log results to file?
+					}
+					the_game.actions.clear();
+				}
+			}
+			// game_over = check for game termination condition...
+		}
+	});
+	
+	std::string input_str;
+	
+	auto input_option = ftxui::InputOption();
+	input_option.on_enter = [&] {
+		Command cmd = parse(input_str, &the_game.agents[0]); // <-- GAaah
+		Action* action = process(cmd);
+//		the_game.msgr->enqueue(ActionEvent::create(ActionEvent::ACTION, action));
+		the_game.evt_dp.dispatch(ActionEvent::create(ActionEvent::ACTION, action));
+		input_str = "";
+	};
+	auto input_command = ftxui::Input(&input_str, "_", input_option);
+	auto component = ftxui::Container::Vertical({ input_command });
+	auto renderer = ftxui::Renderer(component, [&] {
+		return ftxui::vbox({
+			ftxui::text(the_game.axn_results),
+			ftxui::separator(),
+			input_command->Render(),
+		}) | ftxui::border;
+	});
+	
+	screen.Loop(renderer);
+	
+	gui.join();
+};
 
 }
