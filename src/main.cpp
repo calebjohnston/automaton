@@ -73,9 +73,9 @@ void create_world()
 int main(int argc, const char * argv[])
 {	
 	Auto::load_gamestate();
-	Auto::gameplay_loop_0();
+//	Auto::gameplay_loop_0();
 //	Auto::gameplay_loop_1();
-//	Auto::gameplay_loop();
+	Auto::gameplay_loop();
 	
 	return 0;
 	

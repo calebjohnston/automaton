@@ -144,6 +144,7 @@ GameState the_game;
 
 void load_gamestate()
 {
+	// the human game player...
 	Auto::Device dev;
 	Software ping = { "ping", "ICMP network control", 10, 1, 1, Packet::Ping, Binary::Program, Encryption::Kerberos };
 	Software cfg = { "cfg", "System control", 5, 1, 1, Packet::Symplex, Binary::Program, Encryption::None };
@@ -151,8 +152,20 @@ void load_gamestate()
 	Kernel system = { "hostname", { ping, cfg }, {}, {}, {}, 1, comp };
 	Agent player = { "name", "description", Auto::Status::Active, Auto::Class::Player, 1, system };
 	the_game.agents.push_back(player);
+	
+	// the one AI opponent...
+	Software inf = { "inf", "Inference ctx control", 10, 1, 1, Packet::Inference, Binary::Program, Encryption::Kerberos };
+	Computer comp2 = { "serial", "manufacturer", dev, dev, { "Intel i7", Component::Processor, 20, 1 }, dev, dev, { "Gigabyte", Component::Power, 100, 100 } };
+	Kernel system2 = { "hostname", { inf }, {}, {}, {}, 1, comp2 };
+	Agent ai_player = { "wintermute", "descr", Auto::Status::Active, Auto::Class::Automaton, 1, system2 };
+	the_game.agents.push_back(ai_player);
 };
 
+
+/**
+ This implementation works and presents a good single-threaded model for our expected gameplay interactive
+ However, it cannot render UI animations or handle any state changes from a 3rd party GUI (e.g. Godot, FXTUI)
+ */
 void gameplay_loop()
 {
 //	std::string cmd_str;
@@ -174,6 +187,10 @@ void gameplay_loop()
 	}
 };
 
+/**
+ This implementation doesn't work as desired.
+ It can capture user inputs and render outputs but will not work with out-of-band events (e.g. opponent actions)
+ */
 void gameplay_loop_0()
 {
 	std::string cmd_str;
@@ -203,18 +220,27 @@ void gameplay_loop_0()
 	
 	ftxui::Loop loop(&screen, renderer);
 	
+	// The game can't be run 
 	bool game_over = false;
 	while (!game_over) {
 		for (Agent& agent : the_game.agents) {
 			if (agent.type == Class::Player) {
 				loop.RunOnce();
 			}
+//			else {
+//				output_str = agent.name;
+//				loop.RunOnce();
+//			}
 		}
 	}
 	
 //	screen.Loop(renderer);
 }
 
+/**
+ This implementation doesn't work because its not interactive
+ It renders outputs but it will not capture inputs
+ */
 void gameplay_loop_1()
 {
 	std::string reset_position;
@@ -263,7 +289,6 @@ void gameplay_loop_1()
 				continue;
 			}
 		
-			// doesn't work because its not interactive :(
 			auto document = renderer->Render();
 			auto screen = ftxui::ScreenInteractive::FixedSize(80, 25);
 			ftxui::Render(screen, document);
@@ -273,6 +298,54 @@ void gameplay_loop_1()
 		}
 		// game_over = check for game termination condition...
 	}
+}
+
+std::string _output_str;
+
+ftxui::Element gameloop_fn(ftxui::Element el)
+{
+	for (Agent& agent : the_game.agents) {
+		if (agent.type == Class::Player) continue;
+		Command command = decide(agent);
+		Action* action = process(command);
+		ResultSet results = execute(*action);
+		_output_str = agent.name;
+	}
+	return el;
+}
+
+/**
+ This implementation doesn't work as desired
+ - The FXTUI loop still runs as long as their are ANY inputs or model changes
+ - So the player will only supply a command as many times as they hit the <enter> key, but the opponents will submit commands upon every single mouse move, key press, or window resize event (etc)
+ */
+void gameplay_loop_2()
+{
+	std::string cmd_str;
+	std::string input_str;
+	
+	ResultSet results;
+	auto screen = ftxui::ScreenInteractive::TerminalOutput();
+	auto input_option = ftxui::InputOption();
+	input_option.on_enter = [&] {
+		cmd_str = input_str;
+		Command cmd = parse(cmd_str, &the_game.agents[0]); // <-- GAaah
+		Action* action = process(cmd);
+		results = execute(*action);
+		input_str = "";
+		_output_str = render_str(results);
+	};
+	auto input_command = ftxui::Input(&input_str, "_", input_option);
+	auto component = ftxui::Container::Vertical({ input_command });
+	auto renderer = ftxui::Renderer(component, [&] {
+		return ftxui::vbox({
+			ftxui::text(_output_str),
+			ftxui::separator(),
+			input_command->Render(),
+		}) | ftxui::border | gameloop_fn;
+	});
+	
+	screen.Loop(renderer);
 }
 
 }
