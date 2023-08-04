@@ -71,6 +71,7 @@ private:
 class ActionProcessor;
 
 struct GameState {
+	int current_agent_idx;
 	std::vector<Agent> agents;
 	
 //	Messenger* msgr;
@@ -79,6 +80,35 @@ struct GameState {
 	std::vector<Action*> actions;
 	std::string axn_results;
 };
+
+GameState the_game;
+
+
+
+
+
+
+
+class ModelAction : public Action {
+public:
+	ModelAction(Agent* targ, bool list = true, int index = 0) : _target(targ), _list(list), _idx(index) {}
+	virtual ResultSet execute() override {
+		the_game.current_agent_idx = 1;
+		return { { 0, "Success"} };
+		
+	}
+	//	ProgramsAction(ProgramsAction& axn) : _target(axn._target), _list(axn._list), _idx(axn._idx) {}
+	//	ProgramsAction(const ProgramsAction& axn) : _target(axn._target), _list(axn._list), _idx(axn._idx) {}
+	
+private:
+	Agent* _target;
+	bool _list;
+	int _idx;
+};
+
+
+
+
 
 #pragma utility functions
 
@@ -136,7 +166,7 @@ Action* process(Command& cmd)
 		}
 	}
 	else if ("fs" == cmd.function) {
-		// NO-OP
+		return new ModelAction(cmd.target, false, 1);
 	}
 	else if ("cfg" == cmd.function) {
 		// NO-OP
@@ -154,8 +184,6 @@ ResultSet execute(Action& action)
 };
 
 #pragma the game itself
-
-GameState the_game;
 
 typedef std::shared_ptr<class ActionEvent> ActionEventRef;
 
@@ -199,27 +227,40 @@ const EventId ActionEvent::ACTION = str_hash( "ActionProcessorEvent" );
 
 void load_gamestate()
 {
+	the_game.current_agent_idx = 0;
+	
 	// the human game player...
-	Auto::Device dev;
+	Auto::Device disk = { "Hitachi 500", Component::Disk, 100, 16 };
+	Auto::Device mem = { "Crucial 64GB", Component::Memory, 64, 8 };
+	Auto::Device cpu = { "Ono Sendai 2155", Component::Processor, 32, 128 };
+	Auto::Device net = { "DEC OC 768", Component::Network, 4, 12 };
 	Software ping = { "ping", "ICMP network control", 10, 1, 1, Packet::Ping, Binary::Program, Encryption::Kerberos };
 	Software cfg = { "cfg", "System control", 5, 1, 1, Packet::Symplex, Binary::Program, Encryption::None };
-	Computer comp = { "serial", "manufacturer", dev, dev, { "Intel i7", Component::Processor, 20, 1 }, dev, dev, { "Gigabyte", Component::Power, 100, 100 } };
-	Kernel system = { "hostname", { ping, cfg }, {}, {}, {}, 1, comp };
+	File f1 = { "Dall-E2", "Model weights for image GAN", "", 4, 100 };
+	File f2 = { "Emails", "All my personal emails", "", 0, 4 };
+	Computer comp = { "serial", "manufacturer", disk, mem, cpu, net, {}, { "Gigabyte", Component::Power, 100, 100 } };
+	Kernel system = { "hostname", { ping, cfg }, {}, { f1, f2 }, {}, 1, comp };
 	Agent player = { "name", "description", Auto::Status::Active, Auto::Class::Player, 1, system };
 	the_game.agents.push_back(player);
 	
 	// the one AI opponent...
+	disk = { "Intel 4080", Component::Disk, 100, 16 };
+	mem = { "Kingston 64i8ab", Component::Memory, 64, 8 };
+	cpu = { "Intel i7", Component::Processor, 20, 128 };
+	net = { "Cisco RT44", Component::Network, 4, 12 };
 	Software inf = { "inf", "Inference ctx control", 10, 1, 1, Packet::Inference, Binary::Program, Encryption::Kerberos };
-	Computer comp2 = { "serial", "manufacturer", dev, dev, { "Intel i7", Component::Processor, 20, 1 }, dev, dev, { "Gigabyte", Component::Power, 100, 100 } };
-	Kernel system2 = { "hostname", { inf }, {}, {}, {}, 1, comp2 };
+	Software simplex = { "xym", "Symplex backplane", 10, 1, 1, Packet::Symplex, Binary::Daemon, Encryption::None };
+	Software inet = { "inet", "syscrtl inode", 5, 1, 1, Packet::Reflection, Binary::Daemon, Encryption::None };
+	f1 = { "Dall-E2", "Model weights for image GAN", "", 4, 100 };
+	f2 = { "Crypto DB", "Database containing an index for crypto algos", "", 1, 10 };
+	Computer comp2 = { "serial", "manufacturer", disk, mem, cpu, net, {}, { "Gigabyte", Component::Power, 100, 100 } };
+	Kernel system2 = { "hostname", { inf }, { simplex, inet }, { f1, f2 }, {}, 1, comp2 };
 	Agent ai_player = { "wintermute", "descr", Auto::Status::Active, Auto::Class::Automaton, 1, system2 };
 	the_game.agents.push_back(ai_player);
 	
 	// connect game threads with observer pattern
 	using namespace std::placeholders;
 	the_game.action_proc = new ActionProcessor();
-//	the_game.msgr = Messenger::instance();
-//	the_game.msgr->addListener(std::bind(&ActionProcessor::handler, the_game.action_proc, _1), ActionEvent::ACTION);
 	the_game.evt_dp.addListener(std::bind(&ActionProcessor::handler, the_game.action_proc, _1), ActionEvent::ACTION);
 };
 
@@ -463,24 +504,20 @@ void gameplay_loop_3()
 	});
 	*/
 	
-	
 	auto dev = Renderer([&] {
+		Agent& curr_agent = the_game.agents[the_game.current_agent_idx];
+		Elements programs, files;
+		std::for_each(curr_agent.kernel.programs.begin(), curr_agent.kernel.programs.end(), [&](Software& sw) {
+			programs.push_back(text(sw.name));
+		});
+		std::for_each(curr_agent.kernel.files.begin(), curr_agent.kernel.files.end(), [&](File& file) {
+			files.push_back(text(file.name));
+		});
+		
 		return hbox({
-			vbox({
-				text("installed program 1"),
-				text("installed program 2"),
-				text("installed program 3"),
-				text("installed program 4")
-			}),
+			vbox(programs),
 			filler(),
-			vbox({
-				text("available program 1"),
-				text("available program 2"),
-				text("available program 3"),
-				text("available program 4"),
-				text("available program 5"),
-				text("available program 6")
-			}),
+			vbox(files),
 			filler(),
 			vbox({
 				window(text("System Stats"), text("whatever")),
