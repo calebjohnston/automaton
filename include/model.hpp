@@ -23,10 +23,13 @@
  *		- consider the scenario in which you want to determine if a specific instance of software is already installed
  *	- POD types might have nasty memory allocation issues
  *	- POD types don't provide base types which are required for writing generic (aka DRY) code
- *	- a class factory pattern that vends typesafe ID handles will be required to perform reliable conversion from commands to actions
+ *	- A class factory pattern that vends typesafe ID handles will be required to perform reliable conversion from commands to actions
  *		- its also required so that you can maintain references to targets that are passed between scopes
  *		- furthermore, the class factories should maintain a table/list of objects where each object stores its own lookup ID (maybe?)
- *	- the Result and ResultSet types need to be revisited because they mix two semantics: mutation status, and data queries
+ *	- The Result and ResultSet types need to be revisited because they mix two semantics: mutation status, and data queries
+ *	- FTXUI doesn't appear to support disabling/enabling components. Might be required for me though..
+ *	- With the default output going to stdio, I'll need a file logger to get actual log output
+ *	- I've hit my limit with jamming everything into a few files. I'll need to start properly splitting them out
  */
 
 namespace Auto {

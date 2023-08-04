@@ -17,9 +17,13 @@
 #include <iostream>
 #include <vector>
 
+#include "ftxui/component/event.hpp"
 #include "ftxui/component/component.hpp"
+#include "ftxui/component/component_options.hpp"
 #include "ftxui/component/screen_interactive.hpp"
 #include "ftxui/component/loop.hpp"
+#include "ftxui/dom/elements.hpp"
+#include "ftxui/screen/color.hpp"
 
 #include "model.hpp"
 #include "render.hpp"
@@ -51,8 +55,8 @@ public:
 		if (_list) {
 			return list_programs(_target->kernel);
 		}
-		else {
-			return { 0, info(_target->kernel.programs[_idx]) };
+		else { // let's just assume that this one uninstalls...
+			return { uninstall_program(_target->kernel, _idx) };
 		}
 	}
 //	ProgramsAction(ProgramsAction& axn) : _target(axn._target), _list(axn._list), _idx(axn._idx) {}
@@ -69,15 +73,11 @@ class ActionProcessor;
 struct GameState {
 	std::vector<Agent> agents;
 	
-	Messenger* msgr;
+//	Messenger* msgr;
 	ActionProcessor* action_proc;
 	EventDispatcher evt_dp;
-//	std::vector<Command> commands;
 	std::vector<Action*> actions;
 	std::string axn_results;
-//	std::vector<Result> results;
-	
-//	ftxui::ScreenInteractive screen;
 };
 
 #pragma utility functions
@@ -125,9 +125,14 @@ Action* process(Command& cmd)
 		if (cmd.arguments.empty()) {
 			return new ProgramsAction(cmd.target);
 		}
-		else {
-			int index = std::stoi( cmd.arguments[1] ); // big assumption...
-			return new ProgramsAction(cmd.target, false, index);
+		else if (cmd.arguments.front() == "uninstall") {
+			if (cmd.arguments.size() == 2) {
+				int index = std::stoi( cmd.arguments[1] ); // big assumption...
+				return new ProgramsAction(cmd.target, false, index);
+			}
+			else {
+				// NO-OP
+			}
 		}
 	}
 	else if ("fs" == cmd.function) {
@@ -412,6 +417,8 @@ void gameplay_loop_2()
  */
 void gameplay_loop_3()
 {
+	using namespace ftxui;
+	
 	bool game_over = false;
 	auto screen = ftxui::ScreenInteractive::TerminalOutput();
 	
@@ -432,7 +439,9 @@ void gameplay_loop_3()
 					for (Action* axn_ptr : the_game.actions) {
 						ResultSet results = execute(*axn_ptr);
 						the_game.axn_results = results[0].message;
-						screen.RequestAnimationFrame();
+						
+						screen.Post(ftxui::Event::Custom);	// <!-- triggers a re-render
+						
 						// log results to file?
 					}
 					the_game.actions.clear();
@@ -442,17 +451,8 @@ void gameplay_loop_3()
 		}
 	});
 	
-	std::string input_str;
-	
-	auto input_option = ftxui::InputOption();
-	input_option.on_enter = [&] {
-		Command cmd = parse(input_str, &the_game.agents[0]); // <-- GAaah
-		Action* action = process(cmd);
-//		the_game.msgr->enqueue(ActionEvent::create(ActionEvent::ACTION, action));
-		the_game.evt_dp.dispatch(ActionEvent::create(ActionEvent::ACTION, action));
-		input_str = "";
-	};
-	auto input_command = ftxui::Input(&input_str, "_", input_option);
+	/*
+	input_command->Active();
 	auto component = ftxui::Container::Vertical({ input_command });
 	auto renderer = ftxui::Renderer(component, [&] {
 		return ftxui::vbox({
@@ -461,10 +461,123 @@ void gameplay_loop_3()
 			input_command->Render(),
 		}) | ftxui::border;
 	});
+	*/
+	
+	
+	auto dev = Renderer([&] {
+		return hbox({
+			vbox({
+				text("installed program 1"),
+				text("installed program 2"),
+				text("installed program 3"),
+				text("installed program 4")
+			}),
+			filler(),
+			vbox({
+				text("available program 1"),
+				text("available program 2"),
+				text("available program 3"),
+				text("available program 4"),
+				text("available program 5"),
+				text("available program 6")
+			}),
+			filler(),
+			vbox({
+				window(text("System Stats"), text("whatever")),
+				window(text("Capacity"), text("whatever")),
+				window(text("Some other stuff"), text("whatever"))
+			})
+		});
+	});
+	
+	auto net = Renderer([&] {
+		return hbox({
+			vbox({
+				text("installed program 1"),
+				text("installed program 2"),
+				text("installed program 3"),
+				text("installed program 4"),
+				text("installed program 5"),
+				text("installed program 6")
+			}),
+			filler(),
+			vbox({
+				text("remote program X"),
+				text("remote program Y"),
+				text("remote program Z")
+			}),
+			filler(),
+			vbox({
+				window(text("Remote Sys Stats"), text("whatever")),
+				window(text("Capacity"), text("and ")),
+				window(text("Some other stuff"), text("stuff"))
+			})
+		});
+	});
+	
+	auto hack = Renderer([&] {
+		std::string para_str =
+			"Lorem Ipsum is simply dummy text of the printing and typesetting "
+			"industry. Lorem Ipsum has been the industry's standard dummy text "
+			"ever since the 1500s, when an unknown printer took a galley of type "
+			"and scrambled it to make a type specimen book.";
+		return hbox({
+			vbox({
+				window(text("My Sys Stats"), text("whatever")),
+				window(text("Capacity"), text("and ")),
+				window(text("Some other stuff"), text("stuff"))
+			}),
+			filler(),
+			vbox({
+				window(text("Align left:"), paragraphAlignLeft(para_str))
+			}),
+			filler(),
+			vbox({
+				window(text("Remote Sys Stats"), text("whatever")),
+				window(text("Capacity"), text("and ")),
+				window(text("Some other stuff"), text("stuff"))
+			})
+		});
+	});
+	
+	std::string input_str;
+	
+	auto input_option = ftxui::InputOption();
+	input_option.on_enter = [&] {
+		Command cmd = parse(input_str, &the_game.agents[0]); // <-- GAaah
+		Action* action = process(cmd);
+		the_game.evt_dp.dispatch(ActionEvent::create(ActionEvent::ACTION, action));
+		input_str = "";
+	};
+	auto input_command = ftxui::Input(&input_str, "_", input_option);
+	
+	
+	int tab_index = 0;
+	std::vector<std::string> tab_entries = { "Development", "Networking", "Infiltration" };
+	auto tab_selection = Menu(&tab_entries, &tab_index, MenuOption::HorizontalAnimated());
+	auto tab_content = Container::Tab({ dev, net, hack }, &tab_index);
+	
+	auto main_container = Container::Vertical({
+		tab_selection,
+		tab_content,
+		input_command
+	});
+	
+	auto renderer = Renderer(main_container, [&] {
+		return vbox({
+			text("Automaton") | bold | hcenter,
+			tab_selection->Render(),
+			tab_content->Render() | flex,
+			separatorHSelector(0, 0, Color::Palette256::Red1, Color::Palette256::SeaGreen1),
+			input_command->Render()
+		});
+	});
 	
 	screen.Loop(renderer);
 	
 	gui.join();
 };
+
+
 
 }
