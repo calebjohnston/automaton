@@ -21,15 +21,15 @@
  *	- POD types could benefit from convenience functions for comparators, string IO, (de)serialization support, etc.
  * 	- POD types might need an umambiguous way to be empty or null which is currently ill defined
  *		- consider the scenario in which you want to determine if a specific instance of software is already installed
- *	- POD types might have nasty memory allocation issues
+ *	- POD types might have nasty memory allocation issues (what is memory layout for vector<Computer>?)
  *	- POD types don't provide base types which are required for writing generic (aka DRY) code
  *	- A class factory pattern that vends typesafe ID handles will be required to perform reliable conversion from commands to actions
  *		- its also required so that you can maintain references to targets that are passed between scopes
  *		- furthermore, the class factories should maintain a table/list of objects where each object stores its own lookup ID (maybe?)
- *	- The Result and ResultSet types need to be revisited because they mix two semantics: mutation status, and data queries
+ *	- The Result and ResultSet types need to be revisited because they mix two semantics: internal mutation status, and user query results
  *	- FTXUI doesn't appear to support disabling/enabling components. Might be required for me though..
  *	- With the default output going to stdio, I'll need a file logger to get actual log output
- *	- I've hit my limit with jamming everything into a few files. I'll need to start properly splitting them out
+ *	- I've hit my limit with jamming everything into a few files. References are getting hard to keep sequential
  */
 
 namespace Auto {
@@ -42,6 +42,17 @@ enum class Packet {
 	Autoregression,
 	None
 };
+std::string to_str(Packet p) {
+	switch (p) {
+		case Packet::Ping: return "Ping";
+		case Packet::Inference: return "Inference";
+		case Packet::Reflection: return "Reflection";
+		case Packet::Symplex: return "Symplex";
+		case Packet::Autoregression: return "Autoregression";
+		default: return "None";
+	}
+}
+
 enum class Encryption {
 	DH4,
 	X509,
@@ -58,6 +69,17 @@ enum class Component {
 	Power,
 	None
 };
+std::string to_str(Component c) {
+	switch (c) {
+		case Component::Disk: return "Disk";
+		case Component::Memory: return "Memory";
+		case Component::Processor: return "Processor";
+		case Component::Network: return "Network";
+		case Component::Battery: return "Battery";
+		case Component::Power: return "Power";
+		default: return "None";
+	}
+}
 
 enum class Binary {
 	Program,
@@ -70,6 +92,16 @@ enum class Status {
 	Busy,
 	None
 };
+std::string to_str(Status s) {
+	switch (s) {
+		case Status::Active: return "Active";
+		case Status::Inactive: return "Inactive";
+		case Status::Busy: return "Busy";
+		default: return "None";
+	}
+}
+
+
 enum class Class {
 	Electronics,
 	Monitor,
@@ -82,6 +114,20 @@ enum class Class {
 	Player,
 	None
 };
+std::string to_str(Class c) {
+	switch (c) {
+		case Class::Electronics: return "Electronics";
+		case Class::Monitor: return "Monitor";
+		case Class::Sentry: return "Sentry";
+		case Class::Worm: return "Worm";
+		case Class::Virus: return "Virus";
+		case Class::Simulation: return "Simulation";
+		case Class::Agent: return "Agent";
+		case Class::Automaton: return "Automaton";
+		case Class::Player: return "Human";
+		default: return "None";
+	}
+}
 
 struct File {
 	std::string name;
@@ -128,6 +174,7 @@ struct Kernel {
 	std::vector<Kernel> connections;
 	int version;
 	Computer computer;
+	int hitpoints;
 };
 
 struct Agent {

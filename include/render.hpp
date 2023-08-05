@@ -19,8 +19,6 @@
 #include "ftxui/dom/elements.hpp"
 #include "ftxui/util/ref.hpp"
 
-#include "EventDispatcher.h"
-
 #include "model.hpp"
 #include "game.hpp"
 

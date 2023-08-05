@@ -1,5 +1,7 @@
 #include "Events.h"
 
+using namespace Auto;
+
 static uint64_t GetHash(const std::string& name)
 {
 	static std::hash<std::string> hasher;

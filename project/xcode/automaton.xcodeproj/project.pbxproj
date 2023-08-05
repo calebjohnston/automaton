@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3C20ACB42A78F5ED0021EEC7 /* EventDispatcher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C20ACB12A78F5ED0021EEC7 /* EventDispatcher.cpp */; };
-		3C20ACB52A78F5ED0021EEC7 /* EventQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C20ACB22A78F5ED0021EEC7 /* EventQueue.cpp */; };
 		3C20ACB62A78F5ED0021EEC7 /* Events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C20ACB32A78F5ED0021EEC7 /* Events.cpp */; };
 		3CA95A9B27DD77390015AB3C /* network.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CA95A9827DD77380015AB3C /* network.cpp */; };
 		3CA95A9C27DD77390015AB3C /* agent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CA95A9927DD77380015AB3C /* agent.cpp */; };
@@ -25,11 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3C20ACAE2A78F5E10021EEC7 /* EventDispatcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EventDispatcher.h; path = include/EventDispatcher.h; sourceTree = "<group>"; };
-		3C20ACAF2A78F5E10021EEC7 /* EventQueue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EventQueue.h; path = include/EventQueue.h; sourceTree = "<group>"; };
 		3C20ACB02A78F5E10021EEC7 /* Events.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Events.h; path = include/Events.h; sourceTree = "<group>"; };
-		3C20ACB12A78F5ED0021EEC7 /* EventDispatcher.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EventDispatcher.cpp; path = src/EventDispatcher.cpp; sourceTree = "<group>"; };
-		3C20ACB22A78F5ED0021EEC7 /* EventQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EventQueue.cpp; path = src/EventQueue.cpp; sourceTree = "<group>"; };
 		3C20ACB32A78F5ED0021EEC7 /* Events.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Events.cpp; path = src/Events.cpp; sourceTree = "<group>"; };
 		3C43743E2A744B78009C7263 /* node.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = node.h; path = include/node.h; sourceTree = "<group>"; };
 		3C4DBD742A7490CE00B878FD /* model.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = model.hpp; path = include/model.hpp; sourceTree = "<group>"; };
@@ -89,8 +83,6 @@
 				3CCAB8BC29EF885B007F872E /* component.cpp */,
 				3CCAB8BE29EF885B007F872E /* computer.cpp */,
 				3CCAB8BD29EF885B007F872E /* data.cpp */,
-				3C20ACB12A78F5ED0021EEC7 /* EventDispatcher.cpp */,
-				3C20ACB22A78F5ED0021EEC7 /* EventQueue.cpp */,
 				3C20ACB32A78F5ED0021EEC7 /* Events.cpp */,
 				3CCAB8BF29EF885B007F872E /* node.cpp */,
 				3CCAB8C029EF885B007F872E /* program.cpp */,
@@ -110,8 +102,6 @@
 				3CBE200B27D7968B00529C38 /* component.h */,
 				3CAF3E0C27D7FAB400E4D5CA /* computer.h */,
 				3CA95A8E27DD23440015AB3C /* data.h */,
-				3C20ACAE2A78F5E10021EEC7 /* EventDispatcher.h */,
-				3C20ACAF2A78F5E10021EEC7 /* EventQueue.h */,
 				3C20ACB02A78F5E10021EEC7 /* Events.h */,
 				3CAF3E0D27D7FAB400E4D5CA /* kernel.h */,
 				3CC5B6DA27D8E0CC00F9AE44 /* network.h */,
@@ -200,9 +190,7 @@
 				3CBE1FED27D7945100529C38 /* main.cpp in Sources */,
 				3CCAB8C329EF885B007F872E /* computer.cpp in Sources */,
 				3CA95A9C27DD77390015AB3C /* agent.cpp in Sources */,
-				3C20ACB42A78F5ED0021EEC7 /* EventDispatcher.cpp in Sources */,
 				3CCAB8C229EF885B007F872E /* data.cpp in Sources */,
-				3C20ACB52A78F5ED0021EEC7 /* EventQueue.cpp in Sources */,
 				3CCAB8C429EF885B007F872E /* node.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

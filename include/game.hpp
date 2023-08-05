@@ -8,6 +8,7 @@
 #pragma once
 
 #include <chrono>
+#include <deque>
 #include <functional>
 #include <iterator>
 #include <memory>
@@ -16,6 +17,7 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <utility>
 
 #include "ftxui/component/event.hpp"
 #include "ftxui/component/component.hpp"
@@ -27,8 +29,7 @@
 
 #include "model.hpp"
 #include "render.hpp"
-#include "EventQueue.h"
-#include "EventDispatcher.h"
+#include "Events.h"
 
 namespace Auto {
 
@@ -74,11 +75,15 @@ struct GameState {
 	int current_agent_idx;
 	std::vector<Agent> agents;
 	
-//	Messenger* msgr;
 	ActionProcessor* action_proc;
-	EventDispatcher evt_dp;
+	EventDispatchMap evt_dp;
 	std::vector<Action*> actions;
 	std::string axn_results;
+	int mode_index;
+	
+	// test only
+	std::deque<Command> ai_cmds;
+	bool gameover;
 };
 
 GameState the_game;
@@ -107,12 +112,66 @@ private:
 };
 
 
+class NetworkAction : public Action {
+public:
+	NetworkAction(Agent* targ, int index) : _target(targ), _idx(index) {}
+	virtual ResultSet execute() override {
+		the_game.mode_index = 1;
+		the_game.current_agent_idx = _idx;
+		return { { 0, "Success"} };
+	}
+	
+private:
+	Agent* _target;
+	int _idx;
+};
+
+class OffensiveAction : public Action {
+public:
+	OffensiveAction(Agent* targ, int index) : _target(targ), _idx(index) {}
+	virtual ResultSet execute() override {
+		the_game.mode_index = 2;
+		the_game.current_agent_idx = 1; // CJJ: using 1 instead of _idx to ensure the opponent is the AI;
+		return { { 0, "Success"} };
+	}
+	
+private:
+	Agent* _target;
+	int _idx;
+};
+
+
+class CrapAction : public Action {
+public:
+	CrapAction(Agent* targ, int index) : _target(targ), _idx(index) {}
+	virtual ResultSet execute() override {
+		the_game.mode_index = 2;
+		the_game.current_agent_idx = 1; // CJJ: using 1 instead of _idx to ensure the opponent is the AI;
+		
+		if (_target->type == Class::Player) {
+			Agent& receiver = the_game.agents[1];
+			receiver.kernel.hitpoints -= 1;
+		}
+		else if (_target->type != Class::Player) {
+			Agent& receiver = the_game.agents[0];
+			receiver.kernel.hitpoints -= 1;
+		}
+		
+		return { { 0, "Success"} };
+	}
+	
+private:
+	Agent* _target;
+	int _idx;
+};
+
+
 
 
 
 #pragma utility functions
 
-Command parse(std::string& user_input, Agent* user_agent)
+Command parse(std::string user_input, Agent* user_agent)
 {
 	std::vector<std::string> args;
 	std::istringstream iss(user_input);
@@ -130,6 +189,8 @@ Command decide(Agent& agent)
 	Command cmd;
 	if (agent.type != Class::Player) {
 		// cmd = agent must choose what to do and issue a command
+		cmd = the_game.ai_cmds.front();
+		the_game.ai_cmds.pop_front();
 	}
 	else if (agent.type == Class::Player) {
 		std::string input;
@@ -168,8 +229,17 @@ Action* process(Command& cmd)
 	else if ("fs" == cmd.function) {
 		return new ModelAction(cmd.target, false, 1);
 	}
-	else if ("cfg" == cmd.function) {
-		// NO-OP
+	else if ("conn" == cmd.function) {
+		int index = std::stoi( cmd.arguments[0] );
+		return new NetworkAction(cmd.target, index);
+	}
+	else if ("attack" == cmd.function) {
+		int index = std::stoi( cmd.arguments[0] );
+		return new OffensiveAction(cmd.target, index);
+	}
+	else if ("ping" == cmd.function) {
+		int index = std::stoi( cmd.arguments[0] );
+		return new CrapAction(cmd.target, index);
 	}
 	
 	// perform GameState model lookups on command function and target
@@ -228,6 +298,7 @@ const EventId ActionEvent::ACTION = str_hash( "ActionProcessorEvent" );
 void load_gamestate()
 {
 	the_game.current_agent_idx = 0;
+	the_game.mode_index = 0;
 	
 	// the human game player...
 	Auto::Device disk = { "Hitachi 500", Component::Disk, 100, 16 };
@@ -238,9 +309,9 @@ void load_gamestate()
 	Software cfg = { "cfg", "System control", 5, 1, 1, Packet::Symplex, Binary::Program, Encryption::None };
 	File f1 = { "Dall-E2", "Model weights for image GAN", "", 4, 100 };
 	File f2 = { "Emails", "All my personal emails", "", 0, 4 };
-	Computer comp = { "serial", "manufacturer", disk, mem, cpu, net, {}, { "Gigabyte", Component::Power, 100, 100 } };
-	Kernel system = { "hostname", { ping, cfg }, {}, { f1, f2 }, {}, 1, comp };
-	Agent player = { "name", "description", Auto::Status::Active, Auto::Class::Player, 1, system };
+	Computer comp = { "567g8k", "Apple", disk, mem, cpu, net, {}, { "Gigabyte", Component::Power, 100, 100 } };
+	Kernel system = { "MacOS", { ping, cfg }, {}, { f1, f2 }, {}, 1, comp, 5 };
+	Agent player = { "caleb", "author", Auto::Status::Active, Auto::Class::Player, 1, system };
 	the_game.agents.push_back(player);
 	
 	// the one AI opponent...
@@ -253,16 +324,33 @@ void load_gamestate()
 	Software inet = { "inet", "syscrtl inode", 5, 1, 1, Packet::Reflection, Binary::Daemon, Encryption::None };
 	f1 = { "Dall-E2", "Model weights for image GAN", "", 4, 100 };
 	f2 = { "Crypto DB", "Database containing an index for crypto algos", "", 1, 10 };
-	Computer comp2 = { "serial", "manufacturer", disk, mem, cpu, net, {}, { "Gigabyte", Component::Power, 100, 100 } };
-	Kernel system2 = { "hostname", { inf }, { simplex, inet }, { f1, f2 }, {}, 1, comp2 };
-	Agent ai_player = { "wintermute", "descr", Auto::Status::Active, Auto::Class::Automaton, 1, system2 };
+	Computer comp2 = { "nkpasd8", "IBM", disk, mem, cpu, net, {}, { "Gigabyte", Component::Power, 100, 100 } };
+	Kernel system2 = { "OS/2", { inf }, { simplex, inet }, { f1, f2 }, {}, 1, comp2, 10 };
+	Agent ai_player = { "wintermute", "victor", Auto::Status::Active, Auto::Class::Automaton, 1, system2 };
 	the_game.agents.push_back(ai_player);
 	
 	// connect game threads with observer pattern
 	using namespace std::placeholders;
 	the_game.action_proc = new ActionProcessor();
-	the_game.evt_dp.addListener(std::bind(&ActionProcessor::handler, the_game.action_proc, _1), ActionEvent::ACTION);
+	the_game.evt_dp.appendListener(ActionEvent::ACTION, std::bind(&ActionProcessor::handler, the_game.action_proc, _1));
+	
+	Agent* agent_ptr = &the_game.agents.back();
+	the_game.ai_cmds.push_back(parse("ps", agent_ptr));
+	the_game.ai_cmds.push_back(parse("fs", agent_ptr));
+	the_game.ai_cmds.push_back(parse("attack 0", agent_ptr));
+	the_game.ai_cmds.push_back(parse("ping 0", agent_ptr));
+	the_game.ai_cmds.push_back(parse("ping 0", agent_ptr));
+	the_game.ai_cmds.push_back(parse("ping 0", agent_ptr));
+	the_game.ai_cmds.push_back(parse("ping 0", agent_ptr));
+	the_game.ai_cmds.push_back(parse("ping 0", agent_ptr));
+	
+	the_game.gameover = false;
 };
+
+bool is_game_over() {
+	// is player dead?
+	return the_game.agents[0].kernel.hitpoints <= 0;
+}
 
 
 /**
@@ -285,7 +373,7 @@ void gameplay_loop()
 			if (agent.type == Class::Player)
 				render_stdio(results); // loop.RunOnce(); // <-- I think this needs to be split in half
 		}
-		game_over = true;
+		game_over = is_game_over();
 		// game_over = check for game termination condition...
 	}
 };
@@ -451,6 +539,28 @@ void gameplay_loop_2()
 	screen.Loop(renderer);
 }
 
+ftxui::Component ModalComponent(std::function<void()> do_nothing, std::function<void()> quit)
+{
+	using namespace ftxui;
+	
+	auto style = ButtonOption::Animated();
+	auto component = Container::Vertical({
+		Button("Retry", do_nothing, style),
+		Button("Quit", quit, style),
+	}) | Renderer([&](Element inner) {
+		return vbox({
+			text("Game Over"),
+			separator(),
+			inner,
+		})
+		| size(WIDTH, GREATER_THAN, 30)
+		| border;
+	});
+	
+	return component;
+}
+
+
 /**
  This version splits off the GUI renderer onto its own thread
  The renderer should then just handle re-rendering model changes in an MVC pattern where
@@ -488,71 +598,106 @@ void gameplay_loop_3()
 					the_game.actions.clear();
 				}
 			}
-			// game_over = check for game termination condition...
+			game_over = is_game_over();
+			the_game.gameover = game_over;
+//			if (game_over) screen.ExitLoopClosure()();	// Works! but not friendly
 		}
 	});
 	
-	/*
-	input_command->Active();
-	auto component = ftxui::Container::Vertical({ input_command });
-	auto renderer = ftxui::Renderer(component, [&] {
-		return ftxui::vbox({
-			ftxui::text(the_game.axn_results),
-			ftxui::separator(),
-			input_command->Render(),
-		}) | ftxui::border;
-	});
-	*/
+	bool detail = false;
+	auto action = [&] { detail = !detail; };
+	auto btn = Button("Render Toggle", action, ButtonOption::Ascii());
+	
+	auto modal_component = ModalComponent([]{}, screen.ExitLoopClosure());
+	Modal(modal_component, &the_game.gameover);
 	
 	auto dev = Renderer([&] {
-		Agent& curr_agent = the_game.agents[the_game.current_agent_idx];
+		Agent& agent = the_game.agents[0];
 		Elements programs, files;
-		std::for_each(curr_agent.kernel.programs.begin(), curr_agent.kernel.programs.end(), [&](Software& sw) {
-			programs.push_back(text(sw.name));
+		std::for_each(agent.kernel.programs.begin(), agent.kernel.programs.end(), [&](Software& sw) {
+			detail ? programs.push_back(text(sw.name + "   " + sw.description)) : programs.push_back(text(sw.name));
 		});
-		std::for_each(curr_agent.kernel.files.begin(), curr_agent.kernel.files.end(), [&](File& file) {
-			files.push_back(text(file.name));
+		std::for_each(agent.kernel.files.begin(), agent.kernel.files.end(), [&](File& file) {
+			detail ? files.push_back(text(file.name + "   " + file.description)) : files.push_back(text(file.name));
 		});
 		
 		return hbox({
-			vbox(programs),
-			filler(),
-			vbox(files),
-			filler(),
+			vbox(programs) | flex,
+			vbox(files) | flex,
 			vbox({
-				window(text("System Stats"), text("whatever")),
-				window(text("Capacity"), text("whatever")),
-				window(text("Some other stuff"), text("whatever"))
+				window(text(" Agent "), vbox({
+					text(agent.name),
+					text(agent.description),
+					text(to_str(agent.type)),
+					text(to_str(agent.status)),
+					text("version:" + std::to_string(agent.version))
+				})),
+				window(text(" System "), vbox({
+					text("name:" + agent.kernel.hostname),
+					text("health:" + std::to_string(agent.kernel.hitpoints)),
+					text("programs: " + std::to_string(agent.kernel.programs.size())),
+					text("daemons: " + std::to_string(agent.kernel.daemons.size())),
+					text("files: " + std::to_string(agent.kernel.files.size())),
+					text("peers: " + std::to_string(agent.kernel.connections.size())),
+				})),
+				window(text(" Computer "), vbox({
+					text(agent.kernel.computer.processor.name),
+					text(agent.kernel.computer.memory.name),
+					text(agent.kernel.computer.disk.name),
+					text(agent.kernel.computer.uplink.name),
+					text(agent.kernel.computer.serial),
+				}))
 			})
 		});
 	});
 	
+	
 	auto net = Renderer([&] {
+		Agent& player_agent = the_game.agents[0];
+		Agent& remote_agent = the_game.agents[the_game.current_agent_idx];
+		Elements local, remote;
+		std::for_each(player_agent.kernel.files.begin(), player_agent.kernel.files.end(), [&](File& file) {
+			detail ? local.push_back(text(file.name + "   " + file.description)) : local.push_back(text(file.name));
+		});
+		std::for_each(remote_agent.kernel.files.begin(), remote_agent.kernel.files.end(), [&](File& file) {
+			detail ? remote.push_back(text(file.name + "   " + file.description)) : remote.push_back(text(file.name));
+		});
+		
+		Agent& agent = remote_agent;
 		return hbox({
+			vbox(local) | flex,
+			vbox(remote) | flex,
 			vbox({
-				text("installed program 1"),
-				text("installed program 2"),
-				text("installed program 3"),
-				text("installed program 4"),
-				text("installed program 5"),
-				text("installed program 6")
-			}),
-			filler(),
-			vbox({
-				text("remote program X"),
-				text("remote program Y"),
-				text("remote program Z")
-			}),
-			filler(),
-			vbox({
-				window(text("Remote Sys Stats"), text("whatever")),
-				window(text("Capacity"), text("and ")),
-				window(text("Some other stuff"), text("stuff"))
+				window(text(" Agent "), vbox({
+					text(agent.name),
+					text(agent.description),
+					text(to_str(agent.type)),
+					text(to_str(agent.status)),
+					text("version:" + std::to_string(agent.version))
+				})),
+				window(text(" System "), vbox({
+					text("name:" + agent.kernel.hostname),
+					text("health:" + std::to_string(agent.kernel.hitpoints)),
+					text("programs: " + std::to_string(agent.kernel.programs.size())),
+					text("daemons: " + std::to_string(agent.kernel.daemons.size())),
+					text("files: " + std::to_string(agent.kernel.files.size())),
+					text("peers: " + std::to_string(agent.kernel.connections.size())),
+				})),
+				window(text(" Computer "), vbox({
+					text(agent.kernel.computer.processor.name),
+					text(agent.kernel.computer.memory.name),
+					text(agent.kernel.computer.disk.name),
+					text(agent.kernel.computer.uplink.name),
+					text(agent.kernel.computer.serial),
+				}))
 			})
 		});
 	});
 	
 	auto hack = Renderer([&] {
+		Agent& local = the_game.agents[0];
+		Agent& remote = the_game.agents[the_game.current_agent_idx];
+		
 		std::string para_str =
 			"Lorem Ipsum is simply dummy text of the printing and typesetting "
 			"industry. Lorem Ipsum has been the industry's standard dummy text "
@@ -560,19 +705,55 @@ void gameplay_loop_3()
 			"and scrambled it to make a type specimen book.";
 		return hbox({
 			vbox({
-				window(text("My Sys Stats"), text("whatever")),
-				window(text("Capacity"), text("and ")),
-				window(text("Some other stuff"), text("stuff"))
+				window(text(" Agent "), vbox({
+					text(local.name),
+					text(local.description),
+					text(to_str(local.type)),
+					text(to_str(local.status)),
+					text("version:" + std::to_string(local.version))
+				})),
+				window(text(" System "), vbox({
+					text("name:" + local.kernel.hostname),
+					text("health:" + std::to_string(local.kernel.hitpoints)),
+					text("programs: " + std::to_string(local.kernel.programs.size())),
+					text("daemons: " + std::to_string(local.kernel.daemons.size())),
+					text("files: " + std::to_string(local.kernel.files.size())),
+					text("peers: " + std::to_string(local.kernel.connections.size())),
+				})),
+				window(text(" Computer "), vbox({
+					text(local.kernel.computer.processor.name),
+					text(local.kernel.computer.memory.name),
+					text(local.kernel.computer.disk.name),
+					text(local.kernel.computer.uplink.name),
+					text(local.kernel.computer.serial),
+				}))
 			}),
-			filler(),
 			vbox({
 				window(text("Align left:"), paragraphAlignLeft(para_str))
-			}),
-			filler(),
+			}) | flex,
 			vbox({
-				window(text("Remote Sys Stats"), text("whatever")),
-				window(text("Capacity"), text("and ")),
-				window(text("Some other stuff"), text("stuff"))
+				window(text(" Agent "), vbox({
+					text(remote.name),
+					text(remote.description),
+					text(to_str(remote.type)),
+					text(to_str(remote.status)),
+					text("version:" + std::to_string(remote.version))
+				})),
+				window(text(" System "), vbox({
+					text("name:" + remote.kernel.hostname),
+					text("health:" + std::to_string(remote.kernel.hitpoints)),
+					text("programs: " + std::to_string(remote.kernel.programs.size())),
+					text("daemons: " + std::to_string(remote.kernel.daemons.size())),
+					text("files: " + std::to_string(remote.kernel.files.size())),
+					text("peers: " + std::to_string(remote.kernel.connections.size())),
+				})),
+				window(text(" Computer "), vbox({
+					text(remote.kernel.computer.processor.name),
+					text(remote.kernel.computer.memory.name),
+					text(remote.kernel.computer.disk.name),
+					text(remote.kernel.computer.uplink.name),
+					text(remote.kernel.computer.serial),
+				}))
 			})
 		});
 	});
@@ -583,21 +764,20 @@ void gameplay_loop_3()
 	input_option.on_enter = [&] {
 		Command cmd = parse(input_str, &the_game.agents[0]); // <-- GAaah
 		Action* action = process(cmd);
-		the_game.evt_dp.dispatch(ActionEvent::create(ActionEvent::ACTION, action));
+		the_game.evt_dp.dispatch(ActionEvent::ACTION, ActionEvent::create(ActionEvent::ACTION, action));
 		input_str = "";
 	};
 	auto input_command = ftxui::Input(&input_str, "_", input_option);
 	
 	
-	int tab_index = 0;
 	std::vector<std::string> tab_entries = { "Development", "Networking", "Infiltration" };
-	auto tab_selection = Menu(&tab_entries, &tab_index, MenuOption::HorizontalAnimated());
-	auto tab_content = Container::Tab({ dev, net, hack }, &tab_index);
+	auto tab_selection = Menu(&tab_entries, &the_game.mode_index, MenuOption::HorizontalAnimated());
+	auto tab_content = Container::Tab({ dev, net, hack }, &the_game.mode_index);
 	
 	auto main_container = Container::Vertical({
 		tab_selection,
 		tab_content,
-		input_command
+		Container::Vertical({ input_command, btn })
 	});
 	
 	auto renderer = Renderer(main_container, [&] {
@@ -606,11 +786,14 @@ void gameplay_loop_3()
 			tab_selection->Render(),
 			tab_content->Render() | flex,
 			separatorHSelector(0, 0, Color::Palette256::Red1, Color::Palette256::SeaGreen1),
-			input_command->Render()
+			hbox({
+				input_command->Render() | flex,
+				btn->Render()
+			})
 		});
 	});
 	
-	screen.Loop(renderer);
+	screen.Loop(renderer | Modal(modal_component, &the_game.gameover));
 	
 	gui.join();
 };
