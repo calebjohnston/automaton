@@ -12,8 +12,11 @@ option(BUILD_GMOCK OFF)
 option(INSTALL_GTEST OFF)
 
 set( tests_SRCS
-  sample2_unittest.cpp
-  sample2.cpp
+  test_EventDispatcher.cpp
+  test_EventQueue.cpp
+  ${PROJECT_SOURCE_DIR}/src/Events.cpp
+  ${PROJECT_SOURCE_DIR}/src/EventDispatcher.cpp
+  ${PROJECT_SOURCE_DIR}/src/EventQueue.cpp
 )
 
 # Add GoogleTest dependency
@@ -27,6 +30,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/lib/googletest
 include_directories (
   ${PROJECT_SOURCE_DIR}/src
   ${PROJECT_SOURCE_DIR}/include
+  ${PROJECT_SOURCE_DIR}/lib/eventpp/include
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
@@ -42,11 +46,9 @@ add_definitions(
 #--------------------------------------------------------------------------------
 # Associate source and header dependencies to targets.
 #--------------------------------------------------------------------------------
-add_executable( sample2_test
-  ${tests_SRCS}
-)
+add_executable( automaton_tests ${tests_SRCS} )
 
 #--------------------------------------------------------------------------------
 # Associate linker dependencies to targets.
 #--------------------------------------------------------------------------------
-target_link_libraries ( sample2_test gtest_main )
+target_link_libraries ( automaton_tests gtest_main )

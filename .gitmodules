@@ -4,3 +4,6 @@
 [submodule "lib/FTXUI"]
 	path = lib/FTXUI
 	url = https://github.com/ArthurSonzogni/FTXUI.git
+[submodule "lib/eventpp"]
+	path = lib/eventpp
+	url = git@github.com:wqking/eventpp.git

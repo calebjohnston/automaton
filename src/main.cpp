@@ -16,6 +16,9 @@
 #include "network.h"
 #include "node.h"
 
+#include "model.hpp"
+#include "game.hpp"
+
 // STRUCTURE GUIDELINES
 //---------------------
 // create normal OOP type hierarchy
@@ -28,13 +31,6 @@
 // manage variant collections with composable functions
 // create networks of variant collections using composable functions + shared_ptrs
 // query networks of variant collections using composable functions
-
-// CLI DESIGN NOTES
-//---------------------
-// Treat each program as processing its own inputs (as I have done below)
-// Create abstraction for this input processing that works for all programs
-// Process CLI input by finding the right program and supplying it the inputs
-// Take program outputs and process those through the host machine properties
 
 void create_world()
 {
@@ -69,7 +65,12 @@ void create_world()
 }
 
 int main(int argc, const char * argv[])
-{
+{	
+	Auto::load_gamestate();
+	Auto::gameplay_loop();
+	
+	return 0;
+	
 	// collect command line arguments
 	std::deque<std::string> commandLineArgs;
 	for (int arg = 0; arg < argc; ++arg ) {

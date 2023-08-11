@@ -39,6 +39,10 @@ add_subdirectory("${PROJECT_SOURCE_DIR}/lib/FTXUI" "${PROJECT_BINARY_DIR}/fxtui"
 include_directories("${PROJECT_SOURCE_DIR}/lib/FTXUI/include")
 option(FTXUI_BUILD_EXAMPLES OFF)
 
+# Add eventpp dependency
+add_subdirectory("${PROJECT_SOURCE_DIR}/lib/eventpp" "${PROJECT_BINARY_DIR}/eventpp")
+include_directories("${PROJECT_SOURCE_DIR}/lib/eventpp/include")
+
 #--------------------------------------------------------------------------------
 # TARGET_VERSION macros are set in the top level CMakeLists.txt file.
 #--------------------------------------------------------------------------------
@@ -54,4 +58,4 @@ target_compile_features(automaton PRIVATE cxx_std_14)
 #--------------------------------------------------------------------------------
 # Associate linker dependencies to target(s).
 #--------------------------------------------------------------------------------
-target_link_libraries( automaton )
+target_link_libraries( automaton screen dom component )
