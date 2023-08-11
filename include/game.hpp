@@ -33,6 +33,13 @@
 
 namespace Auto {
 
+ftxui::Component CompoundButton(ftxui::ConstStringRef label,
+								std::function<void()> on_click,
+								ftxui::Ref<ftxui::ButtonOption> = ftxui::ButtonOption::Simple());
+
+ftxui::Component AnimatedText(ftxui::ConstStringRef label,
+							  ftxui::Ref<ftxui::ButtonOption> = ftxui::ButtonOption::Animated());
+
 #pragma game model state
 
 struct Command {
@@ -79,11 +86,13 @@ struct GameState {
 	EventDispatchMap evt_dp;
 	std::vector<Action*> actions;
 	std::string axn_results;
+	std::string animation_test;
 	int mode_index;
 	
 	// test only
 	std::deque<Command> ai_cmds;
 	bool gameover;
+	bool show_cmd_menu;
 };
 
 GameState the_game;
@@ -151,13 +160,15 @@ public:
 		if (_target->type == Class::Player) {
 			Agent& receiver = the_game.agents[1];
 			receiver.kernel.hitpoints -= 1;
+			the_game.animation_test = "health:" + std::to_string(receiver.kernel.hitpoints);
 		}
 		else if (_target->type != Class::Player) {
 			Agent& receiver = the_game.agents[0];
 			receiver.kernel.hitpoints -= 1;
+			the_game.animation_test = "health:" + std::to_string(receiver.kernel.hitpoints);
 		}
 		
-		return { { 0, "Success"} };
+		return { { 0, "Success" } };
 	}
 	
 private:
@@ -345,6 +356,7 @@ void load_gamestate()
 	the_game.ai_cmds.push_back(parse("ping 0", agent_ptr));
 	
 	the_game.gameover = false;
+	the_game.show_cmd_menu = false;
 };
 
 bool is_game_over() {
@@ -352,192 +364,6 @@ bool is_game_over() {
 	return the_game.agents[0].kernel.hitpoints <= 0;
 }
 
-
-/**
- This implementation works and presents a good single-threaded model for our expected gameplay interactive
- However, it cannot render UI animations or handle any state changes from a 3rd party GUI (e.g. Godot, FXTUI)
- */
-void gameplay_loop()
-{
-//	std::string cmd_str;
-//	auto gui = ftxui::Container::Vertical({ftxui::Input(&cmd_str, "_")});
-//	auto screen = ftxui::ScreenInteractive::TerminalOutput();
-//	ftxui::Loop loop(&screen, gui);
-	
-	bool game_over = false;
-	while (!game_over) {
-		for (Agent& agent : the_game.agents) {
-			Command command = decide(agent);
-			Action* action = process(command);
-			ResultSet results = execute(*action);
-			if (agent.type == Class::Player)
-				render_stdio(results); // loop.RunOnce(); // <-- I think this needs to be split in half
-		}
-		game_over = is_game_over();
-		// game_over = check for game termination condition...
-	}
-};
-
-/**
- This implementation doesn't work as desired.
- It can capture user inputs and render outputs but will not work with out-of-band events (e.g. opponent actions)
- */
-void gameplay_loop_0()
-{
-	std::string cmd_str;
-	std::string input_str;
-	std::string output_str;
-	
-	ResultSet results;
-	auto screen = ftxui::ScreenInteractive::TerminalOutput();
-	auto input_option = ftxui::InputOption();
-	input_option.on_enter = [&] {
-		cmd_str = input_str;
-		Command cmd = parse(cmd_str, &the_game.agents[0]); // <-- GAaah
-		Action* action = process(cmd);
-		results = execute(*action);
-		input_str = "";
-		output_str = render_str(results);
-	};
-	auto input_command = ftxui::Input(&input_str, "_", input_option);
-	auto component = ftxui::Container::Vertical({ input_command });
-	auto renderer = ftxui::Renderer(component, [&] {
-		return ftxui::vbox({
-			ftxui::text(output_str),
-			ftxui::separator(),
-			input_command->Render(),
-		}) | ftxui::border;
-	});
-	
-	ftxui::Loop loop(&screen, renderer);
-	
-	// The game can't be run 
-	bool game_over = false;
-	while (!game_over) {
-		for (Agent& agent : the_game.agents) {
-			if (agent.type == Class::Player) {
-				loop.RunOnce();
-			}
-//			else {
-//				output_str = agent.name;
-//				loop.RunOnce();
-//			}
-		}
-	}
-	
-//	screen.Loop(renderer);
-}
-
-/**
- This implementation doesn't work because its not interactive
- It renders outputs but it will not capture inputs
- */
-void gameplay_loop_1()
-{
-	std::string reset_position;
-	
-	std::string cmd_str;
-	std::string input_str;
-	std::string output_str;
-	
-	// fetch the player agent ...
-	Agent* player_agent;
-	for (Agent& agent : the_game.agents) {
-		if (agent.type == Class::Player) {
-			player_agent = &agent;
-		}
-	}
-	
-	// configure GUI ...
-	ResultSet results;
-	auto input_option = ftxui::InputOption();
-	input_option.on_enter = [&] {
-		cmd_str = input_str;
-		Command cmd = parse(cmd_str, player_agent);
-		Action* action = process(cmd);
-		results = execute(*action);
-		input_str = "";
-		output_str = render_str(results);
-	};
-	auto input_command = ftxui::Input(&input_str, "_", input_option);
-	auto component = ftxui::Container::Vertical({ input_command });
-	auto renderer = ftxui::Renderer(component, [&] {
-		return ftxui::vbox({
-			ftxui::text(output_str),
-			ftxui::separator(),
-			input_command->Render(),
-		}) | ftxui::border;
-	});
-	
-	// game loop ...
-	bool game_over = false;
-	while (!game_over) {
-		for (Agent& agent : the_game.agents) {
-			if (agent.type != Class::Player) {
-				Command command = decide(agent);
-				Action* action = process(command);
-				ResultSet results = execute(*action);
-				continue;
-			}
-		
-			auto document = renderer->Render();
-			auto screen = ftxui::ScreenInteractive::FixedSize(80, 25);
-			ftxui::Render(screen, document);
-			std::cout << reset_position;
-			screen.Print();
-			reset_position = screen.ResetPosition();
-		}
-		// game_over = check for game termination condition...
-	}
-}
-
-std::string _output_str;
-
-ftxui::Element gameloop_fn(ftxui::Element el)
-{
-	for (Agent& agent : the_game.agents) {
-		if (agent.type == Class::Player) continue;
-		Command command = decide(agent);
-		Action* action = process(command);
-		ResultSet results = execute(*action);
-		_output_str = agent.name;
-	}
-	return el;
-}
-
-/**
- This implementation doesn't work as desired
- - The FXTUI loop still runs as long as their are ANY inputs or model changes
- - So the player will only supply a command as many times as they hit the <enter> key, but the opponents will submit commands upon every single mouse move, key press, or window resize event (etc)
- */
-void gameplay_loop_2()
-{
-	std::string cmd_str;
-	std::string input_str;
-	
-	ResultSet results;
-	auto screen = ftxui::ScreenInteractive::TerminalOutput();
-	auto input_option = ftxui::InputOption();
-	input_option.on_enter = [&] {
-		cmd_str = input_str;
-		Command cmd = parse(cmd_str, &the_game.agents[0]); // <-- GAaah
-		Action* action = process(cmd);
-		results = execute(*action);
-		input_str = "";
-		_output_str = render_str(results);
-	};
-	auto input_command = ftxui::Input(&input_str, "_", input_option);
-	auto component = ftxui::Container::Vertical({ input_command });
-	auto renderer = ftxui::Renderer(component, [&] {
-		return ftxui::vbox({
-			ftxui::text(_output_str),
-			ftxui::separator(),
-			input_command->Render(),
-		}) | ftxui::border | gameloop_fn;
-	});
-	
-	screen.Loop(renderer);
-}
 
 ftxui::Component ModalComponent(std::function<void()> do_nothing, std::function<void()> quit)
 {
@@ -560,13 +386,63 @@ ftxui::Component ModalComponent(std::function<void()> do_nothing, std::function<
 	return component;
 }
 
+ftxui::Component MenuModalComponent(std::function<void()> left, std::function<void()> right)
+{
+	using namespace ftxui;
+	
+	auto style = ButtonOption::Animated();
+	auto component = Container::Vertical({
+		Auto::CompoundButton("Retry", left, style),
+		Button("Quit", right, style),
+	}) | Renderer([&](Element inner) {
+		return vbox({
+			text("Command Menu"),
+			separator(),
+			inner,
+		})
+//		| size(WIDTH, GREATER_THAN, 30)
+		| border;
+	});
+	
+	return component;
+}
+
+ftxui::Element agent_view(Agent& agent)
+{
+	using namespace ftxui;
+	
+	return vbox({
+		window(text(" Agent "), vbox({
+			text(agent.name),
+			text(agent.description),
+			text(to_str(agent.type)),
+			text(to_str(agent.status)),
+			text("version:" + std::to_string(agent.version))
+		})),
+		window(text(" System "), vbox({
+			text("name:" + agent.kernel.hostname),
+			text("health:" + std::to_string(agent.kernel.hitpoints)),
+			text("programs: " + std::to_string(agent.kernel.programs.size())),
+			text("daemons: " + std::to_string(agent.kernel.daemons.size())),
+			text("files: " + std::to_string(agent.kernel.files.size())),
+			text("peers: " + std::to_string(agent.kernel.connections.size())),
+		})),
+		window(text(" Computer "), vbox({
+			text(agent.kernel.computer.processor.name),
+			text(agent.kernel.computer.memory.name),
+			text(agent.kernel.computer.disk.name),
+			text(agent.kernel.computer.uplink.name),
+			text(agent.kernel.computer.serial),
+		}))
+	});
+}
 
 /**
  This version splits off the GUI renderer onto its own thread
  The renderer should then just handle re-rendering model changes in an MVC pattern where
 	the renderer is the view, the action processor is the controller, and the game_state is the model
  */
-void gameplay_loop_3()
+void gameplay_loop()
 {
 	using namespace ftxui;
 	
@@ -600,16 +476,20 @@ void gameplay_loop_3()
 			}
 			game_over = is_game_over();
 			the_game.gameover = game_over;
-//			if (game_over) screen.ExitLoopClosure()();	// Works! but not friendly
 		}
 	});
 	
 	bool detail = false;
-	auto action = [&] { detail = !detail; };
+	auto action = [&] { the_game.show_cmd_menu = !the_game.show_cmd_menu; };
 	auto btn = Button("Render Toggle", action, ButtonOption::Ascii());
 	
 	auto modal_component = ModalComponent([]{}, screen.ExitLoopClosure());
-	Modal(modal_component, &the_game.gameover);
+	auto menu_modal_component = MenuModalComponent([]{}, []{});
+	
+	
+//	auto animation_text = "health:" + std::to_string(the_game.agents[0].kernel.hitpoints);
+	the_game.animation_test = "health:" + std::to_string(the_game.agents[0].kernel.hitpoints);
+	auto animated_field = AnimatedText(&the_game.animation_test);
 	
 	auto dev = Renderer([&] {
 		Agent& agent = the_game.agents[0];
@@ -624,30 +504,7 @@ void gameplay_loop_3()
 		return hbox({
 			vbox(programs) | flex,
 			vbox(files) | flex,
-			vbox({
-				window(text(" Agent "), vbox({
-					text(agent.name),
-					text(agent.description),
-					text(to_str(agent.type)),
-					text(to_str(agent.status)),
-					text("version:" + std::to_string(agent.version))
-				})),
-				window(text(" System "), vbox({
-					text("name:" + agent.kernel.hostname),
-					text("health:" + std::to_string(agent.kernel.hitpoints)),
-					text("programs: " + std::to_string(agent.kernel.programs.size())),
-					text("daemons: " + std::to_string(agent.kernel.daemons.size())),
-					text("files: " + std::to_string(agent.kernel.files.size())),
-					text("peers: " + std::to_string(agent.kernel.connections.size())),
-				})),
-				window(text(" Computer "), vbox({
-					text(agent.kernel.computer.processor.name),
-					text(agent.kernel.computer.memory.name),
-					text(agent.kernel.computer.disk.name),
-					text(agent.kernel.computer.uplink.name),
-					text(agent.kernel.computer.serial),
-				}))
-			})
+			agent_view(agent)
 		});
 	});
 	
@@ -667,30 +524,7 @@ void gameplay_loop_3()
 		return hbox({
 			vbox(local) | flex,
 			vbox(remote) | flex,
-			vbox({
-				window(text(" Agent "), vbox({
-					text(agent.name),
-					text(agent.description),
-					text(to_str(agent.type)),
-					text(to_str(agent.status)),
-					text("version:" + std::to_string(agent.version))
-				})),
-				window(text(" System "), vbox({
-					text("name:" + agent.kernel.hostname),
-					text("health:" + std::to_string(agent.kernel.hitpoints)),
-					text("programs: " + std::to_string(agent.kernel.programs.size())),
-					text("daemons: " + std::to_string(agent.kernel.daemons.size())),
-					text("files: " + std::to_string(agent.kernel.files.size())),
-					text("peers: " + std::to_string(agent.kernel.connections.size())),
-				})),
-				window(text(" Computer "), vbox({
-					text(agent.kernel.computer.processor.name),
-					text(agent.kernel.computer.memory.name),
-					text(agent.kernel.computer.disk.name),
-					text(agent.kernel.computer.uplink.name),
-					text(agent.kernel.computer.serial),
-				}))
-			})
+			agent_view(agent)
 		});
 	});
 	
@@ -698,63 +532,22 @@ void gameplay_loop_3()
 		Agent& local = the_game.agents[0];
 		Agent& remote = the_game.agents[the_game.current_agent_idx];
 		
+		// CJJ: this won't work because SetLabel is a method of an internal Impl class, not an AnimatedText class :(
+//		auto anim_field_ptr = std::dynamic_pointer_cast<AnimatedText>(animated_field);
+//		if (anim_field_ptr) anim_field_ptr->SetLabel("health:" + std::to_string(local.kernel.hitpoints));
+		
 		std::string para_str =
 			"Lorem Ipsum is simply dummy text of the printing and typesetting "
 			"industry. Lorem Ipsum has been the industry's standard dummy text "
 			"ever since the 1500s, when an unknown printer took a galley of type "
 			"and scrambled it to make a type specimen book.";
 		return hbox({
-			vbox({
-				window(text(" Agent "), vbox({
-					text(local.name),
-					text(local.description),
-					text(to_str(local.type)),
-					text(to_str(local.status)),
-					text("version:" + std::to_string(local.version))
-				})),
-				window(text(" System "), vbox({
-					text("name:" + local.kernel.hostname),
-					text("health:" + std::to_string(local.kernel.hitpoints)),
-					text("programs: " + std::to_string(local.kernel.programs.size())),
-					text("daemons: " + std::to_string(local.kernel.daemons.size())),
-					text("files: " + std::to_string(local.kernel.files.size())),
-					text("peers: " + std::to_string(local.kernel.connections.size())),
-				})),
-				window(text(" Computer "), vbox({
-					text(local.kernel.computer.processor.name),
-					text(local.kernel.computer.memory.name),
-					text(local.kernel.computer.disk.name),
-					text(local.kernel.computer.uplink.name),
-					text(local.kernel.computer.serial),
-				}))
-			}),
+			agent_view(local),
 			vbox({
 				window(text("Align left:"), paragraphAlignLeft(para_str))
 			}) | flex,
-			vbox({
-				window(text(" Agent "), vbox({
-					text(remote.name),
-					text(remote.description),
-					text(to_str(remote.type)),
-					text(to_str(remote.status)),
-					text("version:" + std::to_string(remote.version))
-				})),
-				window(text(" System "), vbox({
-					text("name:" + remote.kernel.hostname),
-					text("health:" + std::to_string(remote.kernel.hitpoints)),
-					text("programs: " + std::to_string(remote.kernel.programs.size())),
-					text("daemons: " + std::to_string(remote.kernel.daemons.size())),
-					text("files: " + std::to_string(remote.kernel.files.size())),
-					text("peers: " + std::to_string(remote.kernel.connections.size())),
-				})),
-				window(text(" Computer "), vbox({
-					text(remote.kernel.computer.processor.name),
-					text(remote.kernel.computer.memory.name),
-					text(remote.kernel.computer.disk.name),
-					text(remote.kernel.computer.uplink.name),
-					text(remote.kernel.computer.serial),
-				}))
-			})
+			agent_view(remote),
+			animated_field->Render()
 		});
 	});
 	
@@ -777,7 +570,7 @@ void gameplay_loop_3()
 	auto main_container = Container::Vertical({
 		tab_selection,
 		tab_content,
-		Container::Vertical({ input_command, btn })
+		Container::Vertical({ input_command, btn, animated_field })
 	});
 	
 	auto renderer = Renderer(main_container, [&] {
@@ -793,11 +586,19 @@ void gameplay_loop_3()
 		});
 	});
 	
-	screen.Loop(renderer | Modal(modal_component, &the_game.gameover));
+	screen.Loop(renderer | Modal(modal_component, &the_game.gameover) | Modal(menu_modal_component, &the_game.show_cmd_menu));
 	
 	gui.join();
 };
 
 
+/**
+ NEXT STEPS:
+	* create a custom Button component that has multiple children - DONE
+	* get some basic output animations working - DONE
+	- create a menu system for creating commands from selections (see modal_dialog_custom & dbox)
+	- update the battle system to incorporate installed daemons
+	- update the battle system so that only installed programs can be used
+ */
 
 }

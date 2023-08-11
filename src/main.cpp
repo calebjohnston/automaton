@@ -32,13 +32,6 @@
 // create networks of variant collections using composable functions + shared_ptrs
 // query networks of variant collections using composable functions
 
-// CLI DESIGN NOTES
-//---------------------
-// Treat each program as processing its own inputs (as I have done below)
-// Create abstraction for this input processing that works for all programs
-// Process CLI input by finding the right program and supplying it the inputs
-// Take program outputs and process those through the host machine properties
-
 void create_world()
 {
 	// attempt 2
@@ -74,10 +67,7 @@ void create_world()
 int main(int argc, const char * argv[])
 {	
 	Auto::load_gamestate();
-//	Auto::gameplay_loop();
-//	Auto::gameplay_loop_0();
-//	Auto::gameplay_loop_1();
-	Auto::gameplay_loop_3();
+	Auto::gameplay_loop();
 	
 	return 0;
 	
