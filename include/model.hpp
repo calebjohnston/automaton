@@ -30,6 +30,12 @@
  *	- FTXUI doesn't appear to support disabling/enabling components. Might be required for me though..
  *	- With the default output going to stdio, I'll need a file logger to get actual log output
  *	- I've hit my limit with jamming everything into a few files. References are getting hard to keep sequential
+ *	- I don't have a very simple method of handling invalid user input. I rely upon an "InvalidAction" type that works but is inelegant.
+ *	- FTXUI can only animate Components, not Elements. This makes animating regular output impossible.
+ *	- FTXUI cannot render string output without a constant string reference. Sometimes this is very inconvenient.
+ *		- Could there be a global DOM that is safely manipulated without introducing defects? (edge case: dynamically generated fields)
+ *		- Could it be mitigated by recreating views when the mode changes?
+ *	- If I don't want the user to consume a whole turn with an invalid command, then I'll need to have a validate_command() functions for every API operation that can return an error message
  */
 
 namespace Auto {

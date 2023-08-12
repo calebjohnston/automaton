@@ -19,9 +19,10 @@
 #include <vector>
 #include <utility>
 
-#include "ftxui/component/event.hpp"
 #include "ftxui/component/component.hpp"
 #include "ftxui/component/component_options.hpp"
+#include "ftxui/component/event.hpp"
+#include "ftxui/component/mouse.hpp"
 #include "ftxui/component/screen_interactive.hpp"
 #include "ftxui/component/loop.hpp"
 #include "ftxui/dom/elements.hpp"
@@ -47,13 +48,21 @@ struct Command {
 	Agent* target;
 	std::vector<std::string> arguments;
 };
-// examples:
-//	ps
-// 	ps load/unload <targ>
 
 class Action {
 public:
 	virtual ResultSet execute() { return {}; }
+};
+
+class InvalidAction : public Action {
+public:
+	InvalidAction(Command cmd, std::string msg) : _cmd(cmd), _message(msg) {}
+	virtual ResultSet execute() { return {}; }
+	std::string msg() const { return _message; }
+	
+private:
+	Command _cmd;
+	std::string _message;
 };
 
 class ProgramsAction : public Action {
@@ -85,6 +94,7 @@ struct GameState {
 	ActionProcessor* action_proc;
 	EventDispatchMap evt_dp;
 	std::vector<Action*> actions;
+	std::deque<std::string> cmd_history;
 	std::string axn_results;
 	std::string animation_test;
 	int mode_index;
@@ -182,6 +192,35 @@ private:
 
 #pragma utility functions
 
+void append_to_history(const Command& cmd)
+{
+	std::string cmd_str = cmd.target->name + "$ " + cmd.function;
+	cmd_str = std::accumulate(cmd.arguments.begin(), cmd.arguments.end(), cmd_str, [](std::string acc_out, const std::string& arg){ return acc_out += " " + arg; });
+	the_game.cmd_history.push_back(cmd_str);
+	while (the_game.cmd_history.size() > 5)
+		the_game.cmd_history.pop_front();
+}
+
+void append_to_history(const std::string& str)
+{
+	the_game.cmd_history.push_back(str);
+	while (the_game.cmd_history.size() > 5)
+		the_game.cmd_history.pop_front();
+}
+
+int parse(std::string& num_str)
+{
+	try {
+		return std::stoi(num_str);
+	}
+	catch (std::invalid_argument const& ex) {
+		return -1;
+	}
+	catch (...) {
+		return -1;
+	}
+}
+
 Command parse(std::string user_input, Agent* user_agent)
 {
 	std::vector<std::string> args;
@@ -217,6 +256,10 @@ Command decide(Agent& agent)
 
 Action* process(Command& cmd)
 {
+	
+	// perform GameState model lookups on command function and target
+	// parse arguments from string inputs
+	
 //	using namespace std::placeholders;
 //
 //	std::deque<std::string> commands;
@@ -229,34 +272,45 @@ Action* process(Command& cmd)
 		}
 		else if (cmd.arguments.front() == "uninstall") {
 			if (cmd.arguments.size() == 2) {
-				int index = std::stoi( cmd.arguments[1] ); // big assumption...
+				int index = parse( cmd.arguments[1] );
+				if (index < 0)
+					return new InvalidAction(cmd, "`" + cmd.arguments[1] + "` is not a valid index");
 				return new ProgramsAction(cmd.target, false, index);
 			}
 			else {
-				// NO-OP
+				return new InvalidAction(cmd, "must supply target program or daemon to uninstall");
 			}
+		}
+		else {
+			return new InvalidAction(cmd, "unrecognized argument: `" + cmd.arguments.front() + "`");
 		}
 	}
 	else if ("fs" == cmd.function) {
 		return new ModelAction(cmd.target, false, 1);
 	}
 	else if ("conn" == cmd.function) {
-		int index = std::stoi( cmd.arguments[0] );
+		if (cmd.arguments.empty())
+			return new InvalidAction(cmd, "must supply target endpoint to make a connection");
+		
+		int index = parse( cmd.arguments[0] );
+		if (index < 0)
+			return new InvalidAction(cmd, "`" + cmd.arguments[1] + "` is not a valid index");
 		return new NetworkAction(cmd.target, index);
 	}
 	else if ("attack" == cmd.function) {
-		int index = std::stoi( cmd.arguments[0] );
+		int index = parse( cmd.arguments[0] );
+		if (index < 0)
+			return new InvalidAction(cmd, "`" + cmd.arguments[1] + "` is not a valid index");
 		return new OffensiveAction(cmd.target, index);
 	}
 	else if ("ping" == cmd.function) {
-		int index = std::stoi( cmd.arguments[0] );
+		int index = parse( cmd.arguments[0] );
+		if (index < 0)
+			return new InvalidAction(cmd, "`" + cmd.arguments[1] + "` is not a valid index");
 		return new CrapAction(cmd.target, index);
 	}
 	
-	// perform GameState model lookups on command function and target
-	// parse arguments from string inputs
-	
-	return new Action();
+	return new InvalidAction(cmd, "unrecognized command: `" + cmd.function + "`");
 }
 
 ResultSet execute(Action& action)
@@ -357,6 +411,13 @@ void load_gamestate()
 	
 	the_game.gameover = false;
 	the_game.show_cmd_menu = false;
+	
+	
+	the_game.cmd_history = {"    ___         __                        __            ",
+							"   /   | __  __/ /_____  ____ ___  ____ _/ /_____  ____ ",
+							"  / /| |/ / / / __/ __ \\/ __ `__ \\/ __ `/ __/ __ \\/ __ \\",
+							" / ___ / /_/ / /_/ /_/ / / / / / / /_/ / /_/ /_/ / / / /",
+							"/_/  |_\\__,_/\\__/\\____/_/ /_/ /_/\\__,_/\\__/\\____/_/ /_/ "};
 };
 
 bool is_game_over() {
@@ -386,11 +447,73 @@ ftxui::Component ModalComponent(std::function<void()> do_nothing, std::function<
 	return component;
 }
 
-ftxui::Component MenuModalComponent(std::function<void()> left, std::function<void()> right)
+ftxui::Component MenuModalComponent(std::function<void(std::string cmd)> fn)
 {
 	using namespace ftxui;
 	
-	auto style = ButtonOption::Animated();
+	static std::vector<std::string> functions = { "", "", "", "" };
+	static std::vector<std::string> commands = {
+		"ps",
+		"fs",
+		"conn",
+		"ping",
+	};
+	static int selected_cmd = 0;
+	static int selected_fn = 0;
+	
+	static MenuOption option1;
+	option1.on_enter = [&]{
+		fn(commands.at(selected_cmd));
+		the_game.show_cmd_menu = !the_game.show_cmd_menu;
+	};
+	static MenuOption option2;
+	option2.on_enter = [&]{
+		fn(commands.at(selected_cmd) + " " + functions.at(selected_fn));
+		the_game.show_cmd_menu = !the_game.show_cmd_menu;
+	};
+	auto component = Container::Horizontal({
+		Menu(&commands, &selected_cmd, &option1),
+		Menu(&functions, &selected_fn, &option2),
+	});
+	
+	component |= Renderer([&](Element inner) {
+		return window(text(" Command Options "), inner);
+	});
+	
+	component |= CatchEvent([&](ftxui::Event event) {
+		if (event == ftxui::Event::Tab) {
+			switch (selected_cmd) {
+				case 0:
+					functions[0] = "info";
+					functions[1] = "install";
+					functions[2] = "uninstall";
+					break;
+				case 1:
+					functions[0] = "info";
+					functions[1] = "copy";
+					functions[2] = "delete";
+					break;
+				case 2:
+					functions[0] = "0";
+					functions[1] = "1";
+					functions[2] = "2";
+					break;
+				case 3:
+					functions[0] = "0";
+					functions[1] = "1";
+					functions[2] = "2";
+					break;
+			}
+			return true;
+		}
+		else if (event == ftxui::Event::Escape) {
+			the_game.show_cmd_menu = !the_game.show_cmd_menu;
+			return true;
+		}
+		return false;
+	});
+	
+	/*
 	auto component = Container::Vertical({
 		Auto::CompoundButton("Retry", left, style),
 		Button("Quit", right, style),
@@ -400,9 +523,9 @@ ftxui::Component MenuModalComponent(std::function<void()> left, std::function<vo
 			separator(),
 			inner,
 		})
-//		| size(WIDTH, GREATER_THAN, 30)
 		| border;
 	});
+	*/
 	
 	return component;
 }
@@ -454,6 +577,7 @@ void gameplay_loop()
 			for (Agent& agent : the_game.agents) {
 				if (agent.type != Class::Player) {
 					Command command = decide(agent);
+					append_to_history(command); //<!-- we just assume that the computer never makes an ill-formed command
 					Action* action = process(command);
 					ResultSet results = execute(*action);
 				}
@@ -479,12 +603,15 @@ void gameplay_loop()
 		}
 	});
 	
+	std::string input_str;
+	ftxui::Component input_command;
+	
 	bool detail = false;
 	auto action = [&] { the_game.show_cmd_menu = !the_game.show_cmd_menu; };
-	auto btn = Button("Render Toggle", action, ButtonOption::Ascii());
+	auto btn = Button("Help", action, ButtonOption::Ascii());
 	
 	auto modal_component = ModalComponent([]{}, screen.ExitLoopClosure());
-	auto menu_modal_component = MenuModalComponent([]{}, []{});
+	auto menu_modal_component = MenuModalComponent([&](std::string cmd){ input_str = cmd; input_command->TakeFocus(); });
 	
 	
 //	auto animation_text = "health:" + std::to_string(the_game.agents[0].kernel.hitpoints);
@@ -551,16 +678,22 @@ void gameplay_loop()
 		});
 	});
 	
-	std::string input_str;
-	
 	auto input_option = ftxui::InputOption();
 	input_option.on_enter = [&] {
 		Command cmd = parse(input_str, &the_game.agents[0]); // <-- GAaah
 		Action* action = process(cmd);
-		the_game.evt_dp.dispatch(ActionEvent::ACTION, ActionEvent::create(ActionEvent::ACTION, action));
+		InvalidAction* check_action = dynamic_cast<InvalidAction*>(action);
+		bool valid = (check_action == nullptr);
+		if (valid) {
+			append_to_history(cmd);
+			the_game.evt_dp.dispatch(ActionEvent::ACTION, ActionEvent::create(ActionEvent::ACTION, action));
+		}
+		else {
+			append_to_history(check_action->msg());
+		}
 		input_str = "";
 	};
-	auto input_command = ftxui::Input(&input_str, "_", input_option);
+	input_command = ftxui::Input(&input_str, "_", input_option);
 	
 	
 	std::vector<std::string> tab_entries = { "Development", "Networking", "Infiltration" };
@@ -572,18 +705,35 @@ void gameplay_loop()
 		tab_content,
 		Container::Vertical({ input_command, btn, animated_field })
 	});
+
 	
 	auto renderer = Renderer(main_container, [&] {
+		Elements cmds;
+		for (std::string& cmd : the_game.cmd_history) cmds.push_back(text(cmd));
+		
 		return vbox({
 			text("Automaton") | bold | hcenter,
 			tab_selection->Render(),
 			tab_content->Render() | flex,
+			vbox(cmds) | border,
 			separatorHSelector(0, 0, Color::Palette256::Red1, Color::Palette256::SeaGreen1),
 			hbox({
 				input_command->Render() | flex,
 				btn->Render()
 			})
 		});
+	});
+	
+	renderer |= CatchEvent([&](ftxui::Event event) {
+		if (event == ftxui::Event::Tab) {
+			input_str = "TAB";
+			return true;
+		}
+		else if (event == ftxui::Event::Escape) {
+			the_game.show_cmd_menu = !the_game.show_cmd_menu;
+			return true;
+		}
+		return false;
 	});
 	
 	screen.Loop(renderer | Modal(modal_component, &the_game.gameover) | Modal(menu_modal_component, &the_game.show_cmd_menu));
@@ -594,8 +744,8 @@ void gameplay_loop()
 
 /**
  NEXT STEPS:
-	* create a custom Button component that has multiple children - DONE
-	* get some basic output animations working - DONE
+	- create log history of command output - DONE
+	- implement command validation step - DONE
 	- create a menu system for creating commands from selections (see modal_dialog_custom & dbox)
 	- update the battle system to incorporate installed daemons
 	- update the battle system so that only installed programs can be used
