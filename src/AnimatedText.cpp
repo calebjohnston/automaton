@@ -1,21 +1,20 @@
-#include <algorithm>  // for min
-#include <memory>     // for make_shared
-#include <string>     // for string, wstring
-#include <utility>    // for move
-#include <vector>     // for vector
+#include <algorithm>
+#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
-#include "ftxui/component/animation.hpp"  // for Animator, Params (ptr only)
-#include "ftxui/component/captured_mouse.hpp"  // for CapturedMouse
-#include "ftxui/component/component.hpp"       // for Make, Button
-#include "ftxui/component/component_base.hpp"  // for ComponentBase
-#include "ftxui/component/component_options.hpp"  // for ButtonOption, AnimatedColorOption, AnimatedColorsOption, EntryState
-#include "ftxui/component/event.hpp"  // for Event, Event::Return
-#include "ftxui/component/mouse.hpp"  // for Mouse, Mouse::Left, Mouse::Pressed
-#include "ftxui/component/screen_interactive.hpp"  // for Component
+#include "ftxui/component/animation.hpp"
+#include "ftxui/component/captured_mouse.hpp"
+#include "ftxui/component/component.hpp"
+#include "ftxui/component/component_base.hpp"
+#include "ftxui/component/component_options.hpp"
+#include "ftxui/component/event.hpp"
+#include "ftxui/component/mouse.hpp"
 #include "ftxui/dom/elements.hpp"
-#include "ftxui/screen/box.hpp"    // for Box
-#include "ftxui/screen/color.hpp"  // for Color
-#include "ftxui/util/ref.hpp"      // for Ref, ConstStringRef
+#include "ftxui/screen/box.hpp"
+#include "ftxui/screen/color.hpp"
+#include "ftxui/util/ref.hpp"
 
 namespace Auto {
 

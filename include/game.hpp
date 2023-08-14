@@ -41,6 +41,17 @@ ftxui::Component CompoundButton(ftxui::ConstStringRef label,
 ftxui::Component AnimatedText(ftxui::ConstStringRef label,
 							  ftxui::Ref<ftxui::ButtonOption> = ftxui::ButtonOption::Animated());
 
+ftxui::Component AnimatedBackground(ftxui::Ref<ftxui::ButtonOption> = ftxui::ButtonOption::Animated());
+/*
+ftxui::Element animated_bg(ftxui::Color color, ftxui::Element child) {
+	return std::make_shared<BgColor>(std::move(child), color);
+}
+
+ftxui::Decorator animated_bg(ftxui::Component bg) {
+	return [&](ftxui::Element child) { return bgcolor(color, std::move(child)); };
+}
+ */
+
 #pragma game model state
 
 struct Command {
@@ -365,34 +376,66 @@ void load_gamestate()
 	the_game.current_agent_idx = 0;
 	the_game.mode_index = 0;
 	
-	// the human game player...
-	Auto::Device disk = { "Hitachi 500", Component::Disk, 100, 16 };
-	Auto::Device mem = { "Crucial 64GB", Component::Memory, 64, 8 };
-	Auto::Device cpu = { "Ono Sendai 2155", Component::Processor, 32, 128 };
-	Auto::Device net = { "DEC OC 768", Component::Network, 4, 12 };
-	Software ping = { "ping", "ICMP network control", 10, 1, 1, Packet::Ping, Binary::Program, Encryption::Kerberos };
-	Software cfg = { "cfg", "System control", 5, 1, 1, Packet::Symplex, Binary::Program, Encryption::None };
-	File f1 = { "Dall-E2", "Model weights for image GAN", "", 4, 100 };
-	File f2 = { "Emails", "All my personal emails", "", 0, 4 };
-	Computer comp = { "567g8k", "Apple", disk, mem, cpu, net, {}, { "Gigabyte", Component::Power, 100, 100 } };
-	Kernel system = { "MacOS", { ping, cfg }, {}, { f1, f2 }, {}, 1, comp, 5 };
+	// devices ...
+	Auto::Device dev_disk_hitachi =	{ "Hitachi 500", Component::Disk, 100, 16 };
+	Auto::Device dev_disk_intel =	{ "Intel 4080", Component::Disk, 100, 16 };
+	Auto::Device dev_disk_fujitsu = { "Fujitsu 100HD", Component::Disk, 112, 28 };
+	Auto::Device dev_disk_samsung = { "Samsung 1650", Component::Disk, 128, 36 };
+	Auto::Device dev_disk_xilinx =	{ "Xilinx 10", Component::Disk, 96, 24 };
+	
+	Auto::Device dev_mem_crucial =	{ "Crucial 64GB", Component::Memory, 64, 8 };
+	Auto::Device dev_mem_kingston = { "Kingston 64i8ab", Component::Memory, 64, 8 };
+	Auto::Device dev_mem_msi =		{ "MSI DDR 6k", Component::Memory, 32, 8 };
+	Auto::Device dev_mem_intel =	{ "Intel LGA 5700", Component::Memory, 48, 12 };
+	Auto::Device dev_mem_trident =	{ "Trident Z Royal Series A", Component::Memory, 32, 10 };
+	Auto::Device dev_mem_dell =		{ "Dell HyperX Memristor", Component::Memory, 128, 24 };
+	
+	Auto::Device dev_cpu_intel_1 =	{ "Intel i7", Component::Processor, 20, 128 };
+	Auto::Device dev_cpu_ibm =		{ "IBM Power9", Component::Processor, 32, 112 };
+	Auto::Device dev_cpu_amd = 		{ "AMD Ryzen 9 5900x", Component::Processor, 12, 96 };
+	Auto::Device dev_cpu_ono_s = 	{ "Ono Sendai 2155", Component::Processor, 32, 128 };
+	Auto::Device dev_cpu_intel_2 = 	{ "Intel Xeon W-10855m", Component::Processor, 64, 192 };
+	
+	Auto::Device dev_net_cisco =	{ "Cisco RT44", Component::Network, 4, 12 };
+	Auto::Device dev_net_dec_oc =	{ "DEC OC 768", Component::Network, 4, 12 };
+	Auto::Device dev_net_netgear =	{ "Netgear Duo", Component::Network, 2, 8 };
+	Auto::Device dev_net_intel =	{ "Intel 82574L Gigabit-E", Component::Network, 8, 10 };
+	Auto::Device dev_net_infinib =	{ "Infiniband RDMA Fabric", Component::Network, 12, 16 };
+	
+	Auto::Device dev_bt_anker =		{ "Anker PowerCore 2100", Component::Battery, 100, 100 };
+	Auto::Device dev_bt_aibocn =	{ "Aibocn 10000mAh Power Bank", Component::Battery, 100, 100 };
+	Auto::Device dev_bt_amdahl =	{ "Amdahl 8020b", Component::Battery, 100, 100 };
+	
+	Auto::Device dev_pw_evga =		{ "EVGA M1 PSU", Component::Power, 100, 100 };
+	Auto::Device dev_pw_gigabyte =	{ "Gigabyte PSU", Component::Power, 100, 100 };
+	Auto::Device dev_pw_corsair =	{ "Corsair CX450 PSU", Component::Power, 100, 100 };
+	Auto::Device dev_pw_seasonic =	{ "Seasonic Platinum 650T PSU", Component::Power, 100, 100 };
+	Auto::Device dev_pw_sfx =		{ "SFX Lightning PSU", Component::Power, 100, 100 };
+	
+	// software ...
+	Software sw_program_ping =		{ "ping", "ICMP network control", 10, 1, 1, Packet::Ping, Binary::Program, Encryption::Kerberos };
+	Software sw_program_cfg =		{ "cfg", "System control", 5, 1, 1, Packet::Symplex, Binary::Program, Encryption::None };
+	Software sw_program_inf =		{ "inf", "Inference ctx control", 10, 1, 1, Packet::Inference, Binary::Program, Encryption::Kerberos };
+	Software sw_daemon_simplex =	{ "xym", "Symplex backplane", 10, 1, 1, Packet::Symplex, Binary::Daemon, Encryption::None };
+	Software sw_daemon_inet =		{ "inet", "syscrtl inode", 5, 1, 1, Packet::Reflection, Binary::Daemon, Encryption::None };
+	
+	// files ...
+	File file_dalle_1 =		{ "Dall-E2", "Model weights for image GAN", "", 4, 100 };
+	File file_emails =		{ "Emails", "All my personal emails", "", 0, 4 };
+	File file_stack =		{ "local trace", "Global Stack Trace", "", 4, 100 };
+	File file_crypto_db =	{ "Crypto DB", "Database containing an index for crypto algos", "", 1, 10 };
+	
+	
+	Computer comp = { "567g8k", "Apple", dev_disk_hitachi, dev_mem_crucial, dev_cpu_ono_s, dev_net_dec_oc, {}, { "Gigabyte", Component::Power, 100, 100 } };
+	Kernel system = { "MacOS", { sw_program_ping, sw_program_cfg }, {}, { file_dalle_1, file_emails }, {}, 1, comp, 5 };
 	Agent player = { "caleb", "author", Auto::Status::Active, Auto::Class::Player, 1, system };
 	the_game.agents.push_back(player);
 	
-	// the one AI opponent...
-	disk = { "Intel 4080", Component::Disk, 100, 16 };
-	mem = { "Kingston 64i8ab", Component::Memory, 64, 8 };
-	cpu = { "Intel i7", Component::Processor, 20, 128 };
-	net = { "Cisco RT44", Component::Network, 4, 12 };
-	Software inf = { "inf", "Inference ctx control", 10, 1, 1, Packet::Inference, Binary::Program, Encryption::Kerberos };
-	Software simplex = { "xym", "Symplex backplane", 10, 1, 1, Packet::Symplex, Binary::Daemon, Encryption::None };
-	Software inet = { "inet", "syscrtl inode", 5, 1, 1, Packet::Reflection, Binary::Daemon, Encryption::None };
-	f1 = { "Dall-E2", "Model weights for image GAN", "", 4, 100 };
-	f2 = { "Crypto DB", "Database containing an index for crypto algos", "", 1, 10 };
-	Computer comp2 = { "nkpasd8", "IBM", disk, mem, cpu, net, {}, { "Gigabyte", Component::Power, 100, 100 } };
-	Kernel system2 = { "OS/2", { inf }, { simplex, inet }, { f1, f2 }, {}, 1, comp2, 10 };
+	Computer comp2 = { "nkpasd8", "IBM", dev_disk_intel, dev_mem_kingston, dev_cpu_intel_1, dev_net_cisco, {}, { "Gigabyte", Component::Power, 100, 100 } };
+	Kernel system2 = { "OS/2", { sw_program_inf }, { sw_daemon_simplex, sw_daemon_inet }, { file_dalle_1, file_crypto_db }, {}, 1, comp2, 10 };
 	Agent ai_player = { "wintermute", "victor", Auto::Status::Active, Auto::Class::Automaton, 1, system2 };
 	the_game.agents.push_back(ai_player);
+	
 	
 	// connect game threads with observer pattern
 	using namespace std::placeholders;
@@ -430,16 +473,19 @@ ftxui::Component ModalComponent(std::function<void()> do_nothing, std::function<
 {
 	using namespace ftxui;
 	
+	auto bg = AnimatedBackground(ButtonOption::Animated(Color::Aquamarine1, Color::RoyalBlue1));
 	auto style = ButtonOption::Animated();
 	auto component = Container::Vertical({
 		Button("Retry", do_nothing, style),
 		Button("Quit", quit, style),
+		bg,
 	}) | Renderer([&](Element inner) {
 		return vbox({
 			text("Game Over"),
 			separator(),
 			inner,
 		})
+		| borderDouble
 		| size(WIDTH, GREATER_THAN, 30)
 		| border;
 	});
@@ -744,9 +790,7 @@ void gameplay_loop()
 
 /**
  NEXT STEPS:
-	- create log history of command output - DONE
-	- implement command validation step - DONE
-	- create a menu system for creating commands from selections (see modal_dialog_custom & dbox)
+	- fix the command menu system to a location with better tab completion
 	- update the battle system to incorporate installed daemons
 	- update the battle system so that only installed programs can be used
  */

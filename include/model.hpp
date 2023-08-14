@@ -16,8 +16,7 @@
 
 /*
  * Architecture and design considerations:
- * 	- POD types must have pointers if they are to have bidirectional references between child/parents
- *		- consider the scenario in which you have a computer but you want to know what kernel is running on it, currently impossible
+ * 	- Refactor the POD types to support handles
  *	- POD types could benefit from convenience functions for comparators, string IO, (de)serialization support, etc.
  * 	- POD types might need an umambiguous way to be empty or null which is currently ill defined
  *		- consider the scenario in which you want to determine if a specific instance of software is already installed
@@ -32,7 +31,8 @@
  *	- I've hit my limit with jamming everything into a few files. References are getting hard to keep sequential
  *	- I don't have a very simple method of handling invalid user input. I rely upon an "InvalidAction" type that works but is inelegant.
  *	- FTXUI can only animate Components, not Elements. This makes animating regular output impossible.
- *	- FTXUI cannot render string output without a constant string reference. Sometimes this is very inconvenient.
+ *	- FTXUI cannot render string output without a constant string reference. Sometimes this is inconvenient.
+ * 		- This CAN be mitigated by wrapping a component in a renderer that captures the input fields as part of the closure scope
  *		- Could there be a global DOM that is safely manipulated without introducing defects? (edge case: dynamically generated fields)
  *		- Could it be mitigated by recreating views when the mode changes?
  *	- If I don't want the user to consume a whole turn with an invalid command, then I'll need to have a validate_command() functions for every API operation that can return an error message

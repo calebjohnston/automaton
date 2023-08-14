@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3C20ACB62A78F5ED0021EEC7 /* Events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C20ACB32A78F5ED0021EEC7 /* Events.cpp */; };
 		3C8F0B752A85D6C80006AAD0 /* AnimatedText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C8F0B742A85D6C80006AAD0 /* AnimatedText.cpp */; };
+		3C91704C2A88726900BA0885 /* AnimatedBackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C91704B2A88726900BA0885 /* AnimatedBackground.cpp */; };
 		3CA95A9B27DD77390015AB3C /* network.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CA95A9827DD77380015AB3C /* network.cpp */; };
 		3CA95A9C27DD77390015AB3C /* agent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CA95A9927DD77380015AB3C /* agent.cpp */; };
 		3CA95A9D27DD77390015AB3C /* kernel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CA95A9A27DD77390015AB3C /* kernel.cpp */; };
@@ -31,6 +32,7 @@
 		3C4DBD742A7490CE00B878FD /* model.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = model.hpp; path = include/model.hpp; sourceTree = "<group>"; };
 		3C4DBD752A749E2C00B878FD /* game.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = game.hpp; path = include/game.hpp; sourceTree = "<group>"; };
 		3C8F0B742A85D6C80006AAD0 /* AnimatedText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AnimatedText.cpp; path = src/AnimatedText.cpp; sourceTree = "<group>"; };
+		3C91704B2A88726900BA0885 /* AnimatedBackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AnimatedBackground.cpp; path = src/AnimatedBackground.cpp; sourceTree = "<group>"; };
 		3CA95A8E27DD23440015AB3C /* data.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = data.h; path = include/data.h; sourceTree = "<group>"; };
 		3CA95A9427DD2EB20015AB3C /* command.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = command.h; path = include/command.h; sourceTree = "<group>"; };
 		3CA95A9627DD53460015AB3C /* table.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = table.hpp; path = include/table.hpp; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 		3CBE1FD827D793FD00529C38 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				3C91704B2A88726900BA0885 /* AnimatedBackground.cpp */,
 				3C8F0B742A85D6C80006AAD0 /* AnimatedText.cpp */,
 				3CCAB8BC29EF885B007F872E /* component.cpp */,
 				3CD0BE412A83F84D00FD4F40 /* CompoundButton.cpp */,
@@ -199,6 +202,7 @@
 				3CA95A9C27DD77390015AB3C /* agent.cpp in Sources */,
 				3C8F0B752A85D6C80006AAD0 /* AnimatedText.cpp in Sources */,
 				3CCAB8C229EF885B007F872E /* data.cpp in Sources */,
+				3C91704C2A88726900BA0885 /* AnimatedBackground.cpp in Sources */,
 				3CCAB8C429EF885B007F872E /* node.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
