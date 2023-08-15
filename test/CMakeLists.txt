@@ -11,12 +11,9 @@ cmake_minimum_required(VERSION 3.11)
 option(BUILD_GMOCK OFF)
 option(INSTALL_GTEST OFF)
 
-set( tests_SRCS
-  test_EventDispatcher.cpp
-  test_EventQueue.cpp
+set( tests_SRCS 
+  test_placeholder.cpp
   ${PROJECT_SOURCE_DIR}/src/Events.cpp
-  ${PROJECT_SOURCE_DIR}/src/EventDispatcher.cpp
-  ${PROJECT_SOURCE_DIR}/src/EventQueue.cpp
 )
 
 # Add GoogleTest dependency

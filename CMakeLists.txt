@@ -16,6 +16,10 @@ set( TARGET_VERSION_MINOR 1 )
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if(POLICY CMP0091)
+  cmake_policy(SET CMP0091 NEW) 
+endif()
+
 set(CMAKE_BUILD_TYPE Debug CACHE STRING "Set the build configuration")
 
 # if("${CMAKE_GENERATOR}" STREQUAL "Xcode")
@@ -43,13 +47,3 @@ add_subdirectory( src )
 if(AUTOMATON_BUILD_TESTS)
   add_subdirectory( test )
 endif(AUTOMATON_BUILD_TESTS)
-
-# Add the Doxyfile.in and UseDoxygen.cmake files to the projects source directory.
-# if(AUTOMATON_BUILD_DOCS)
-#   set( "DOXYFILE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/src "
-#        "DOXYFILE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/include "
-#        "DOXYFILE_SOURCE_DIR ${PROJECT_SOURCE_DIR}/docs/pages " )
-#   set( DOXYFILE_OUTPUT_DIR ${PROJECT_SOURCE_DIR}/docs )
-#   set( DOXYFILE_LATEX "NO" )
-#   include( UseDoxygen )
-# endif(AUTOMATON_BUILD_DOCS)

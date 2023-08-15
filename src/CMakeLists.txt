@@ -22,6 +22,13 @@ add_executable(automaton ${automaton_SRCS})
 
 add_library(auto STATIC ${automaton_lib_SRCS})
 
+if (WIN32)
+  set_property(TARGET automaton PROPERTY 
+               MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+  set_property(TARGET auto PROPERTY 
+              MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
+
 #--------------------------------------------------------------------------------
 # We need this to be able to include headers produced by uic in our code
 # CMAKE_BINARY_DIR holds a path to the build directory, while INCLUDE_DIRECTORIES()
