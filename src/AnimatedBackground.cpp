@@ -56,4 +56,4 @@ ftxui::Component AnimatedBackground(Ref<ButtonOption> option) {
 	return Make<Impl>(std::move(option));
 }
 
-} // Auto
+}	// namespace Auto

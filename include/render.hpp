@@ -19,8 +19,8 @@
 #include "ftxui/dom/elements.hpp"
 #include "ftxui/util/ref.hpp"
 
-#include "model.hpp"
-#include "game.hpp"
+#include "model.h"
+#include "game.h"
 
 namespace Auto {
 
@@ -63,10 +63,5 @@ void render_1(ResultSet& results)
 //	loop.RunOnce();
 }
 
-//void Render(ftxui::ScreenInteractive& screen, GameState& the_game)
-//{
-//
-//}
 
-
-}
+}	// namespace Auto

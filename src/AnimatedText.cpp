@@ -114,4 +114,4 @@ ftxui::Component AnimatedText(ConstStringRef label,
 	return Make<Impl>(std::move(label), std::move(option));
 }
 
-} // Auto
+}	// namespace Auto

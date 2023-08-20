@@ -1,203 +1,16 @@
 //
-//  model.hpp
+//  model.cpp
 //
-//  Created by Caleb Johnston on 7/28/2023.
+//  Created by Caleb Johnston on 8/19/2023.
 //  Copyright © 2023 Caleb Johnston. All rights reserved.
 //
 
-#pragma once
-
-#include <functional>
-#include <iterator>
-#include <memory>
-#include <numeric>
 #include <string>
 #include <vector>
 
-/*
- * Architecture and design considerations:
- * 	- Refactor the POD types to support handles
- *	- POD types could benefit from convenience functions for comparators, string IO, (de)serialization support, etc.
- * 	- POD types might need an umambiguous way to be empty or null which is currently ill defined
- *		- consider the scenario in which you want to determine if a specific instance of software is already installed
- *	- POD types might have nasty memory allocation issues (what is memory layout for vector<Computer>?)
- *	- POD types don't provide base types which are required for writing generic (aka DRY) code
- *	- A class factory pattern that vends typesafe ID handles will be required to perform reliable conversion from commands to actions
- *		- its also required so that you can maintain references to targets that are passed between scopes
- *		- furthermore, the class factories should maintain a table/list of objects where each object stores its own lookup ID (maybe?)
- *	- The Result and ResultSet types need to be revisited because they mix two semantics: internal mutation status, and user query results
- *	- FTXUI doesn't appear to support disabling/enabling components. Might be required for me though..
- *	- With the default output going to stdio, I'll need a file logger to get actual log output
- *	- I've hit my limit with jamming everything into a few files. References are getting hard to keep sequential
- *	- I don't have a very simple method of handling invalid user input. I rely upon an "InvalidAction" type that works but is inelegant.
- *	- FTXUI can only animate Components, not Elements. This makes animating regular output impossible.
- *	- FTXUI cannot render string output without a constant string reference. Sometimes this is inconvenient.
- * 		- This CAN be mitigated by wrapping a component in a renderer that captures the input fields as part of the closure scope
- *		- Could there be a global DOM that is safely manipulated without introducing defects? (edge case: dynamically generated fields)
- *		- Could it be mitigated by recreating views when the mode changes?
- *	- If I don't want the user to consume a whole turn with an invalid command, then I'll need to have a validate_command() functions for every API operation that can return an error message
- */
+#include "model.h"
 
 namespace Auto {
-
-enum class Packet {
-	Ping,
-	Inference,
-	Reflection,
-	Symplex,
-	Autoregression,
-	None
-};
-std::string to_str(Packet p) {
-	switch (p) {
-		case Packet::Ping: return "Ping";
-		case Packet::Inference: return "Inference";
-		case Packet::Reflection: return "Reflection";
-		case Packet::Symplex: return "Symplex";
-		case Packet::Autoregression: return "Autoregression";
-		default: return "None";
-	}
-}
-
-enum class Encryption {
-	DH4,
-	X509,
-	Kerberos,
-	None
-};
-
-enum class Component {
-	Disk,
-	Memory,
-	Processor,
-	Network,
-	Battery,
-	Power,
-	None
-};
-std::string to_str(Component c) {
-	switch (c) {
-		case Component::Disk: return "Disk";
-		case Component::Memory: return "Memory";
-		case Component::Processor: return "Processor";
-		case Component::Network: return "Network";
-		case Component::Battery: return "Battery";
-		case Component::Power: return "Power";
-		default: return "None";
-	}
-}
-
-enum class Binary {
-	Program,
-	Daemon
-};
-
-enum class Status {
-	Active,
-	Inactive,
-	Busy,
-	None
-};
-std::string to_str(Status s) {
-	switch (s) {
-		case Status::Active: return "Active";
-		case Status::Inactive: return "Inactive";
-		case Status::Busy: return "Busy";
-		default: return "None";
-	}
-}
-
-
-enum class Class {
-	Electronics,
-	Monitor,
-	Sentry,
-	Worm,
-	Virus,
-	Simulation,
-	Agent,
-	Automaton,
-	Player,
-	None
-};
-std::string to_str(Class c) {
-	switch (c) {
-		case Class::Electronics: return "Electronics";
-		case Class::Monitor: return "Monitor";
-		case Class::Sentry: return "Sentry";
-		case Class::Worm: return "Worm";
-		case Class::Virus: return "Virus";
-		case Class::Simulation: return "Simulation";
-		case Class::Agent: return "Agent";
-		case Class::Automaton: return "Automaton";
-		case Class::Player: return "Human";
-		default: return "None";
-	}
-}
-
-struct File {
-	std::string name;
-	std::string description;
-	std::string contents;
-	int version;
-	int size;
-};
-
-struct Software {
-	std::string name;
-	std::string description;
-	int size;
-	int version;
-	int cycles;
-	Packet data_type;
-	Binary exec_type;
-	Encryption crypto;
-};
-
-struct Device {
-	std::string name;
-	Component type;
-	int capacity;
-	int power;
-};
-
-struct Computer {
-	std::string serial;
-	std::string manufacturer;
-	Device disk;
-	Device memory;
-	Device processor;
-	Device uplink;
-	Device battery;
-	Device power_unit;
-};
-
-struct Kernel {
-	std::string hostname;
-	std::vector<Software> programs;
-	std::vector<Software> daemons;
-	std::vector<File> files;
-	std::vector<Kernel> connections;
-	int version;
-	Computer computer;
-	int hitpoints;
-};
-
-struct Agent {
-	std::string name;
-	std::string description;
-	Status status;
-	Class type;
-	int version;
-	Kernel kernel;
-};
-
-struct Result {
-	int status;
-	std::string message;
-};
-
-typedef std::vector<Result> ResultSet;
 
 #pragma utility functions
 
@@ -249,6 +62,52 @@ int capacity_for_type(Kernel& kernel, Component type)
 		default: return 0;
 	}
 	return total_capacity - total_size;
+}
+
+template<typename T>
+std::vector<std::string> to_strings(const std::vector<T>& list)
+{
+	std::vector<std::string> results;
+	std::for_each(list.begin(), list.end(), [&](const T& entry) {
+		results.push_back(entry.name);
+	});
+	return results;
+}
+
+std::vector<std::string> program_names(const Kernel& kernel)
+{
+	return to_strings<Software>(kernel.programs);
+}
+
+std::vector<std::string> daemon_names(const Kernel& kernel)
+{
+	return to_strings<Software>(kernel.daemons);
+}
+
+std::vector<std::string> file_names(const Kernel& kernel)
+{
+	return to_strings<File>(kernel.files);
+}
+
+std::vector<std::string> device_names(const Kernel& kernel)
+{
+	std::vector<std::string> results;
+	results.push_back(kernel.computer.disk.name);
+	results.push_back(kernel.computer.memory.name);
+	results.push_back(kernel.computer.processor.name);
+	results.push_back(kernel.computer.uplink.name);
+	results.push_back(kernel.computer.battery.name);
+	results.push_back(kernel.computer.power_unit.name);
+	return results;
+}
+
+std::vector<std::string> connection_names(const Kernel& kernel)
+{
+	std::vector<std::string> results;
+	std::for_each(kernel.connections.begin(), kernel.connections.end(), [&](const Kernel& conn) {
+		results.push_back(conn.hostname);
+	});
+	return results;
 }
 
 #pragma transformation functions
@@ -373,7 +232,7 @@ Result connect_to(Kernel& kernel, Kernel& target)
 	return res;
 }
 
-Result uninstall_program(Kernel& kernel, uint index)
+Result uninstall_program(Kernel& kernel, unsigned index)
 {
 	if (index >= kernel.programs.size()) return { 1, "invalid index" };
 	
@@ -382,7 +241,7 @@ Result uninstall_program(Kernel& kernel, uint index)
 	return { 0, "success" };
 }
 
-Result uninstall_daemon(Kernel& kernel, uint index)
+Result uninstall_daemon(Kernel& kernel, unsigned index)
 {
 	if (index >= kernel.daemons.size()) return { 1, "invalid index" };
 	
@@ -391,7 +250,7 @@ Result uninstall_daemon(Kernel& kernel, uint index)
 	return { 0, "success" };
 }
 
-Result delete_file(Kernel& kernel, uint index)
+Result delete_file(Kernel& kernel, unsigned index)
 {
 	if (index >= kernel.files.size()) return { 1, "invalid index" };
 	
@@ -400,7 +259,7 @@ Result delete_file(Kernel& kernel, uint index)
 	return { 0, "success" };
 }
 
-Result disconnect(Kernel& kernel, uint index)
+Result disconnect(Kernel& kernel, unsigned index)
 {
 	if (index >= kernel.connections.size()) return { 1, "invalid index" };
 	

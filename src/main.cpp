@@ -10,14 +10,15 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <map>
 
 #include "computer.h"
 #include "kernel.h"
 #include "network.h"
 #include "node.h"
 
-#include "model.hpp"
-#include "game.hpp"
+#include "model.h"
+#include "game.h"
 
 // STRUCTURE GUIDELINES
 //---------------------
@@ -65,7 +66,17 @@ void create_world()
 }
 
 int main(int argc, const char * argv[])
-{	
+{
+	typedef std::vector<std::string> Arguments;
+	typedef std::map<std::string,Arguments> FunctionMap;
+	typedef std::map<std::string,FunctionMap> CommandMap;
+	
+	
+	
+//	CommandMap cmd_map = {
+//		{ "ps", { "list", "info", "install", "uninstall" } }
+//	};
+	
 	Auto::load_gamestate();
 	Auto::gameplay_loop();
 	

@@ -1,11 +1,9 @@
 //
-//  game.hpp
+//  game.cpp
 //
-//  Created by Caleb Johnston on 7/28/2023.
+//  Created by Caleb Johnston on 8/19/2023.
 //  Copyright © 2023 Caleb Johnston. All rights reserved.
 //
-
-#pragma once
 
 #include <chrono>
 #include <deque>
@@ -28,42 +26,12 @@
 #include "ftxui/dom/elements.hpp"
 #include "ftxui/screen/color.hpp"
 
-#include "model.hpp"
 #include "render.hpp"
-#include "Events.h"
+#include "game.h"
 
 namespace Auto {
 
-ftxui::Component CompoundButton(ftxui::ConstStringRef label,
-								std::function<void()> on_click,
-								ftxui::Ref<ftxui::ButtonOption> = ftxui::ButtonOption::Simple());
-
-ftxui::Component AnimatedText(ftxui::ConstStringRef label,
-							  ftxui::Ref<ftxui::ButtonOption> = ftxui::ButtonOption::Animated());
-
-ftxui::Component AnimatedBackground(ftxui::Ref<ftxui::ButtonOption> = ftxui::ButtonOption::Animated());
-/*
-ftxui::Element animated_bg(ftxui::Color color, ftxui::Element child) {
-	return std::make_shared<BgColor>(std::move(child), color);
-}
-
-ftxui::Decorator animated_bg(ftxui::Component bg) {
-	return [&](ftxui::Element child) { return bgcolor(color, std::move(child)); };
-}
- */
-
 #pragma game model state
-
-struct Command {
-	std::string function;
-	Agent* target;
-	std::vector<std::string> arguments;
-};
-
-class Action {
-public:
-	virtual ResultSet execute() { return {}; }
-};
 
 class InvalidAction : public Action {
 public:
@@ -95,33 +63,6 @@ private:
 	bool _list;
 	int _idx;
 };
-
-class ActionProcessor;
-
-struct GameState {
-	int current_agent_idx;
-	std::vector<Agent> agents;
-	
-	ActionProcessor* action_proc;
-	EventDispatchMap evt_dp;
-	std::vector<Action*> actions;
-	std::deque<std::string> cmd_history;
-	std::string axn_results;
-	std::string animation_test;
-	int mode_index;
-	
-	// test only
-	std::deque<Command> ai_cmds;
-	bool gameover;
-	bool show_cmd_menu;
-};
-
-GameState the_game;
-
-
-
-
-
 
 
 class ModelAction : public Action {
@@ -196,8 +137,6 @@ private:
 	Agent* _target;
 	int _idx;
 };
-
-
 
 
 
@@ -493,89 +432,6 @@ ftxui::Component ModalComponent(std::function<void()> do_nothing, std::function<
 	return component;
 }
 
-ftxui::Component MenuModalComponent(std::function<void(std::string cmd)> fn)
-{
-	using namespace ftxui;
-	
-	static std::vector<std::string> functions = { "", "", "", "" };
-	static std::vector<std::string> commands = {
-		"ps",
-		"fs",
-		"conn",
-		"ping",
-	};
-	static int selected_cmd = 0;
-	static int selected_fn = 0;
-	
-	static MenuOption option1;
-	option1.on_enter = [&]{
-		fn(commands.at(selected_cmd));
-		the_game.show_cmd_menu = !the_game.show_cmd_menu;
-	};
-	static MenuOption option2;
-	option2.on_enter = [&]{
-		fn(commands.at(selected_cmd) + " " + functions.at(selected_fn));
-		the_game.show_cmd_menu = !the_game.show_cmd_menu;
-	};
-	auto component = Container::Horizontal({
-		Menu(&commands, &selected_cmd, &option1),
-		Menu(&functions, &selected_fn, &option2),
-	});
-	
-	component |= Renderer([&](Element inner) {
-		return window(text(" Command Options "), inner);
-	});
-	
-	component |= CatchEvent([&](ftxui::Event event) {
-		if (event == ftxui::Event::Tab) {
-			switch (selected_cmd) {
-				case 0:
-					functions[0] = "info";
-					functions[1] = "install";
-					functions[2] = "uninstall";
-					break;
-				case 1:
-					functions[0] = "info";
-					functions[1] = "copy";
-					functions[2] = "delete";
-					break;
-				case 2:
-					functions[0] = "0";
-					functions[1] = "1";
-					functions[2] = "2";
-					break;
-				case 3:
-					functions[0] = "0";
-					functions[1] = "1";
-					functions[2] = "2";
-					break;
-			}
-			return true;
-		}
-		else if (event == ftxui::Event::Escape) {
-			the_game.show_cmd_menu = !the_game.show_cmd_menu;
-			return true;
-		}
-		return false;
-	});
-	
-	/*
-	auto component = Container::Vertical({
-		Auto::CompoundButton("Retry", left, style),
-		Button("Quit", right, style),
-	}) | Renderer([&](Element inner) {
-		return vbox({
-			text("Command Menu"),
-			separator(),
-			inner,
-		})
-		| border;
-	});
-	*/
-	
-	return component;
-}
-
 ftxui::Element agent_view(Agent& agent)
 {
 	using namespace ftxui;
@@ -651,13 +507,19 @@ void gameplay_loop()
 	
 	std::string input_str;
 	ftxui::Component input_command;
+	auto submit_fn = [&](std::string cmd_str){
+		input_str = cmd_str;
+		if (!cmd_str.empty()) append_to_history(cmd_str);
+		the_game.show_cmd_menu = !the_game.show_cmd_menu;
+		input_command->TakeFocus();
+	};
+	auto cmd_palette = CommandPalette(input_str, submit_fn);
 	
 	bool detail = false;
-	auto action = [&] { the_game.show_cmd_menu = !the_game.show_cmd_menu; };
+	auto action = [&] { the_game.show_cmd_menu = !the_game.show_cmd_menu; cmd_palette->TakeFocus(); };
 	auto btn = Button("Help", action, ButtonOption::Ascii());
 	
 	auto modal_component = ModalComponent([]{}, screen.ExitLoopClosure());
-	auto menu_modal_component = MenuModalComponent([&](std::string cmd){ input_str = cmd; input_command->TakeFocus(); });
 	
 	
 //	auto animation_text = "health:" + std::to_string(the_game.agents[0].kernel.hitpoints);
@@ -782,7 +644,7 @@ void gameplay_loop()
 		return false;
 	});
 	
-	screen.Loop(renderer | Modal(modal_component, &the_game.gameover) | Modal(menu_modal_component, &the_game.show_cmd_menu));
+	screen.Loop(renderer | Modal(modal_component, &the_game.gameover) | Layer(cmd_palette, &the_game.show_cmd_menu));
 	
 	gui.join();
 };
@@ -790,9 +652,9 @@ void gameplay_loop()
 
 /**
  NEXT STEPS:
-	- fix the command menu system to a location with better tab completion
+	- Move the command input component to the CommandPalette
+	- update the battle system so that only installed programs can be used	
 	- update the battle system to incorporate installed daemons
-	- update the battle system so that only installed programs can be used
  */
 
-}
+}	// namespace Auto
