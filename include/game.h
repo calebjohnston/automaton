@@ -19,6 +19,7 @@
 
 #include "model.h"
 #include "Events.h"
+#include "tree.hpp"
 
 namespace Auto {
 
@@ -31,7 +32,7 @@ ftxui::Component AnimatedText(ftxui::ConstStringRef label,
 
 ftxui::Component AnimatedBackground(ftxui::Ref<ftxui::ButtonOption> = ftxui::ButtonOption::Animated());
 
-ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::string)> submit);
+ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::string)> submit, TreeNode* node);
 
 ftxui::ComponentDecorator Layer(ftxui::Component layer, const bool* show_layer);
 
@@ -53,6 +54,7 @@ class ActionProcessor;
 struct GameState {
 	int current_agent_idx;
 	std::vector<Agent> agents;
+	TreeNode* player_cmd_tree;
 	
 	ActionProcessor* action_proc;
 	EventDispatchMap evt_dp;
@@ -86,6 +88,7 @@ ResultSet execute(Action& action);
 
 #pragma the game itself
 
+void build_player_cmd_tree();
 void load_gamestate();
 bool is_game_over();
 

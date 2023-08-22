@@ -220,6 +220,7 @@ Result install_program(Kernel& kernel, const Software& sw);
 Result install_daemon(Kernel& kernel, const Software& sw);
 Result copy_file(Kernel& kernel, const File& file);
 Result connect_to(Kernel& kernel, Kernel& target);
+Result uninstall_program(Kernel& kernel, const std::string& name);
 Result uninstall_program(Kernel& kernel, unsigned index);
 Result uninstall_daemon(Kernel& kernel, unsigned index);
 Result delete_file(Kernel& kernel, unsigned index);

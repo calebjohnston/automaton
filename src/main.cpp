@@ -33,49 +33,12 @@
 // create networks of variant collections using composable functions + shared_ptrs
 // query networks of variant collections using composable functions
 
-void create_world()
-{
-	// attempt 2
-	/*
-	 auto cpu = MakeComponent(...bunch of details...)
-	 auto disk = MakeComponent(...bunch of details...)
-	 auto computer = MakeComputer(cpu, disk, ...)
-
-	 auto program = MakeProgram(...bunch of details...)
-	 auto daemon = MakeDaemon(...bunch of details...)
-	 auto file = MakeDaemon(...bunch of details...)
-	 auto system = MakeSystem(...bunch of details...)
-	 system.add(program)
-	 system.add(daemon)
-	 system.add(file)
-
-	 auto host1 = MakeHost( name, descr, computer1, system1 );
-	 auto host2 = MakeHost( name, descr, computer2, system2 );
-
-	 auto network = MakeNetwork( name, descr )
-	 network.add(host1)
-	 network.add(host2)
-	*/
-
-	// attempt 3
-	/*
-
-	 cpu > disk >
-
-	 */
-}
-
 int main(int argc, const char * argv[])
 {
-	typedef std::vector<std::string> Arguments;
-	typedef std::map<std::string,Arguments> FunctionMap;
-	typedef std::map<std::string,FunctionMap> CommandMap;
+//	typedef std::vector<std::string> Arguments;
+//	typedef std::map<std::string,Arguments> FunctionMap;
+//	typedef std::map<std::string,FunctionMap> CommandMap;
 	
-	
-	
-//	CommandMap cmd_map = {
-//		{ "ps", { "list", "info", "install", "uninstall" } }
-//	};
 	
 	Auto::load_gamestate();
 	Auto::gameplay_loop();

@@ -5,6 +5,7 @@
 //  Copyright © 2023 Caleb Johnston. All rights reserved.
 //
 
+#include <algorithm>
 #include <chrono>
 #include <deque>
 #include <functional>
@@ -28,6 +29,7 @@
 
 #include "render.hpp"
 #include "game.h"
+#include "tree.hpp"
 
 namespace Auto {
 
@@ -46,10 +48,13 @@ private:
 
 class ProgramsAction : public Action {
 public:
-	ProgramsAction(Agent* targ, bool list = true, int index = 0) : _target(targ), _list(list), _idx(index) {}
+	ProgramsAction(Agent* targ, bool list = true, const std::string& prog_name = "", int index = -1) : _target(targ), _list(list), _program_name(prog_name), _idx(index) {}
 	virtual ResultSet execute() override {
 		if (_list) {
 			return list_programs(_target->kernel);
+		}
+		else if (_idx < 0 && !_program_name.empty()) {
+			return { uninstall_program(_target->kernel, _program_name) };
 		}
 		else { // let's just assume that this one uninstalls...
 			return { uninstall_program(_target->kernel, _idx) };
@@ -62,6 +67,7 @@ private:
 	Agent* _target;
 	bool _list;
 	int _idx;
+	std::string _program_name;
 };
 
 
@@ -182,6 +188,25 @@ Command parse(std::string user_input, Agent* user_agent)
 	return { fn_str, user_agent, args };
 }
 
+Result validate(Command& cmd)
+{
+	// validate command str
+	auto command = the_game.player_cmd_tree->child_for_str(cmd.function);
+	if (nullptr == command) return { -1, "invalid command: " + cmd.function };
+	else if (cmd.arguments.empty()) return { 0, "Success" };
+	
+	// validate function str
+	auto function = command->child_for_str(cmd.arguments[0]);
+	if (nullptr == function) return { -1, "invalid function for command: " + cmd.arguments[0] };
+	else if (cmd.arguments.size() < 2) return { 0, "Success" };
+	
+	// validate argument str
+	auto argument = function->child_for_str(cmd.arguments[1]);
+	if (nullptr == argument) return { -1, "invalid argument for function: " + cmd.arguments[1] };
+	else if (cmd.arguments.size() < 3) return { 0, "Success" };
+	else return { -1, "Too many arguments for function: " + cmd.arguments[0] };
+}
+
 #pragma game lifecycle operations
 
 Command decide(Agent& agent)
@@ -206,17 +231,12 @@ Command decide(Agent& agent)
 
 Action* process(Command& cmd)
 {
+	// TODO: right now all arguments must be indices. But they can also be names
 	
-	// perform GameState model lookups on command function and target
-	// parse arguments from string inputs
-	
-//	using namespace std::placeholders;
-//
-//	std::deque<std::string> commands;
-//	std::deque<std::string> options;
-//	std::vector<std::string> command_params = {"", "load", "unload", "install", "uninstall"};
-//	std::vector<std::string> option_params = {"-i", "--input", "-o", "--output", "-c", "--config", "-v", "--verbose", "-d", "--default"};
-	if ("ps" == cmd.function) {
+	if ("exit" == cmd.function) {
+		std::exit(EXIT_SUCCESS);
+	}
+	else if ("ps" == cmd.function) {
 		if (cmd.arguments.empty()) {
 			return new ProgramsAction(cmd.target);
 		}
@@ -224,8 +244,9 @@ Action* process(Command& cmd)
 			if (cmd.arguments.size() == 2) {
 				int index = parse( cmd.arguments[1] );
 				if (index < 0)
-					return new InvalidAction(cmd, "`" + cmd.arguments[1] + "` is not a valid index");
-				return new ProgramsAction(cmd.target, false, index);
+					return new ProgramsAction(cmd.target, false, cmd.arguments[1]);
+				else
+					return new ProgramsAction(cmd.target, false, "", index);
 			}
 			else {
 				return new InvalidAction(cmd, "must supply target program or daemon to uninstall");
@@ -309,6 +330,57 @@ private:
 
 std::hash<std::string> str_hash;
 const EventId ActionEvent::ACTION = str_hash( "ActionProcessorEvent" );
+
+void build_player_cmd_tree()
+{
+	// TODO: leaks memory like a sieve...
+	
+	auto programs = program_names(the_game.agents[0].kernel);
+	auto daemons = daemon_names(the_game.agents[0].kernel);
+	auto files = file_names(the_game.agents[0].kernel);
+	auto devices = device_names(the_game.agents[0].kernel);
+	auto connections = connection_names(the_game.agents[0].kernel);
+	
+	auto ps = new TreeNode("ps");
+	ps->add_child("list");
+	ps->add_child("info", programs);
+	ps->add_child("install", programs);
+	ps->add_child("uninstall", programs);
+	
+	auto fs = new TreeNode("fs");
+	fs->add_child("list");
+	fs->add_child("info", files);
+	fs->add_child("copy", files);
+	fs->add_child("delete", files);
+	
+	auto dev = new TreeNode("dev");
+	dev->add_child("list");
+	dev->add_child("info", devices);
+	dev->add_child("config", devices);
+	dev->add_child("restore", devices);
+	
+	auto net = new TreeNode("net");
+	net->add_child("scan");
+	net->add_child("whois", connections);
+	net->add_child("route", connections);
+	net->add_child("conn", connections);
+	
+	auto msg = new TreeNode("msg");
+	msg->add_child("ping", connections);
+	msg->add_child("xfer", connections);
+	msg->add_child("cfg", connections);
+	msg->add_child("simplex", connections);
+	msg->add_child("inf", connections);
+	
+	auto quit = new TreeNode("exit");
+	
+	the_game.player_cmd_tree->add_child(ps);
+	the_game.player_cmd_tree->add_child(fs);
+	the_game.player_cmd_tree->add_child(dev);
+	the_game.player_cmd_tree->add_child(net);
+	the_game.player_cmd_tree->add_child(msg);
+	the_game.player_cmd_tree->add_child(quit);
+}
 
 void load_gamestate()
 {
@@ -400,7 +472,11 @@ void load_gamestate()
 							"  / /| |/ / / / __/ __ \\/ __ `__ \\/ __ `/ __/ __ \\/ __ \\",
 							" / ___ / /_/ / /_/ /_/ / / / / / / /_/ / /_/ /_/ / / / /",
 							"/_/  |_\\__,_/\\__/\\____/_/ /_/ /_/\\__,_/\\__/\\____/_/ /_/ "};
+	
+	the_game.player_cmd_tree = new TreeNode("commands");
+	build_player_cmd_tree();
 };
+
 
 bool is_game_over() {
 	// is player dead?
@@ -513,7 +589,7 @@ void gameplay_loop()
 		the_game.show_cmd_menu = !the_game.show_cmd_menu;
 		input_command->TakeFocus();
 	};
-	auto cmd_palette = CommandPalette(input_str, submit_fn);
+	auto cmd_palette = CommandPalette(input_str, submit_fn, the_game.player_cmd_tree);
 	
 	bool detail = false;
 	auto action = [&] { the_game.show_cmd_menu = !the_game.show_cmd_menu; cmd_palette->TakeFocus(); };
@@ -589,16 +665,25 @@ void gameplay_loop()
 	auto input_option = ftxui::InputOption();
 	input_option.on_enter = [&] {
 		Command cmd = parse(input_str, &the_game.agents[0]); // <-- GAaah
-		Action* action = process(cmd);
-		InvalidAction* check_action = dynamic_cast<InvalidAction*>(action);
-		bool valid = (check_action == nullptr);
-		if (valid) {
-			append_to_history(cmd);
-			the_game.evt_dp.dispatch(ActionEvent::ACTION, ActionEvent::create(ActionEvent::ACTION, action));
+		Result res = validate(cmd);
+		if (res.status != 0) {
+			append_to_history(res.message);
 		}
 		else {
-			append_to_history(check_action->msg());
+			Action* action = process(cmd);
+			// CJJ: vestigial!! TODO: update or refactor this section...
+			InvalidAction* check_action = dynamic_cast<InvalidAction*>(action);
+			bool valid = (check_action == nullptr);
+			if (valid) {
+				append_to_history(cmd);
+				the_game.evt_dp.dispatch(ActionEvent::ACTION, ActionEvent::create(ActionEvent::ACTION, action));
+				build_player_cmd_tree();
+			}
+			else {
+				append_to_history(check_action->msg());
+			}
 		}
+		
 		input_str = "";
 	};
 	input_command = ftxui::Input(&input_str, "_", input_option);

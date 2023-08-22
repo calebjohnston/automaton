@@ -39,6 +39,7 @@
 		3C7CD8C42A91BAAC004525F2 /* game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = game.cpp; path = src/game.cpp; sourceTree = "<group>"; };
 		3C7CD8C62A91BC4E004525F2 /* model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = model.cpp; path = src/model.cpp; sourceTree = "<group>"; };
 		3C7CD8C82A91BCF4004525F2 /* model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = model.h; path = include/model.h; sourceTree = "<group>"; };
+		3C7CD8C92A92F0B9004525F2 /* tree.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = tree.hpp; path = include/tree.hpp; sourceTree = "<group>"; };
 		3C8F0B742A85D6C80006AAD0 /* AnimatedText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AnimatedText.cpp; path = src/AnimatedText.cpp; sourceTree = "<group>"; };
 		3C91704B2A88726900BA0885 /* AnimatedBackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AnimatedBackground.cpp; path = src/AnimatedBackground.cpp; sourceTree = "<group>"; };
 		3CA95A8E27DD23440015AB3C /* data.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = data.h; path = include/data.h; sourceTree = "<group>"; };
@@ -132,6 +133,7 @@
 				3C43743E2A744B78009C7263 /* node.h */,
 				3CBE201527D7A73000529C38 /* program.h */,
 				3CA95A9627DD53460015AB3C /* table.hpp */,
+				3C7CD8C92A92F0B9004525F2 /* tree.hpp */,
 			);
 			name = Headers;
 			sourceTree = "<group>";

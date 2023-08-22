@@ -10,22 +10,22 @@
 
 #include "model.h"
 #include "game.h"
+#include "tree.hpp"
 
 namespace Auto {
 
-ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::string)> submit)
+ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::string)> submit, TreeNode* node)
 {
 	class Impl : public ftxui::ComponentBase {
 	public:
-		Impl(ftxui::StringRef cmd, std::function<void(std::string)> on_submit)
-		: cmd_(cmd), on_submit_(std::move(on_submit))
+		Impl(ftxui::StringRef cmd, std::function<void(std::string)> on_submit, TreeNode* node)
+		: cmd_(cmd), on_submit_(std::move(on_submit)), node_(node)
 		{
 			using namespace ftxui;
 			
 			depth = 0;
 			
-//			Agent* player = &the_game.agents[0];
-//			program_names(player->kernel);
+			commands = node_->str_children();
 			
 			command = "";
 			function = "";
@@ -36,37 +36,28 @@ ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::st
 			command_focus = 0;
 			function_focus = 0;
 			argument_focus = 0;
-			commands = {
-				"ps", "fs", "dev", "net", "conn", "msg"
-			};
-			arguments = {
-				"whatever", "dude"
-			};
-			ps_functions = { "list", "info", "install", "uninstall" };
-			fs_functions = { "list", "info", "copy", "delete" };
-			dev_functions = { "list", "info", "config", "restore" };
-			net_functions = { "scan", "whois", "route" };
-			conn_functions = { "wintermute", "case", "armitage" };
-			msg_functions = { "ping", "xfer", "cfg", "simplex", "inf" };
-			functions = {
-				ps_functions, fs_functions, dev_functions, net_functions, conn_functions, msg_functions
-			};
-			fn_options = functions[0];
 			
 			// Depth = 0
 			MenuOption menu_0_option;
 			menu_0_selection = [&] {
 				command = commands[command_index];
-				fn_options = functions[command_index];
+				auto cmd_node = node_->child_for_index(command_index);
+				functions = cmd_node->str_children();
 				
 				function_focus = argument_focus = 0;
 				function_index = argument_index = 0;
 				function = argument = "";
 				cmd_ = command;
 				
-				depth = 1;
+				if (functions.empty()) {
+					depth = 0;
+					on_submit_(command);
+				} else {
+					depth = 1;
+					cmd_ = command;
+				}
 				
-				BuildDependentMenus();
+				depth = 1;
 			};
 			menu_0_option.on_select = menu_0_selection;
 			menu_0_option.focused_entry = &command_focus;
@@ -77,24 +68,19 @@ ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::st
 				});
 			});
 			
-			BuildDependentMenus();
-		}
-		
-		void BuildDependentMenus() {
-			using namespace ftxui;
-			
-			DetachAllChildren();
-			
 			// Depth = 1
 			MenuOption menu_1_option;
 			menu_1_selection = [&] {
-				function = fn_options[function_index];
+				function = functions[function_index];
+				auto cmd_node = node_->child_for_index(command_index);
+				auto fn_node = cmd_node->child_for_index(function_index);
+				arguments = fn_node->str_children();
 				
 				argument_focus = 0;
 				argument_index = 0;
 				argument = "";
 				
-				if (4 == command_index) {
+				if (arguments.empty()) {
 					depth = 0;
 					on_submit_(command + " " + function);
 				} else {
@@ -104,7 +90,7 @@ ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::st
 			};
 			menu_1_option.on_select = menu_1_selection;
 			menu_1_option.focused_entry = &function_focus;
-			depth_1_container = Menu(&functions[command_index], &function_index, menu_1_option);
+			depth_1_container = Menu(&functions, &function_index, menu_1_option);
 			depth_1_renderer = Renderer(depth_1_container, [&] {
 				return hbox({
 					vbox(depth_1_container->Render()) | size(WIDTH, GREATER_THAN, 15),
@@ -221,6 +207,8 @@ ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::st
 	private:
 		ftxui::StringRef cmd_;
 		std::function<void(std::string)> on_submit_;
+		TreeNode* node_;
+		
 		std::function<void()> menu_0_selection;
 		std::function<void()> menu_1_selection;
 		std::function<void()> menu_2_selection;
@@ -239,14 +227,7 @@ ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::st
 		
 		std::vector<std::string> commands;
 		std::vector<std::string> arguments;
-		std::vector<std::string> ps_functions;
-		std::vector<std::string> fs_functions;
-		std::vector<std::string> dev_functions;
-		std::vector<std::string> net_functions;
-		std::vector<std::string> conn_functions;
-		std::vector<std::string> msg_functions;
-		std::vector<std::vector<std::string>> functions;
-		std::vector<std::string>& fn_options = ps_functions;
+		std::vector<std::string> functions;
 		
 		ftxui::Component main_container;
 		ftxui::Component depth_0_renderer;
@@ -257,7 +238,7 @@ ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::st
 		ftxui::Component depth_2_container;
 	};
 	
-	return ftxui::Make<Impl>(std::move(cmd), std::move(submit));
+	return ftxui::Make<Impl>(std::move(cmd), std::move(submit), node);
 }
 
 }	// namespace Auto

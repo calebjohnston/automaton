@@ -96,8 +96,8 @@ std::vector<std::string> device_names(const Kernel& kernel)
 	results.push_back(kernel.computer.memory.name);
 	results.push_back(kernel.computer.processor.name);
 	results.push_back(kernel.computer.uplink.name);
-	results.push_back(kernel.computer.battery.name);
-	results.push_back(kernel.computer.power_unit.name);
+	if (!kernel.computer.battery.name.empty()) results.push_back(kernel.computer.battery.name);
+	if (!kernel.computer.power_unit.name.empty()) results.push_back(kernel.computer.power_unit.name);
 	return results;
 }
 
@@ -230,6 +230,20 @@ Result connect_to(Kernel& kernel, Kernel& target)
 	else res = { 1, "maximum number of simultaneous connections reached" };
 	
 	return res;
+}
+
+Result uninstall_program(Kernel& kernel, const std::string& name)
+{
+	auto iter = std::remove_if(std::begin(kernel.programs), std::end(kernel.programs), [&](Software& program){
+		return program.name == name;
+	});
+	
+	if (iter == std::end(kernel.programs))
+		return { -1, "no program found with name `" + name + "`" };
+	
+	kernel.programs.erase(iter);
+	
+	return { 0, "Success" };
 }
 
 Result uninstall_program(Kernel& kernel, unsigned index)
