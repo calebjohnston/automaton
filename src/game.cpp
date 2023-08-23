@@ -207,6 +207,25 @@ Result validate(Command& cmd)
 	else return { -1, "Too many arguments for function: " + cmd.arguments[0] };
 }
 
+Result autocomplete(Command& cmd)
+{
+	// validate command str
+	auto command = the_game.player_cmd_tree->child_for_partial_str(cmd.function);
+	if (nullptr == command) return { -1, "no partial match found for command: " + cmd.function };
+	else if (cmd.arguments.empty()) return { 0, command->data() };
+	
+	// validate function str
+	auto function = command->child_for_partial_str(cmd.arguments[0]);
+	if (nullptr == function) return { -1, "no partial match found for function: " + cmd.arguments[0] };
+	else if (cmd.arguments.size() < 2) return { 0, command->data() + " " + function->data() };
+	
+	// validate argument str
+	auto argument = function->child_for_partial_str(cmd.arguments[1]);
+	if (nullptr == argument) return { -1, "no partial match found for argument: " + cmd.arguments[1] };
+	else if (cmd.arguments.size() < 3) return { 0, command->data() + " " + function->data() + " " + argument->data() };
+	else return { -1, "No autocompletion available" };
+}
+
 #pragma game lifecycle operations
 
 Command decide(Agent& agent)
@@ -584,6 +603,7 @@ void gameplay_loop()
 	});
 	
 	std::string input_str;
+	int input_index;
 	ftxui::Component input_command;
 	auto submit_fn = [&](std::string cmd_str){
 		input_str = cmd_str;
@@ -665,6 +685,7 @@ void gameplay_loop()
 	});
 	
 	auto input_option = ftxui::InputOption();
+	input_option.cursor_position = &input_index;
 	input_option.on_enter = [&] {
 		Command cmd = parse(input_str, &the_game.agents[0]); // <-- GAaah
 		Result res = validate(cmd);
@@ -720,7 +741,11 @@ void gameplay_loop()
 	
 	renderer |= CatchEvent([&](ftxui::Event event) {
 		if (event == ftxui::Event::Tab) {
-			input_str = "TAB";
+			Command cmd = parse(input_str, &the_game.agents[0]);
+			Result res = autocomplete(cmd);
+			if (0 != res.status) return false;
+			input_str = res.message;
+			input_index = static_cast<int>(input_str.size());
 			return true;
 		}
 		else if (event == ftxui::Event::Escape) {
@@ -734,13 +759,5 @@ void gameplay_loop()
 	
 	gui.join();
 };
-
-
-/**
- NEXT STEPS:
-	- Move the command input component to the CommandPalette
-	- update the battle system so that only installed programs can be used	
-	- update the battle system to incorporate installed daemons
- */
 
 }	// namespace Auto

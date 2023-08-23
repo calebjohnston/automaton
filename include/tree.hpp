@@ -46,6 +46,12 @@ public:
 		});
 		return iter == std::end(_children) ? nullptr : *iter;
 	}
+	TreeNode* child_for_partial_str(const std::string& str) {
+		auto iter = std::find_if(std::begin(_children), std::end(_children), [&](const TreeNode* node){
+			return node->data().find(str) == 0;
+		});
+		return iter == std::end(_children) ? nullptr : *iter;
+	}
 	TreeNode* child_for_index(const int index) {
 		if (index < 0 || index >= _children.size()) return nullptr;
 		return _children[index];

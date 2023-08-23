@@ -136,7 +136,7 @@ ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::st
 						})) | clear_under,
 						filler() | xflex_grow,
 					}),
-					filler() | size(HEIGHT, EQUAL, 1)
+					text(*cmd_)
 				});
 			}
 			else  if (depth == 1) {
@@ -150,7 +150,7 @@ ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::st
 						})) | clear_under,
 						filler() | xflex_grow
 					}),
-					filler() | size(HEIGHT, EQUAL, 1)
+					text(*cmd_)
 				});
 			}
 			else if (depth == 2) {
@@ -166,7 +166,7 @@ ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::st
 						})) | clear_under,
 						filler() | xflex_grow
 					}),
-					filler() | size(HEIGHT, EQUAL, 1)
+					text(*cmd_)
 				});
 			}
 			else {
