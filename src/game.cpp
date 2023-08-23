@@ -374,6 +374,7 @@ void build_player_cmd_tree()
 	
 	auto quit = new TreeNode("exit");
 	
+	the_game.player_cmd_tree->clear();
 	the_game.player_cmd_tree->add_child(ps);
 	the_game.player_cmd_tree->add_child(fs);
 	the_game.player_cmd_tree->add_child(dev);
@@ -568,6 +569,7 @@ void gameplay_loop()
 					for (Action* axn_ptr : the_game.actions) {
 						ResultSet results = execute(*axn_ptr);
 						the_game.axn_results = results[0].message;
+						build_player_cmd_tree();
 						
 						screen.Post(ftxui::Event::Custom);	// <!-- triggers a re-render
 						
@@ -677,7 +679,6 @@ void gameplay_loop()
 			if (valid) {
 				append_to_history(cmd);
 				the_game.evt_dp.dispatch(ActionEvent::ACTION, ActionEvent::create(ActionEvent::ACTION, action));
-				build_player_cmd_tree();
 			}
 			else {
 				append_to_history(check_action->msg());

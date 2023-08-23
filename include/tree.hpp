@@ -51,6 +51,26 @@ public:
 		return _children[index];
 	}
 	
+	
+	bool remove_child_str(const std::string& str) {
+		auto iter = std::find_if(std::begin(_children), std::end(_children), [&](const TreeNode* node){
+			return node->data() == str;
+		});
+		if (iter == std::end(_children)) return false;
+		
+		_children.erase(iter);
+		return true;
+	}
+	bool remove_child(const int index) {
+		if (index < 0 || index >= _children.size()) return false;
+		_children.erase(_children.begin()+index);
+		return true;
+	}
+	
+	void clear() {
+		_children.clear();
+	}
+	
 private:
 	std::string	_data;
 	TreeNode* _parent;
