@@ -16,6 +16,9 @@ set( tests_SRCS
   ${PROJECT_SOURCE_DIR}/src/Events.cpp
 )
 
+set(gtest_force_shared_crt ON CACHE INTERNAL "")
+enable_testing()
+
 # Add GoogleTest dependency
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/googletest
                  ${PROJECT_SOURCE_DIR}/lib/googletest/build
@@ -45,7 +48,10 @@ add_definitions(
 #--------------------------------------------------------------------------------
 add_executable( automaton_tests ${tests_SRCS} )
 
+# set_property(TARGET automaton_tests PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
+# set_property(TARGET gtest_main PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")
+
 #--------------------------------------------------------------------------------
 # Associate linker dependencies to targets.
 #--------------------------------------------------------------------------------
-target_link_libraries ( automaton_tests gtest_main )
+target_link_libraries( automaton_tests gtest_main )

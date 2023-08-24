@@ -5,6 +5,7 @@
 //  Copyright © 2023 Caleb Johnston. All rights reserved.
 //
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
