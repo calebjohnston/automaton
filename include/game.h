@@ -49,15 +49,13 @@ public:
 	virtual ResultSet execute() { return {}; }
 };
 
-class ActionProcessor;
-
 struct GameState {
 	int current_agent_idx;
 	std::vector<Agent> agents;
 	TreeNode* player_cmd_tree;
+	std::map<std::string,std::function<Result(Command&)>> cmd_api;
+	bool cmd_api_bit;
 	
-	ActionProcessor* action_proc;
-	EventDispatchMap evt_dp;
 	std::vector<Action*> actions;
 	std::deque<std::string> cmd_history;
 	std::string axn_results;
@@ -84,10 +82,12 @@ Command parse(std::string user_input, Agent* user_agent);
 
 Command decide(Agent& agent);
 Action* process(Command& cmd);
+ResultSet process_api(Command& cmd);
 ResultSet execute(Action& action);
 
 #pragma the game itself
 
+void build_controller_api();
 void build_player_cmd_tree();
 void load_gamestate();
 bool is_game_over();

@@ -303,6 +303,24 @@ Action* process(Command& cmd)
 	return new InvalidAction(cmd, "unrecognized command: `" + cmd.function + "`");
 }
 
+ResultSet process_api(Command& cmd)
+{
+	// TODO: There is a problem with this parsing logic. Sometimes the strings from arguments will be named symbols and sometimes they will be function strings
+	std::string api_call;
+	if (cmd.arguments.size() == 2)
+		api_call = cmd.function + " " + cmd.arguments[0];
+	else if (cmd.arguments.size() == 1)
+		api_call = cmd.function + " " + cmd.arguments[0];
+	else if (cmd.arguments.empty())
+		api_call = cmd.function;
+	
+	if (auto search = the_game.cmd_api.find(api_call); search != the_game.cmd_api.end()) {
+		return { search->second(cmd) };
+	}
+	
+	return { { -1, "no matching API call for: " + api_call } };
+}
+
 ResultSet execute(Action& action)
 {
 	return action.execute();
@@ -333,22 +351,31 @@ private:
 	Action* _action;
 };
 
-class ActionProcessor {
-public:
-	void handler(const EventRef event) {
-		auto action_evt = std::dynamic_pointer_cast<ActionEvent>(event);
-		if (action_evt) {
-			_action = action_evt->getAction();
-			the_game.actions.push_back(_action);
-		}
-	}
-	
-private:
-	Action* _action;
-};
+Result test_api_1(Command& cmd)
+{
+	return { 0, "ps list Success" };
+}
 
-std::hash<std::string> str_hash;
-const EventId ActionEvent::ACTION = str_hash( "ActionProcessorEvent" );
+Result test_api_2(Command& cmd)
+{
+	return { 0, "ps info Success" };
+}
+
+Result test_api_3(Command& cmd)
+{
+	std::exit(EXIT_SUCCESS);
+	return { 0, "doesn't matter" };
+}
+
+void build_controller_api()
+{
+	// TODO: this works, except it also introduces an implicit coupling between the_game.player_cmd_tree and the_game.cmd_api -- mitigate!
+	the_game.cmd_api = {
+		{ "ps list", test_api_1 },
+		{ "ps info", test_api_2 },
+		{ "exit", test_api_3 }
+	};
+}
 
 void build_player_cmd_tree()
 {
@@ -406,6 +433,7 @@ void load_gamestate()
 {
 	the_game.current_agent_idx = 0;
 	the_game.mode_index = 0;
+	the_game.cmd_api_bit = false;
 	
 	// devices ...
 	Auto::Device dev_disk_hitachi =	{ "Hitachi 500", Component::Disk, 100, 16 };
@@ -468,11 +496,6 @@ void load_gamestate()
 	the_game.agents.push_back(ai_player);
 	
 	
-	// connect game threads with observer pattern
-	using namespace std::placeholders;
-	the_game.action_proc = new ActionProcessor();
-	the_game.evt_dp.appendListener(ActionEvent::ACTION, std::bind(&ActionProcessor::handler, the_game.action_proc, _1));
-	
 	Agent* agent_ptr = &the_game.agents.back();
 	the_game.ai_cmds.push_back(parse("ps", agent_ptr));
 	the_game.ai_cmds.push_back(parse("fs", agent_ptr));
@@ -495,6 +518,7 @@ void load_gamestate()
 	
 	the_game.player_cmd_tree = new TreeNode("commands");
 	build_player_cmd_tree();
+	build_controller_api();
 };
 
 
@@ -580,11 +604,12 @@ void gameplay_loop()
 					ResultSet results = execute(*action);
 				}
 				else if (agent.type == Class::Player) {
-					while (the_game.actions.empty()) {
+					while (!the_game.cmd_api_bit) {
 						using namespace std::chrono_literals;
 						std::this_thread::sleep_for(0.1s);
 //						the_game.msgr->update();
 					}
+					/*
 					for (Action* axn_ptr : the_game.actions) {
 						ResultSet results = execute(*axn_ptr);
 						the_game.axn_results = results[0].message;
@@ -595,6 +620,9 @@ void gameplay_loop()
 						// log results to file?
 					}
 					the_game.actions.clear();
+					 */
+					screen.Post(ftxui::Event::Custom);
+					the_game.cmd_api_bit = false;
 				}
 			}
 			game_over = is_game_over();
@@ -689,6 +717,16 @@ void gameplay_loop()
 	input_option.on_enter = [&] {
 		Command cmd = parse(input_str, &the_game.agents[0]); // <-- GAaah
 		Result res = validate(cmd);
+		if (res.status == 0) {
+			ResultSet resy = process_api(cmd);
+			if (!resy.empty() && resy.at(0).status != 0)
+				append_to_history(resy.at(0).message);
+			else
+				append_to_history(cmd);
+			the_game.cmd_api_bit = true;
+		}
+		else append_to_history(res.message);
+		/*
 		if (res.status != 0) {
 			append_to_history(res.message);
 		}
@@ -699,12 +737,13 @@ void gameplay_loop()
 			bool valid = (check_action == nullptr);
 			if (valid) {
 				append_to_history(cmd);
-				the_game.evt_dp.dispatch(ActionEvent::ACTION, ActionEvent::create(ActionEvent::ACTION, action));
+				the_game.actions.push_back(action);
 			}
 			else {
 				append_to_history(check_action->msg());
 			}
 		}
+		 */
 		
 		input_str = "";
 	};
