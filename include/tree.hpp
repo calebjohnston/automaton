@@ -79,9 +79,8 @@ public:
 	
 private:
 	std::string	_data;
-	TreeNode* _parent;
 	std::vector<TreeNode*> _children;
-	std::vector<std::string> _children_str;
+	std::vector<std::string> _children_str; //<!-- TODO: move to the dynamic tree
 };
 
 }	// namespace Auto
