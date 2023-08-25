@@ -34,7 +34,7 @@
 namespace Auto {
 
 #pragma game model state
-
+/*
 class InvalidAction : public Action {
 public:
 	InvalidAction(Command cmd, std::string msg) : _cmd(cmd), _message(msg) {}
@@ -143,7 +143,7 @@ private:
 	Agent* _target;
 	int _idx;
 };
-
+*/
 
 
 #pragma utility functions
@@ -190,40 +190,12 @@ Command parse(std::string user_input, Agent* user_agent)
 
 Result validate(Command& cmd)
 {
-	// validate command str
-	auto command = the_game.player_cmd_tree->child_for_str(cmd.function);
-	if (nullptr == command) return { -1, "invalid command: " + cmd.function };
-	else if (cmd.arguments.empty()) return { 0, "Success" };
-	
-	// validate function str
-	auto function = command->child_for_str(cmd.arguments[0]);
-	if (nullptr == function) return { -1, "invalid function for command: " + cmd.arguments[0] };
-	else if (cmd.arguments.size() < 2) return { 0, "Success" };
-	
-	// validate argument str
-	auto argument = function->child_for_str(cmd.arguments[1]);
-	if (nullptr == argument) return { -1, "invalid argument for function: " + cmd.arguments[1] };
-	else if (cmd.arguments.size() < 3) return { 0, "Success" };
-	else return { -1, "Too many arguments for function: " + cmd.arguments[0] };
+	return the_game.cmd_api->validate(cmd);
 }
 
 Result autocomplete(Command& cmd)
 {
-	// validate command str
-	auto command = the_game.player_cmd_tree->child_for_partial_str(cmd.function);
-	if (nullptr == command) return { -1, "no partial match found for command: " + cmd.function };
-	else if (cmd.arguments.empty()) return { 0, command->data() };
-	
-	// validate function str
-	auto function = command->child_for_partial_str(cmd.arguments[0]);
-	if (nullptr == function) return { -1, "no partial match found for function: " + cmd.arguments[0] };
-	else if (cmd.arguments.size() < 2) return { 0, command->data() + " " + function->data() };
-	
-	// validate argument str
-	auto argument = function->child_for_partial_str(cmd.arguments[1]);
-	if (nullptr == argument) return { -1, "no partial match found for argument: " + cmd.arguments[1] };
-	else if (cmd.arguments.size() < 3) return { 0, command->data() + " " + function->data() + " " + argument->data() };
-	else return { -1, "No autocompletion available" };
+	return the_game.cmd_gui->autocomplete(cmd);
 }
 
 #pragma game lifecycle operations
@@ -248,6 +220,7 @@ Command decide(Agent& agent)
 	return cmd;
 };
 
+/*
 Action* process(Command& cmd)
 {
 	// TODO: right now all arguments must be indices. But they can also be names
@@ -302,63 +275,28 @@ Action* process(Command& cmd)
 	
 	return new InvalidAction(cmd, "unrecognized command: `" + cmd.function + "`");
 }
+*/
 
 ResultSet process_api(Command& cmd)
 {
-	// TODO: There is a problem with this parsing logic. Sometimes the strings from arguments will be named symbols and sometimes they will be function strings
-	std::string api_call;
-	if (cmd.arguments.size() == 2)
-		api_call = cmd.function + " " + cmd.arguments[0];
-	else if (cmd.arguments.size() == 1)
-		api_call = cmd.function + " " + cmd.arguments[0];
-	else if (cmd.arguments.empty())
-		api_call = cmd.function;
-	
-	if (auto search = the_game.cmd_api.find(api_call); search != the_game.cmd_api.end()) {
-		return { search->second(cmd) };
-	}
-	
-	return { { -1, "no matching API call for: " + api_call } };
+	return { the_game.cmd_api->execute(cmd) };
 }
 
-ResultSet execute(Action& action)
-{
-	return action.execute();
-};
+//ResultSet execute(Action& action)
+//{
+//	return action.execute();
+//};
 
 #pragma the game itself
 
-typedef std::shared_ptr<class ActionEvent> ActionEventRef;
-
-class ActionEvent : public Event {
-public:
-	static const EventId ACTION;
-	
-public:
-	static ActionEventRef create( const EventId id, Action* action ) {
-		return ActionEventRef( new ActionEvent(id, action) );
-	}
-	
-	virtual ~ActionEvent() {};
-	
-	Action* getAction() const { return _action; }
-	
-protected:
-	explicit ActionEvent( const EventId id, Action* action )
-		: Event(id, 0), _action(action) {}
-	
-private:
-	Action* _action;
-};
-
 Result test_api_1(Command& cmd)
 {
-	return { 0, "ps list Success" };
+	return list_programs(cmd.target->kernel).front();
 }
 
 Result test_api_2(Command& cmd)
 {
-	return { 0, "ps info Success" };
+	return { -1, "NOT IMPLEMENTED" };
 }
 
 Result test_api_3(Command& cmd)
@@ -367,66 +305,125 @@ Result test_api_3(Command& cmd)
 	return { 0, "doesn't matter" };
 }
 
-void build_controller_api()
+Result test_api_4(Command& cmd)
 {
-	// TODO: this works, except it also introduces an implicit coupling between the_game.player_cmd_tree and the_game.cmd_api -- mitigate!
-	the_game.cmd_api = {
-		{ "ps list", test_api_1 },
-		{ "ps info", test_api_2 },
-		{ "exit", test_api_3 }
-	};
+	return uninstall_program(cmd.target->kernel, cmd.arguments.back());
 }
 
-void build_player_cmd_tree()
+Result api_not_implemented(Command& cmd)
 {
-	// TODO: leaks memory like a sieve...
+	return { -1, "NOT IMPLEMENTED" };
+}
+
+
+void build_cmd_api()
+{
+	// create the attack API commands...
+	auto msg_ping = branch_node("ping", {
+		leaf_node("@c", api_not_implemented)
+	});
+	auto msg_xfer = branch_node("xfer", {
+		leaf_node("@c", api_not_implemented)
+	});
+	auto msg_cfg = branch_node("cfg", {
+		leaf_node("@c", api_not_implemented)
+	});
+	auto msg_simplex = branch_node("simplex", {
+		leaf_node("@c", api_not_implemented)
+	});
+	auto msg_inf = branch_node("inf", {
+		leaf_node("@c", api_not_implemented)
+	});
+	auto msg = branch_node("msg", {
+		msg_ping,
+		msg_xfer,
+		msg_cfg,
+		msg_simplex,
+		msg_inf
+	});
 	
-	auto programs = program_names(the_game.agents[0].kernel);
-	auto daemons = daemon_names(the_game.agents[0].kernel);
-	auto files = file_names(the_game.agents[0].kernel);
-	auto devices = device_names(the_game.agents[0].kernel);
-	auto connections = connection_names(the_game.agents[0].kernel);
+	// create the networking API commands...
+	auto net_conn = branch_node("conn", {
+		leaf_node("@c", api_not_implemented)
+	});
+	auto net_whois = branch_node("whois", {
+		leaf_node("@c", api_not_implemented)
+	});
+	auto net_route = branch_node("route", {
+		leaf_node("@c", api_not_implemented)
+	});
+	auto net = branch_node("net", {
+		leaf_node("scan", api_not_implemented),
+		net_whois,
+		net_route,
+		net_conn
+	});
 	
-	auto ps = new TreeNode("ps");
-	ps->add_child("list");
-	ps->add_child("info", programs);
-	ps->add_child("install", programs);
-	ps->add_child("uninstall", programs);
+	// create the device config commands...
+	auto dev_info = branch_node("info", {
+		leaf_node("@h", api_not_implemented)
+	});
+	auto dev_config = branch_node("config", {
+		leaf_node("@h", api_not_implemented)
+	});
+	auto dev_restore = branch_node("restore", {
+		leaf_node("@h", api_not_implemented)
+	});
+	auto dev = branch_node("dev", {
+		leaf_node("list", api_not_implemented),
+		dev_info,
+		dev_config,
+		dev_restore
+	});
 	
-	auto fs = new TreeNode("fs");
-	fs->add_child("list");
-	fs->add_child("info", files);
-	fs->add_child("copy", files);
-	fs->add_child("delete", files);
+	// create the filesystem commands...
+	auto fs_info = branch_node("info", {
+		leaf_node("@f", api_not_implemented)
+	});
+	auto fs_delete = branch_node("delete", {
+		leaf_node("@f", api_not_implemented)
+	});
+	auto fs_copy = branch_node("copy", {
+		leaf_node("@f", api_not_implemented)
+	});
+	auto fs = branch_node("fs", {
+		leaf_node("list", api_not_implemented),
+		fs_info,
+		fs_copy,
+		fs_delete
+	});
 	
-	auto dev = new TreeNode("dev");
-	dev->add_child("list");
-	dev->add_child("info", devices);
-	dev->add_child("config", devices);
-	dev->add_child("restore", devices);
+	// create the program commands...
+	auto ps_info = branch_node("info", {
+		leaf_node("@p", test_api_2)
+	});
+	auto ps_uninstall = branch_node("uninstall", {
+		leaf_node("@p", test_api_4)
+	});
+	auto ps_install = branch_node("install", {
+		leaf_node("@p", api_not_implemented)
+	});
+	auto ps = branch_node("ps", {
+		leaf_node("list", test_api_1),
+		ps_info,
+		ps_install,
+		ps_uninstall
+	});
 	
-	auto net = new TreeNode("net");
-	net->add_child("scan");
-	net->add_child("whois", connections);
-	net->add_child("route", connections);
-	net->add_child("conn", connections);
-	
-	auto msg = new TreeNode("msg");
-	msg->add_child("ping", connections);
-	msg->add_child("xfer", connections);
-	msg->add_child("cfg", connections);
-	msg->add_child("simplex", connections);
-	msg->add_child("inf", connections);
-	
-	auto quit = new TreeNode("exit");
-	
-	the_game.player_cmd_tree->clear();
-	the_game.player_cmd_tree->add_child(ps);
-	the_game.player_cmd_tree->add_child(fs);
-	the_game.player_cmd_tree->add_child(dev);
-	the_game.player_cmd_tree->add_child(net);
-	the_game.player_cmd_tree->add_child(msg);
-	the_game.player_cmd_tree->add_child(quit);
+	// root API map
+	the_game.cmd_api = node({
+		ps,
+		fs,
+		dev,
+		net,
+		msg,
+		leaf_node("exit", test_api_3)
+	});
+}
+
+void build_cmd_gui()
+{
+	the_game.cmd_gui = command_tree(the_game.cmd_api, the_game.agents.at(0).kernel, the_game.cmd_gui);
 }
 
 void load_gamestate()
@@ -516,9 +513,8 @@ void load_gamestate()
 							" / ___ / /_/ / /_/ /_/ / / / / / / /_/ / /_/ /_/ / / / /",
 							"/_/  |_\\__,_/\\__/\\____/_/ /_/ /_/\\__,_/\\__/\\____/_/ /_/ "};
 	
-	the_game.player_cmd_tree = new TreeNode("commands");
-	build_player_cmd_tree();
-	build_controller_api();
+	build_cmd_api();
+	build_cmd_gui();
 };
 
 
@@ -600,8 +596,11 @@ void gameplay_loop()
 				if (agent.type != Class::Player) {
 					Command command = decide(agent);
 					append_to_history(command); //<!-- we just assume that the computer never makes an ill-formed command
-					Action* action = process(command);
-					ResultSet results = execute(*action);
+					ResultSet resy = process_api(command);
+					if (!resy.empty() && resy.at(0).status != 0)
+						append_to_history(resy.at(0).message);
+					else
+						append_to_history(command);
 				}
 				else if (agent.type == Class::Player) {
 					while (!the_game.cmd_api_bit) {
@@ -639,7 +638,7 @@ void gameplay_loop()
 		the_game.show_cmd_menu = !the_game.show_cmd_menu;
 		input_command->TakeFocus();
 	};
-	auto cmd_palette = CommandPalette(input_str, submit_fn, the_game.player_cmd_tree);
+	auto cmd_palette = CommandPalette(input_str, submit_fn, the_game.cmd_gui);
 	
 	bool detail = false;
 	auto action = [&] { the_game.show_cmd_menu = !the_game.show_cmd_menu; cmd_palette->TakeFocus(); };
@@ -719,6 +718,7 @@ void gameplay_loop()
 		Result res = validate(cmd);
 		if (res.status == 0) {
 			ResultSet resy = process_api(cmd);
+			build_cmd_gui();
 			if (!resy.empty() && resy.at(0).status != 0)
 				append_to_history(resy.at(0).message);
 			else

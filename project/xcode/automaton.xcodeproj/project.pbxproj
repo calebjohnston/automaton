@@ -26,6 +26,7 @@
 		3CCAB8C329EF885B007F872E /* computer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CCAB8BE29EF885B007F872E /* computer.cpp */; };
 		3CCAB8C429EF885B007F872E /* node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CCAB8BF29EF885B007F872E /* node.cpp */; };
 		3CCAB8C529EF885B007F872E /* program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CCAB8C029EF885B007F872E /* program.cpp */; };
+		3CCC70532A985A3100597E00 /* tree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CCC70522A985A3100597E00 /* tree.cpp */; };
 		3CD0BE422A83F84D00FD4F40 /* CompoundButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CD0BE412A83F84D00FD4F40 /* CompoundButton.cpp */; };
 /* End PBXBuildFile section */
 
@@ -39,7 +40,6 @@
 		3C7CD8C42A91BAAC004525F2 /* game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = game.cpp; path = src/game.cpp; sourceTree = "<group>"; };
 		3C7CD8C62A91BC4E004525F2 /* model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = model.cpp; path = src/model.cpp; sourceTree = "<group>"; };
 		3C7CD8C82A91BCF4004525F2 /* model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = model.h; path = include/model.h; sourceTree = "<group>"; };
-		3C7CD8C92A92F0B9004525F2 /* tree.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = tree.hpp; path = include/tree.hpp; sourceTree = "<group>"; };
 		3C8F0B742A85D6C80006AAD0 /* AnimatedText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AnimatedText.cpp; path = src/AnimatedText.cpp; sourceTree = "<group>"; };
 		3C91704B2A88726900BA0885 /* AnimatedBackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AnimatedBackground.cpp; path = src/AnimatedBackground.cpp; sourceTree = "<group>"; };
 		3CA95A8E27DD23440015AB3C /* data.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = data.h; path = include/data.h; sourceTree = "<group>"; };
@@ -63,6 +63,8 @@
 		3CCAB8BE29EF885B007F872E /* computer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = computer.cpp; path = src/computer.cpp; sourceTree = "<group>"; };
 		3CCAB8BF29EF885B007F872E /* node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = node.cpp; path = src/node.cpp; sourceTree = "<group>"; };
 		3CCAB8C029EF885B007F872E /* program.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = program.cpp; path = src/program.cpp; sourceTree = "<group>"; };
+		3CCC70512A985A2A00597E00 /* tree.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = tree.hpp; path = include/tree.hpp; sourceTree = "<group>"; };
+		3CCC70522A985A3100597E00 /* tree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tree.cpp; path = src/tree.cpp; sourceTree = "<group>"; };
 		3CD0BE412A83F84D00FD4F40 /* CompoundButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CompoundButton.cpp; path = src/CompoundButton.cpp; sourceTree = "<group>"; };
 		E5D4017F8C2E497BA365ACC7 /* automaton */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = automaton; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC2516114ACB421CA44AF10F /* main.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
@@ -112,6 +114,7 @@
 				3CA95A9827DD77380015AB3C /* network.cpp */,
 				FC2516114ACB421CA44AF10F /* main.cpp */,
 				3C7CD8C62A91BC4E004525F2 /* model.cpp */,
+				3CCC70522A985A3100597E00 /* tree.cpp */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -133,7 +136,7 @@
 				3C43743E2A744B78009C7263 /* node.h */,
 				3CBE201527D7A73000529C38 /* program.h */,
 				3CA95A9627DD53460015AB3C /* table.hpp */,
-				3C7CD8C92A92F0B9004525F2 /* tree.hpp */,
+				3CCC70512A985A2A00597E00 /* tree.hpp */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -181,6 +184,7 @@
 		7D4EC3332636446BBED33215 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				DefaultBuildSystemTypeForWorkspace = Latest;
 				LastUpgradeCheck = 1230;
 			};
 			buildConfigurationList = 2BACB3F1D6804D69A43B8306 /* Build configuration list for PBXProject "automaton" */;
@@ -216,6 +220,7 @@
 				3CBE1FED27D7945100529C38 /* main.cpp in Sources */,
 				3CCAB8C329EF885B007F872E /* computer.cpp in Sources */,
 				3CA95A9C27DD77390015AB3C /* agent.cpp in Sources */,
+				3CCC70532A985A3100597E00 /* tree.cpp in Sources */,
 				3C7CD8C22A919F2E004525F2 /* Layer.cpp in Sources */,
 				3C7CD8BE2A911DFD004525F2 /* CommandPalette.cpp in Sources */,
 				3C8F0B752A85D6C80006AAD0 /* AnimatedText.cpp in Sources */,

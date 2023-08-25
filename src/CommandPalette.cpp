@@ -14,11 +14,11 @@
 
 namespace Auto {
 
-ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::string)> submit, TreeNode* node)
+ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::string)> submit, CommandNode node)
 {
 	class Impl : public ftxui::ComponentBase {
 	public:
-		Impl(ftxui::StringRef cmd, std::function<void(std::string)> on_submit, TreeNode* node)
+		Impl(ftxui::StringRef cmd, std::function<void(std::string)> on_submit, CommandNode node)
 		: cmd_(cmd), on_submit_(std::move(on_submit)), node_(node)
 		{
 			using namespace ftxui;
@@ -207,7 +207,7 @@ ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::st
 	private:
 		ftxui::StringRef cmd_;
 		std::function<void(std::string)> on_submit_;
-		TreeNode* node_;
+		CommandNode node_;
 		
 		std::function<void()> menu_0_selection;
 		std::function<void()> menu_1_selection;

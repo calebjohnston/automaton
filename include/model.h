@@ -199,6 +199,13 @@ struct Result {
 
 typedef std::vector<Result> ResultSet;
 
+class Command {
+public:
+	std::string function;
+	Agent* target;
+	std::vector<std::string> arguments;
+};
+
 #pragma utility functions
 
 int computer_power_draw(Computer& computer);
