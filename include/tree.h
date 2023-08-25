@@ -1,17 +1,21 @@
 //
-//  tree.hpp
+//  tree.h
 //
-//  Created by Caleb Johnston on 8/21/2023.
+//  Created by Caleb Johnston on 8/23/2023.
 //  Copyright © 2023 Caleb Johnston. All rights reserved.
 //
 
 #pragma once
 
+#include <functional>
+#include <memory>
 #include <string>
 #include <vector>
 
-namespace Auto {
+#include "game.h"
 
+namespace Auto {
+/*
 class TreeNode {
 public:
 	TreeNode(const std::string& str) : _data(str) {}
@@ -81,6 +85,71 @@ private:
 	std::string	_data;
 	std::vector<TreeNode*> _children;
 	std::vector<std::string> _children_str; //<!-- TODO: move to the dynamic tree
+};
+*/
+
+class NodeBase;
+using Node = std::shared_ptr<NodeBase>;
+using Nodes = std::vector<Node>;
+
+class NodeBase {
+public:
+	NodeBase() = default;
+	NodeBase(Nodes children) : children_(std::move(children)) {};
+	NodeBase(const NodeBase&) = delete;
+	NodeBase(const NodeBase&&) = delete;
+	NodeBase& operator=(const NodeBase&) = delete;
+	NodeBase& operator=(const NodeBase&&) = delete;
+	virtual ~NodeBase() = default;
+	
+protected:
+	Nodes children_;
+};
+
+class BranchNode : public NodeBase {
+public:
+	explicit BranchNode(std::string& token, Nodes children) : NodeBase(std::move(children)), token_(token) {}
+	
+protected:
+	std::string	token_;
+};
+
+class LeafNode : public NodeBase {
+public:
+	explicit LeafNode(std::vector<std::string>& args, std::function<Result(Command&)> api)
+	: NodeBase(), args_(args), api_(api) {}
+	
+private:
+	std::vector<std::string> args_;
+	std::function<Result(Command&)> api_;
+};
+
+//using CommandNode = std::shared_ptr<CommandNodeBase>;
+//using CommandNodes = std::vector<CommandNode>;
+
+class CommandNode : public BranchNode {
+public:
+	explicit CommandNode(std::string& token, Nodes children) : BranchNode(token, std::move(children)) {
+		for (const Node& child : children_) children_.push_back(child->token_);
+	}
+	
+	const std::vector<std::string>& str_children() const { return children_str_; }
+	
+	CommandNode child_for_str(const std::string& str) const {
+		auto iter = std::find_if(std::begin(children_), std::end(children_), [&](const CommandNode node){
+			return node->token_ == str;
+		});
+		return iter == std::end(children_) ? nullptr : *iter;
+	}
+	CommandNode child_for_partial_str(const std::string& str) const {
+		auto iter = std::find_if(std::begin(children_), std::end(children_), [&](const CommandNode node){
+			return node->token_.find(str) == 0;
+		});
+		return iter == std::end(children_) ? nullptr : *iter;
+	}
+
+private:
+	std::vector<std::string> children_str_;
 };
 
 }	// namespace Auto
