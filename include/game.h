@@ -23,6 +23,8 @@
 
 namespace Auto {
 
+//class TreeNode;
+
 ftxui::Component CompoundButton(ftxui::ConstStringRef label,
 								std::function<void()> on_click,
 								ftxui::Ref<ftxui::ButtonOption> = ftxui::ButtonOption::Simple());
@@ -32,31 +34,28 @@ ftxui::Component AnimatedText(ftxui::ConstStringRef label,
 
 ftxui::Component AnimatedBackground(ftxui::Ref<ftxui::ButtonOption> = ftxui::ButtonOption::Animated());
 
-ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::string)> submit, TreeNode* node);
+ftxui::Component CommandPalette(ftxui::StringRef cmd, std::function<void(std::string)> submit, CommandNode node);
 
 ftxui::ComponentDecorator Layer(ftxui::Component layer, const bool* show_layer);
 
 #pragma game model state
 
-struct Command {
-	std::string function;
-	Agent* target;
-	std::vector<std::string> arguments;
-};
+//class Action {
+//public:
+//	virtual ResultSet execute() { return {}; }
+//};
 
-class Action {
+class GameState {
 public:
-	virtual ResultSet execute() { return {}; }
-};
-
-struct GameState {
 	int current_agent_idx;
 	std::vector<Agent> agents;
-	TreeNode* player_cmd_tree;
-	std::map<std::string,std::function<Result(Command&)>> cmd_api;
+//	TreeNode* player_cmd_tree;
+//	std::map<std::string,std::function<Result(Command&)>> cmd_api;
+	CommandNode cmd_gui;
+	Node cmd_api;
 	bool cmd_api_bit;
 	
-	std::vector<Action*> actions;
+//	std::vector<Action*> actions;
 	std::deque<std::string> cmd_history;
 	std::string axn_results;
 	std::string animation_test;
@@ -81,14 +80,13 @@ Command parse(std::string user_input, Agent* user_agent);
 #pragma game lifecycle operations
 
 Command decide(Agent& agent);
-Action* process(Command& cmd);
 ResultSet process_api(Command& cmd);
-ResultSet execute(Action& action);
+//ResultSet execute(Action& action);
 
 #pragma the game itself
 
-void build_controller_api();
-void build_player_cmd_tree();
+void build_cmd_api();
+void build_cmd_gui();
 void load_gamestate();
 bool is_game_over();
 

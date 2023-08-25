@@ -63,7 +63,7 @@
 		3CCAB8BE29EF885B007F872E /* computer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = computer.cpp; path = src/computer.cpp; sourceTree = "<group>"; };
 		3CCAB8BF29EF885B007F872E /* node.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = node.cpp; path = src/node.cpp; sourceTree = "<group>"; };
 		3CCAB8C029EF885B007F872E /* program.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = program.cpp; path = src/program.cpp; sourceTree = "<group>"; };
-		3CCC70512A985A2A00597E00 /* tree.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = tree.h; path = include/tree.h; sourceTree = "<group>"; };
+		3CCC70512A985A2A00597E00 /* tree.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = tree.hpp; path = include/tree.hpp; sourceTree = "<group>"; };
 		3CCC70522A985A3100597E00 /* tree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tree.cpp; path = src/tree.cpp; sourceTree = "<group>"; };
 		3CD0BE412A83F84D00FD4F40 /* CompoundButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CompoundButton.cpp; path = src/CompoundButton.cpp; sourceTree = "<group>"; };
 		E5D4017F8C2E497BA365ACC7 /* automaton */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = automaton; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -136,7 +136,7 @@
 				3C43743E2A744B78009C7263 /* node.h */,
 				3CBE201527D7A73000529C38 /* program.h */,
 				3CA95A9627DD53460015AB3C /* table.hpp */,
-				3CCC70512A985A2A00597E00 /* tree.h */,
+				3CCC70512A985A2A00597E00 /* tree.hpp */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -184,6 +184,7 @@
 		7D4EC3332636446BBED33215 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				DefaultBuildSystemTypeForWorkspace = Latest;
 				LastUpgradeCheck = 1230;
 			};
 			buildConfigurationList = 2BACB3F1D6804D69A43B8306 /* Build configuration list for PBXProject "automaton" */;
