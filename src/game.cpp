@@ -27,7 +27,6 @@
 #include "ftxui/dom/elements.hpp"
 #include "ftxui/screen/color.hpp"
 
-#include "render.hpp"
 #include "game.h"
 #include "tree.hpp"
 
@@ -277,15 +276,10 @@ Action* process(Command& cmd)
 }
 */
 
-ResultSet process_api(Command& cmd)
+ResultSet process(Command& cmd)
 {
 	return { the_game.cmd_api->execute(cmd) };
 }
-
-//ResultSet execute(Action& action)
-//{
-//	return action.execute();
-//};
 
 #pragma the game itself
 
@@ -305,9 +299,14 @@ Result test_api_3(Command& cmd)
 	return { 0, "doesn't matter" };
 }
 
-Result test_api_4(Command& cmd)
+Result api_uninstall_program(Command& cmd)
 {
 	return uninstall_program(cmd.target->kernel, cmd.arguments.back());
+}
+
+Result api_install_program(Command& cmd)
+{
+	return install_program(cmd.target->kernel, cmd.arguments.back());
 }
 
 Result api_not_implemented(Command& cmd)
@@ -398,7 +397,7 @@ void build_cmd_api()
 		leaf_node("@p", test_api_2)
 	});
 	auto ps_uninstall = branch_node("uninstall", {
-		leaf_node("@p", test_api_4)
+		leaf_node("@p", api_uninstall_program)
 	});
 	auto ps_install = branch_node("install", {
 		leaf_node("@p", api_not_implemented)
@@ -596,7 +595,7 @@ void gameplay_loop()
 				if (agent.type != Class::Player) {
 					Command command = decide(agent);
 					append_to_history(command); //<!-- we just assume that the computer never makes an ill-formed command
-					ResultSet resy = process_api(command);
+					ResultSet resy = process(command);
 					if (!resy.empty() && resy.at(0).status != 0)
 						append_to_history(resy.at(0).message);
 					else
@@ -717,7 +716,7 @@ void gameplay_loop()
 		Command cmd = parse(input_str, &the_game.agents[0]); // <-- GAaah
 		Result res = validate(cmd);
 		if (res.status == 0) {
-			ResultSet resy = process_api(cmd);
+			ResultSet resy = process(cmd);
 			build_cmd_gui();
 			if (!resy.empty() && resy.at(0).status != 0)
 				append_to_history(resy.at(0).message);

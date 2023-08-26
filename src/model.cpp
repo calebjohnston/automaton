@@ -111,7 +111,7 @@ std::vector<std::string> connection_names(const Kernel& kernel)
 	return results;
 }
 
-#pragma transformation functions
+#pragma raw transformation functions
 
 Result install_kernel(Kernel& kernel, const Computer& computer)
 {
@@ -233,20 +233,6 @@ Result connect_to(Kernel& kernel, Kernel& target)
 	return res;
 }
 
-Result uninstall_program(Kernel& kernel, const std::string& name)
-{
-	auto iter = std::remove_if(std::begin(kernel.programs), std::end(kernel.programs), [&](Software& program){
-		return program.name == name;
-	});
-	
-	if (iter == std::end(kernel.programs))
-		return { -1, "no program found with name `" + name + "`" };
-	
-	kernel.programs.erase(iter);
-	
-	return { 0, "Success" };
-}
-
 Result uninstall_program(Kernel& kernel, unsigned index)
 {
 	if (index >= kernel.programs.size()) return { 1, "invalid index" };
@@ -281,6 +267,56 @@ Result disconnect(Kernel& kernel, unsigned index)
 	kernel.connections.erase(kernel.connections.begin() + index);
 	
 	return { 0, "success" };
+}
+
+#pragma transformation functions
+
+Result install_program(Kernel& kernel, const std::string& name)
+{
+	auto iter = find_if(kernel.files.begin(), kernel.files.end(), [&](const File& file) {
+		return file.name == name;
+	});
+	
+	File file = *iter;
+	install_program(kernel, { file.name, file.description, file.size, file.version });
+}
+
+Result uninstall_program(Kernel& kernel, const std::string& name)
+{
+	auto iter = std::remove_if(std::begin(kernel.programs), std::end(kernel.programs), [&](Software& program){
+		return program.name == name;
+	});
+	
+	if (iter == std::end(kernel.programs))
+		return { -1, "no program found with name `" + name + "`" };
+	
+	kernel.programs.erase(iter);
+	
+	return { 0, "Success" };
+}
+
+Result install_daemon(Kernel& kernel, const std::string& name)
+{
+	auto iter = find_if(kernel.files.begin(), kernel.files.end(), [&](const File& file) {
+		return file.name == name;
+	});
+	
+	File file = *iter;
+	install_daemon(kernel, { file.name, file.description, file.size, file.version });
+}
+
+Result uninstall_daemon(Kernel& kernel, const std::string& name)
+{
+	auto iter = std::remove_if(std::begin(kernel.daemons), std::end(kernel.daemons), [&](Software& daemon){
+		return daemon.name == name;
+	});
+	
+	if (iter == std::end(kernel.daemons))
+		return { -1, "no program found with name `" + name + "`" };
+	
+	kernel.daemons.erase(iter);
+	
+	return { 0, "Success" };
 }
 
 #pragma readonly functions

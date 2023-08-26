@@ -18,12 +18,9 @@
 #include "ftxui/dom/elements.hpp"
 
 #include "model.h"
-#include "Events.h"
 #include "tree.hpp"
 
 namespace Auto {
-
-//class TreeNode;
 
 ftxui::Component CompoundButton(ftxui::ConstStringRef label,
 								std::function<void()> on_click,
@@ -40,22 +37,14 @@ ftxui::ComponentDecorator Layer(ftxui::Component layer, const bool* show_layer);
 
 #pragma game model state
 
-//class Action {
-//public:
-//	virtual ResultSet execute() { return {}; }
-//};
-
 class GameState {
 public:
 	int current_agent_idx;
 	std::vector<Agent> agents;
-//	TreeNode* player_cmd_tree;
-//	std::map<std::string,std::function<Result(Command&)>> cmd_api;
 	CommandNode cmd_gui;
 	Node cmd_api;
 	bool cmd_api_bit;
 	
-//	std::vector<Action*> actions;
 	std::deque<std::string> cmd_history;
 	std::string axn_results;
 	std::string animation_test;
@@ -80,8 +69,7 @@ Command parse(std::string user_input, Agent* user_agent);
 #pragma game lifecycle operations
 
 Command decide(Agent& agent);
-ResultSet process_api(Command& cmd);
-//ResultSet execute(Action& action);
+ResultSet process(Command& cmd);
 
 #pragma the game itself
 

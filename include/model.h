@@ -218,7 +218,7 @@ std::vector<std::string> file_names(const Kernel& kernel);
 std::vector<std::string> device_names(const Kernel& kernel);
 std::vector<std::string> connection_names(const Kernel& kernel);
 
-#pragma transformation functions
+#pragma raw transformation functions
 
 Result install_kernel(Kernel& kernel, const Computer& computer);
 Result install_device(Computer& computer, const Device& device);
@@ -227,11 +227,15 @@ Result install_program(Kernel& kernel, const Software& sw);
 Result install_daemon(Kernel& kernel, const Software& sw);
 Result copy_file(Kernel& kernel, const File& file);
 Result connect_to(Kernel& kernel, Kernel& target);
-Result uninstall_program(Kernel& kernel, const std::string& name);
 Result uninstall_program(Kernel& kernel, unsigned index);
 Result uninstall_daemon(Kernel& kernel, unsigned index);
 Result delete_file(Kernel& kernel, unsigned index);
 Result disconnect(Kernel& kernel, unsigned index);
+
+#pragma raw transformation functions
+
+Result install_program(Kernel& kernel, const std::string& name);
+Result uninstall_program(Kernel& kernel, const std::string& name);
 
 #pragma readonly functions
 
