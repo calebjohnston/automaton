@@ -475,10 +475,10 @@ void load_gamestate()
 	Software sw_daemon_inet =		{ "inet", "syscrtl inode", 5, 1, 1, Packet::Reflection, Binary::Daemon, Encryption::None };
 	
 	// files ...
-	File file_dalle_1 =		{ "Dall-E2", "Model weights for image GAN", "", 4, 100 };
-	File file_emails =		{ "Emails", "All my personal emails", "", 0, 4 };
-	File file_stack =		{ "local trace", "Global Stack Trace", "", 4, 100 };
-	File file_crypto_db =	{ "Crypto DB", "Database containing an index for crypto algos", "", 1, 10 };
+	File file_dalle_1 =		{ "Dall-E2", "Model weights for image GAN", 4, 100 };
+	File file_emails =		{ "Emails", "All my personal emails", 0, 4 };
+	File file_stack =		{ "local trace", "Global Stack Trace", 4, 100 };
+	File file_crypto_db =	{ "Crypto DB", "Database containing an index for crypto algos", 1, 10 };
 	
 	
 	Computer comp = { "567g8k", "Apple", dev_disk_hitachi, dev_mem_crucial, dev_cpu_ono_s, dev_net_dec_oc, {}, { "Gigabyte", Component::Power, 100, 100 } };

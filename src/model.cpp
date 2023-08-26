@@ -278,7 +278,16 @@ Result install_program(Kernel& kernel, const std::string& name)
 	});
 	
 	File file = *iter;
-	install_program(kernel, { file.name, file.description, file.size, file.version });
+	install_program(kernel, {
+		file.name,
+		file.description,
+		file.size,
+		file.version,
+		10,
+		Packet::None,
+		Binary::Program,
+		Encryption::None
+	});
 }
 
 Result uninstall_program(Kernel& kernel, const std::string& name)
@@ -302,7 +311,17 @@ Result install_daemon(Kernel& kernel, const std::string& name)
 	});
 	
 	File file = *iter;
-	install_daemon(kernel, { file.name, file.description, file.size, file.version });
+	Software sw = { file.name, file.description };
+	install_daemon(kernel, {
+		file.name,
+		file.description,
+		file.size,
+		file.version,
+		10,
+		Packet::None,
+		Binary::Program,
+		Encryption::None
+	});
 }
 
 Result uninstall_daemon(Kernel& kernel, const std::string& name)

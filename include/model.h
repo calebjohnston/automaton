@@ -135,19 +135,16 @@ static std::string to_str(Class c) {
 	}
 }
 
-struct File {
+class File {
+public:
 	std::string name;
 	std::string description;
-	std::string contents;
 	int version;
 	int size;
 };
 
-struct Software {
-	std::string name;
-	std::string description;
-	int size;
-	int version;
+class Software : public File {
+public:
 	int cycles;
 	Packet data_type;
 	Binary exec_type;
