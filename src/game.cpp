@@ -28,6 +28,7 @@
 #include "ftxui/screen/color.hpp"
 
 #include "game.h"
+#include "api.h"
 #include "tree.hpp"
 
 namespace Auto {
@@ -282,38 +283,6 @@ ResultSet process(Command& cmd)
 }
 
 #pragma the game itself
-
-Result test_api_1(Command& cmd)
-{
-	return list_programs(cmd.target->kernel).front();
-}
-
-Result test_api_2(Command& cmd)
-{
-	return { -1, "NOT IMPLEMENTED" };
-}
-
-Result test_api_3(Command& cmd)
-{
-	std::exit(EXIT_SUCCESS);
-	return { 0, "doesn't matter" };
-}
-
-Result api_uninstall_program(Command& cmd)
-{
-	return uninstall_program(cmd.target->kernel, cmd.arguments.back());
-}
-
-Result api_install_program(Command& cmd)
-{
-	return install_program(cmd.target->kernel, cmd.arguments.back());
-}
-
-Result api_not_implemented(Command& cmd)
-{
-	return { -1, "NOT IMPLEMENTED" };
-}
-
 
 void build_cmd_api()
 {

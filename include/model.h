@@ -229,11 +229,6 @@ Result uninstall_daemon(Kernel& kernel, unsigned index);
 Result delete_file(Kernel& kernel, unsigned index);
 Result disconnect(Kernel& kernel, unsigned index);
 
-#pragma raw transformation functions
-
-Result install_program(Kernel& kernel, const std::string& name);
-Result uninstall_program(Kernel& kernel, const std::string& name);
-
 #pragma readonly functions
 
 Result info(const Computer& computer);
