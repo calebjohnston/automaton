@@ -14,7 +14,6 @@ option(INSTALL_GTEST OFF)
 set( tests_SRCS 
   test_placeholder.cpp
   ${PROJECT_SOURCE_DIR}/src/tree.cpp
-  ${PROJECT_SOURCE_DIR}/src/Events.cpp
 )
 
 set(gtest_force_shared_crt ON CACHE INTERNAL "")
