@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3C20ACB62A78F5ED0021EEC7 /* Events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C20ACB32A78F5ED0021EEC7 /* Events.cpp */; };
 		3C7CD8BE2A911DFD004525F2 /* CommandPalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C7CD8BD2A911DFD004525F2 /* CommandPalette.cpp */; };
 		3C7CD8C22A919F2E004525F2 /* Layer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C7CD8C12A919F2E004525F2 /* Layer.cpp */; };
 		3C7CD8C52A91BAAC004525F2 /* game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C7CD8C42A91BAAC004525F2 /* game.cpp */; };
@@ -31,8 +30,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		3C20ACB02A78F5E10021EEC7 /* Events.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Events.h; path = include/Events.h; sourceTree = "<group>"; };
-		3C20ACB32A78F5ED0021EEC7 /* Events.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Events.cpp; path = src/Events.cpp; sourceTree = "<group>"; };
 		3C43743E2A744B78009C7263 /* node.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = node.h; path = include/node.h; sourceTree = "<group>"; };
 		3C7CD8BD2A911DFD004525F2 /* CommandPalette.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CommandPalette.cpp; path = src/CommandPalette.cpp; sourceTree = "<group>"; };
 		3C7CD8C12A919F2E004525F2 /* Layer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Layer.cpp; path = src/Layer.cpp; sourceTree = "<group>"; };
@@ -54,7 +51,6 @@
 		3CBE200B27D7968B00529C38 /* component.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = component.h; path = include/component.h; sourceTree = "<group>"; };
 		3CBE201527D7A73000529C38 /* program.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = program.h; path = include/program.h; sourceTree = "<group>"; };
 		3CC5B6DA27D8E0CC00F9AE44 /* network.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = network.h; path = include/network.h; sourceTree = "<group>"; };
-		3CC78D582A75EE3D0053CF4E /* render.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = render.hpp; path = include/render.hpp; sourceTree = "<group>"; };
 		3CC78D5F2A7616010053CF4E /* libftxui-component.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libftxui-component.a"; path = "lib/FTXUI/build/libftxui-component.a"; sourceTree = "<group>"; };
 		3CC78D602A7616010053CF4E /* libftxui-screen.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libftxui-screen.a"; path = "lib/FTXUI/build/libftxui-screen.a"; sourceTree = "<group>"; };
 		3CC78D612A7616010053CF4E /* libftxui-dom.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libftxui-dom.a"; path = "lib/FTXUI/build/libftxui-dom.a"; sourceTree = "<group>"; };
@@ -104,7 +100,6 @@
 				3CD0BE412A83F84D00FD4F40 /* CompoundButton.cpp */,
 				3CCAB8BE29EF885B007F872E /* computer.cpp */,
 				3CCAB8BD29EF885B007F872E /* data.cpp */,
-				3C20ACB32A78F5ED0021EEC7 /* Events.cpp */,
 				3C7CD8C42A91BAAC004525F2 /* game.cpp */,
 				3CCAB8BF29EF885B007F872E /* node.cpp */,
 				3CCAB8C029EF885B007F872E /* program.cpp */,
@@ -127,12 +122,10 @@
 				3CBE200B27D7968B00529C38 /* component.h */,
 				3CAF3E0C27D7FAB400E4D5CA /* computer.h */,
 				3CA95A8E27DD23440015AB3C /* data.h */,
-				3C20ACB02A78F5E10021EEC7 /* Events.h */,
 				3CAF3E0D27D7FAB400E4D5CA /* kernel.h */,
 				3C7CD8C82A91BCF4004525F2 /* model.h */,
 				3CC5B6DA27D8E0CC00F9AE44 /* network.h */,
 				3C7CD8C32A91BA98004525F2 /* game.h */,
-				3CC78D582A75EE3D0053CF4E /* render.hpp */,
 				3C43743E2A744B78009C7263 /* node.h */,
 				3CBE201527D7A73000529C38 /* program.h */,
 				3CA95A9627DD53460015AB3C /* table.hpp */,
@@ -209,7 +202,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3C20ACB62A78F5ED0021EEC7 /* Events.cpp in Sources */,
 				3CCAB8C129EF885B007F872E /* component.cpp in Sources */,
 				3CCAB8C529EF885B007F872E /* program.cpp in Sources */,
 				3C7CD8C52A91BAAC004525F2 /* game.cpp in Sources */,
