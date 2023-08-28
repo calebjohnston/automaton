@@ -58,18 +58,24 @@ Result test_api_3(Command& cmd)
 Result api_file_list(Command& cmd)
 {
 	the_game.mode_index = 0;
+
+	return { -1, "NOT IMPLEMENTED" };
 }
 
 // TODO: requires a method to render the output
 Result api_file_info(Command& cmd)
 {
 	the_game.mode_index = 0;
+	
+	return { -1, "NOT IMPLEMENTED" };
 }
 
 // TODO: requires a source and destination
 Result api_copy_file(Command& cmd)
 {
 	the_game.mode_index = 0;
+	
+	return { -1, "NOT IMPLEMENTED" };
 }
 
 Result api_delete_file(Command& cmd)
