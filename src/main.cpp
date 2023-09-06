@@ -33,13 +33,53 @@
 // create networks of variant collections using composable functions + shared_ptrs
 // query networks of variant collections using composable functions
 
+/*
+ class Base {
+ public:
+ Base(const std::string& name) : _name(name) {}
+ virtual ~Base() = default;
+ 
+ virtual std::optional<Base> visit() const {
+ return std::nullopt;
+ }
+ 
+ protected:
+ std::string _name;
+ };
+ 
+ class Derived : public Base {
+ public:
+ Derived(const std::string& name) : Base(name) {}
+ virtual ~Derived() = default;
+ 
+ virtual std::optional<Base> visit() const override { return std::make_optional(Derived(_name)); }
+ };
+ 
+ template<typename T>
+ void copy(const std::vector<T>& input, std::vector<T> output) {
+ for (const T& item : input) {
+ auto maybe = item.visit();
+ if (maybe.has_value())
+ output.push_back(maybe.value());
+ }
+ }
+ 
+ void test() {
+ Base a("a");
+ Base b("b");
+ Base c("c");
+ Derived x("x");
+ Derived y("y");
+ Derived z("z");
+ std::vector<Base> collection = { a, b, c, x, y, z };
+ std::vector<Base> results;
+ 
+ copy<Base>(collection, results);
+ }
+ */
+
 int main(int argc, const char * argv[])
 {
-//	typedef std::vector<std::string> Arguments;
-//	typedef std::map<std::string,Arguments> FunctionMap;
-//	typedef std::map<std::string,FunctionMap> CommandMap;
-	
-	
 	Auto::load_gamestate();
 	Auto::gameplay_loop();
 	

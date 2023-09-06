@@ -39,6 +39,11 @@ ftxui::ComponentDecorator Layer(ftxui::Component layer, const bool* show_layer);
 
 class GameState {
 public:
+	GameState( const GameState& ) = delete;
+	GameState& operator=( const GameState& ) = delete;
+	GameState( const GameState&& ) = delete;
+	GameState& operator=( const GameState&& ) = delete;
+	
 	int current_agent_idx;
 	std::vector<Agent> agents;
 	CommandNode cmd_gui;
@@ -54,9 +59,24 @@ public:
 	std::deque<Command> ai_cmds;
 	bool gameover;
 	bool show_cmd_menu;
+	
+	// more test only
+	int view_index;
+	File file_info;
+	
+	/** singleton interface */
+	static GameState* get() {
+		return sInitialized? &sInstance : nullptr;
+	}
+	
+private:
+	GameState() { sInitialized = true; }
+	~GameState() { sInitialized = false; }
+	
+	/** Singelton interface */
+	static GameState sInstance;
+	static bool	sInitialized;
 };
-
-static GameState the_game;
 
 #pragma utility functions
 

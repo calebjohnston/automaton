@@ -29,6 +29,7 @@ Result api_delete_file(Command& cmd);
 Result api_uninstall_program(Command& cmd);
 Result api_install_program(Command& cmd);
 Result api_not_implemented(Command& cmd);
+Result api_not_implemented_2(Command& cmd);
 
 #pragma transformation functions
 

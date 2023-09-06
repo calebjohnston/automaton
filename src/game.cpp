@@ -33,6 +33,9 @@
 
 namespace Auto {
 
+GameState GameState::sInstance;
+bool GameState::sInitialized = false;
+
 #pragma game model state
 /*
 class InvalidAction : public Action {
@@ -75,7 +78,7 @@ class ModelAction : public Action {
 public:
 	ModelAction(Agent* targ, bool list = true, int index = 0) : _target(targ), _list(list), _idx(index) {}
 	virtual ResultSet execute() override {
-		the_game.current_agent_idx = 1;
+		GameState::get()->current_agent_idx = 1;
 		return { { 0, "Success"} };
 		
 	}
@@ -93,8 +96,8 @@ class NetworkAction : public Action {
 public:
 	NetworkAction(Agent* targ, int index) : _target(targ), _idx(index) {}
 	virtual ResultSet execute() override {
-		the_game.mode_index = 1;
-		the_game.current_agent_idx = _idx;
+		GameState::get()->mode_index = 1;
+		GameState::get()->current_agent_idx = _idx;
 		return { { 0, "Success"} };
 	}
 	
@@ -107,8 +110,8 @@ class OffensiveAction : public Action {
 public:
 	OffensiveAction(Agent* targ, int index) : _target(targ), _idx(index) {}
 	virtual ResultSet execute() override {
-		the_game.mode_index = 2;
-		the_game.current_agent_idx = 1; // CJJ: using 1 instead of _idx to ensure the opponent is the AI;
+		GameState::get()->mode_index = 2;
+		GameState::get()->current_agent_idx = 1; // CJJ: using 1 instead of _idx to ensure the opponent is the AI;
 		return { { 0, "Success"} };
 	}
 	
@@ -122,18 +125,18 @@ class CrapAction : public Action {
 public:
 	CrapAction(Agent* targ, int index) : _target(targ), _idx(index) {}
 	virtual ResultSet execute() override {
-		the_game.mode_index = 2;
-		the_game.current_agent_idx = 1; // CJJ: using 1 instead of _idx to ensure the opponent is the AI;
+		GameState::get()->mode_index = 2;
+		GameState::get()->current_agent_idx = 1; // CJJ: using 1 instead of _idx to ensure the opponent is the AI;
 		
 		if (_target->type == Class::Player) {
-			Agent& receiver = the_game.agents[1];
+			Agent& receiver = GameState::get()->agents[1];
 			receiver.kernel.hitpoints -= 1;
-			the_game.animation_test = "health:" + std::to_string(receiver.kernel.hitpoints);
+			GameState::get()->animation_test = "health:" + std::to_string(receiver.kernel.hitpoints);
 		}
 		else if (_target->type != Class::Player) {
-			Agent& receiver = the_game.agents[0];
+			Agent& receiver = GameState::get()->agents[0];
 			receiver.kernel.hitpoints -= 1;
-			the_game.animation_test = "health:" + std::to_string(receiver.kernel.hitpoints);
+			GameState::get()->animation_test = "health:" + std::to_string(receiver.kernel.hitpoints);
 		}
 		
 		return { { 0, "Success" } };
@@ -152,16 +155,16 @@ void append_to_history(const Command& cmd)
 {
 	std::string cmd_str = cmd.target->name + "$ " + cmd.function;
 	cmd_str = std::accumulate(cmd.arguments.begin(), cmd.arguments.end(), cmd_str, [](std::string acc_out, const std::string& arg){ return acc_out += " " + arg; });
-	the_game.cmd_history.push_back(cmd_str);
-	while (the_game.cmd_history.size() > 5)
-		the_game.cmd_history.pop_front();
+	GameState::get()->cmd_history.push_back(cmd_str);
+	while (GameState::get()->cmd_history.size() > 5)
+		GameState::get()->cmd_history.pop_front();
 }
 
 void append_to_history(const std::string& str)
 {
-	the_game.cmd_history.push_back(str);
-	while (the_game.cmd_history.size() > 5)
-		the_game.cmd_history.pop_front();
+	GameState::get()->cmd_history.push_back(str);
+	while (GameState::get()->cmd_history.size() > 5)
+		GameState::get()->cmd_history.pop_front();
 }
 
 int parse(std::string& num_str)
@@ -190,12 +193,12 @@ Command parse(std::string user_input, Agent* user_agent)
 
 Result validate(Command& cmd)
 {
-	return the_game.cmd_api->validate(cmd);
+	return GameState::get()->cmd_api->validate(cmd);
 }
 
 Result autocomplete(Command& cmd)
 {
-	return the_game.cmd_gui->autocomplete(cmd);
+	return GameState::get()->cmd_gui->autocomplete(cmd);
 }
 
 #pragma game lifecycle operations
@@ -205,8 +208,8 @@ Command decide(Agent& agent)
 	Command cmd;
 	if (agent.type != Class::Player) {
 		// cmd = agent must choose what to do and issue a command
-		cmd = the_game.ai_cmds.front();
-		the_game.ai_cmds.pop_front();
+		cmd = GameState::get()->ai_cmds.front();
+		GameState::get()->ai_cmds.pop_front();
 	}
 	else if (agent.type == Class::Player) {
 		std::string input;
@@ -279,7 +282,7 @@ Action* process(Command& cmd)
 
 ResultSet process(Command& cmd)
 {
-	return { the_game.cmd_api->execute(cmd) };
+	return { GameState::get()->cmd_api->execute(cmd) };
 }
 
 #pragma the game itself
@@ -321,7 +324,7 @@ void build_cmd_api()
 		leaf_node("@c", api_not_implemented)
 	});
 	auto net = branch_node("net", {
-		leaf_node("scan", api_not_implemented),
+		leaf_node("scan", api_not_implemented_2),
 		net_whois,
 		net_route,
 		net_conn
@@ -346,7 +349,7 @@ void build_cmd_api()
 	
 	// create the filesystem commands...
 	auto fs_info = branch_node("info", {
-		leaf_node("@f", api_not_implemented)
+		leaf_node("@f", api_file_info)
 	});
 	auto fs_delete = branch_node("delete", {
 		leaf_node("@f", api_not_implemented)
@@ -379,7 +382,7 @@ void build_cmd_api()
 	});
 	
 	// root API map
-	the_game.cmd_api = node({
+	GameState::get()->cmd_api = node({
 		ps,
 		fs,
 		dev,
@@ -391,14 +394,15 @@ void build_cmd_api()
 
 void build_cmd_gui()
 {
-	the_game.cmd_gui = command_tree(the_game.cmd_api, the_game.agents.at(0).kernel, the_game.cmd_gui);
+	GameState::get()->cmd_gui = command_tree(GameState::get()->cmd_api, GameState::get()->agents.at(0).kernel, GameState::get()->cmd_gui);
 }
 
 void load_gamestate()
 {
-	the_game.current_agent_idx = 0;
-	the_game.mode_index = 0;
-	the_game.cmd_api_bit = false;
+	GameState::get()->current_agent_idx = 0;
+	GameState::get()->mode_index = 0;
+	GameState::get()->view_index = 0;
+	GameState::get()->cmd_api_bit = false;
 	
 	// devices ...
 	Auto::Device dev_disk_hitachi =	{ "Hitachi 500", Component::Disk, 100, 16 };
@@ -453,29 +457,29 @@ void load_gamestate()
 	Computer comp = { "567g8k", "Apple", dev_disk_hitachi, dev_mem_crucial, dev_cpu_ono_s, dev_net_dec_oc, {}, { "Gigabyte", Component::Power, 100, 100 } };
 	Kernel system = { "MacOS", { sw_program_ping, sw_program_cfg }, {}, { file_dalle_1, file_emails }, {}, 1, comp, 5 };
 	Agent player = { "caleb", "author", Auto::Status::Active, Auto::Class::Player, 1, system };
-	the_game.agents.push_back(player);
+	GameState::get()->agents.push_back(player);
 	
 	Computer comp2 = { "nkpasd8", "IBM", dev_disk_intel, dev_mem_kingston, dev_cpu_intel_1, dev_net_cisco, {}, { "Gigabyte", Component::Power, 100, 100 } };
 	Kernel system2 = { "OS/2", { sw_program_inf }, { sw_daemon_simplex, sw_daemon_inet }, { file_dalle_1, file_crypto_db }, {}, 1, comp2, 10 };
 	Agent ai_player = { "wintermute", "victor", Auto::Status::Active, Auto::Class::Automaton, 1, system2 };
-	the_game.agents.push_back(ai_player);
+	GameState::get()->agents.push_back(ai_player);
 	
 	
-	Agent* agent_ptr = &the_game.agents.back();
-	the_game.ai_cmds.push_back(parse("ps", agent_ptr));
-	the_game.ai_cmds.push_back(parse("fs", agent_ptr));
-	the_game.ai_cmds.push_back(parse("attack 0", agent_ptr));
-	the_game.ai_cmds.push_back(parse("ping 0", agent_ptr));
-	the_game.ai_cmds.push_back(parse("ping 0", agent_ptr));
-	the_game.ai_cmds.push_back(parse("ping 0", agent_ptr));
-	the_game.ai_cmds.push_back(parse("ping 0", agent_ptr));
-	the_game.ai_cmds.push_back(parse("ping 0", agent_ptr));
+	Agent* agent_ptr = &GameState::get()->agents.back();
+	GameState::get()->ai_cmds.push_back(parse("ps", agent_ptr));
+	GameState::get()->ai_cmds.push_back(parse("fs", agent_ptr));
+	GameState::get()->ai_cmds.push_back(parse("attack 0", agent_ptr));
+	GameState::get()->ai_cmds.push_back(parse("ping 0", agent_ptr));
+	GameState::get()->ai_cmds.push_back(parse("ping 0", agent_ptr));
+	GameState::get()->ai_cmds.push_back(parse("ping 0", agent_ptr));
+	GameState::get()->ai_cmds.push_back(parse("ping 0", agent_ptr));
+	GameState::get()->ai_cmds.push_back(parse("ping 0", agent_ptr));
 	
-	the_game.gameover = false;
-	the_game.show_cmd_menu = false;
+	GameState::get()->gameover = false;
+	GameState::get()->show_cmd_menu = false;
 	
 	
-	the_game.cmd_history = {"    ___         __                        __            ",
+	GameState::get()->cmd_history = {"    ___         __                        __            ",
 							"   /   | __  __/ /_____  ____ ___  ____ _/ /_____  ____ ",
 							"  / /| |/ / / / __/ __ \\/ __ `__ \\/ __ `/ __/ __ \\/ __ \\",
 							" / ___ / /_/ / /_/ /_/ / / / / / / /_/ / /_/ /_/ / / / /",
@@ -488,7 +492,7 @@ void load_gamestate()
 
 bool is_game_over() {
 	// is player dead?
-	return the_game.agents[0].kernel.hitpoints <= 0;
+	return GameState::get()->agents[0].kernel.hitpoints <= 0;
 }
 
 
@@ -560,7 +564,7 @@ void gameplay_loop()
 	
 	std::thread gui([&] {
 		while (!game_over) {
-			for (Agent& agent : the_game.agents) {
+			for (Agent& agent : GameState::get()->agents) {
 				if (agent.type != Class::Player) {
 					Command command = decide(agent);
 					append_to_history(command); //<!-- we just assume that the computer never makes an ill-formed command
@@ -571,29 +575,29 @@ void gameplay_loop()
 						append_to_history(command);
 				}
 				else if (agent.type == Class::Player) {
-					while (!the_game.cmd_api_bit) {
+					while (!GameState::get()->cmd_api_bit) {
 						using namespace std::chrono_literals;
 						std::this_thread::sleep_for(0.1s);
-//						the_game.msgr->update();
+//						GameState::get()->msgr->update();
 					}
 					/*
-					for (Action* axn_ptr : the_game.actions) {
+					for (Action* axn_ptr : GameState::get()->actions) {
 						ResultSet results = execute(*axn_ptr);
-						the_game.axn_results = results[0].message;
+						GameState::get()->axn_results = results[0].message;
 						build_player_cmd_tree();
 						
 						screen.Post(ftxui::Event::Custom);	// <!-- triggers a re-render
 						
 						// log results to file?
 					}
-					the_game.actions.clear();
+					GameState::get()->actions.clear();
 					 */
 					screen.Post(ftxui::Event::Custom);
-					the_game.cmd_api_bit = false;
+					GameState::get()->cmd_api_bit = false;
 				}
 			}
 			game_over = is_game_over();
-			the_game.gameover = game_over;
+			GameState::get()->gameover = game_over;
 		}
 	});
 	
@@ -603,24 +607,24 @@ void gameplay_loop()
 	auto submit_fn = [&](std::string cmd_str){
 		input_str = cmd_str;
 		if (!cmd_str.empty()) append_to_history(cmd_str);
-		the_game.show_cmd_menu = !the_game.show_cmd_menu;
+		GameState::get()->show_cmd_menu = !GameState::get()->show_cmd_menu;
 		input_command->TakeFocus();
 	};
-	auto cmd_palette = CommandPalette(input_str, submit_fn, the_game.cmd_gui);
+	auto cmd_palette = CommandPalette(input_str, submit_fn, GameState::get()->cmd_gui);
 	
 	bool detail = false;
-	auto action = [&] { the_game.show_cmd_menu = !the_game.show_cmd_menu; cmd_palette->TakeFocus(); };
+	auto action = [&] { GameState::get()->show_cmd_menu = !GameState::get()->show_cmd_menu; cmd_palette->TakeFocus(); };
 	auto btn = Button("Help", action, ButtonOption::Ascii());
 	
 	auto modal_component = ModalComponent([]{}, screen.ExitLoopClosure());
 	
 	
-//	auto animation_text = "health:" + std::to_string(the_game.agents[0].kernel.hitpoints);
-	the_game.animation_test = "health:" + std::to_string(the_game.agents[0].kernel.hitpoints);
-	auto animated_field = AnimatedText(&the_game.animation_test);
+//	auto animation_text = "health:" + std::to_string(GameState::get()->agents[0].kernel.hitpoints);
+	GameState::get()->animation_test = "health:" + std::to_string(GameState::get()->agents[0].kernel.hitpoints);
+	auto animated_field = AnimatedText(&GameState::get()->animation_test);
 	
 	auto dev = Renderer([&] {
-		Agent& agent = the_game.agents[0];
+		Agent& agent = GameState::get()->agents[0];
 		Elements programs, files;
 		std::for_each(agent.kernel.programs.begin(), agent.kernel.programs.end(), [&](Software& sw) {
 			detail ? programs.push_back(text(sw.name + "   " + sw.description)) : programs.push_back(text(sw.name));
@@ -629,17 +633,32 @@ void gameplay_loop()
 			detail ? files.push_back(text(file.name + "   " + file.description)) : files.push_back(text(file.name));
 		});
 		
-		return hbox({
-			vbox(programs) | flex,
-			vbox(files) | flex,
-			agent_view(agent)
-		});
+		Element view;
+		if (GameState::get()->view_index == 5) {
+			view = hbox({
+				window(text(" File "), vbox({
+					text("name:" + GameState::get()->file_info.name),
+					text("description:" + GameState::get()->file_info.description),
+					text("version:" + std::to_string(GameState::get()->file_info.version)),
+				})) | flex,
+				agent_view(agent)
+			});
+		}
+		else {
+			view = hbox({
+				vbox(programs) | flex,
+				vbox(files) | flex,
+				agent_view(agent)
+			});
+		}
+		
+		return view;
 	});
 	
 	
 	auto net = Renderer([&] {
-		Agent& player_agent = the_game.agents[0];
-		Agent& remote_agent = the_game.agents[the_game.current_agent_idx];
+		Agent& player_agent = GameState::get()->agents[0];
+		Agent& remote_agent = GameState::get()->agents[GameState::get()->current_agent_idx];
 		Elements local, remote;
 		std::for_each(player_agent.kernel.files.begin(), player_agent.kernel.files.end(), [&](File& file) {
 			detail ? local.push_back(text(file.name + "   " + file.description)) : local.push_back(text(file.name));
@@ -657,8 +676,8 @@ void gameplay_loop()
 	});
 	
 	auto hack = Renderer([&] {
-		Agent& local = the_game.agents[0];
-		Agent& remote = the_game.agents[the_game.current_agent_idx];
+		Agent& local = GameState::get()->agents[0];
+		Agent& remote = GameState::get()->agents[GameState::get()->current_agent_idx];
 		
 		// CJJ: this won't work because SetLabel is a method of an internal Impl class, not an AnimatedText class :(
 //		auto anim_field_ptr = std::dynamic_pointer_cast<AnimatedText>(animated_field);
@@ -682,7 +701,7 @@ void gameplay_loop()
 	auto input_option = ftxui::InputOption();
 	input_option.cursor_position = &input_index;
 	input_option.on_enter = [&] {
-		Command cmd = parse(input_str, &the_game.agents[0]); // <-- GAaah
+		Command cmd = parse(input_str, &GameState::get()->agents[0]); // <-- GAaah
 		Result res = validate(cmd);
 		if (res.status == 0) {
 			ResultSet resy = process(cmd);
@@ -691,7 +710,7 @@ void gameplay_loop()
 				append_to_history(resy.at(0).message);
 			else
 				append_to_history(cmd);
-			the_game.cmd_api_bit = true;
+			GameState::get()->cmd_api_bit = true;
 		}
 		else append_to_history(res.message);
 		/*
@@ -705,7 +724,7 @@ void gameplay_loop()
 			bool valid = (check_action == nullptr);
 			if (valid) {
 				append_to_history(cmd);
-				the_game.actions.push_back(action);
+				GameState::get()->actions.push_back(action);
 			}
 			else {
 				append_to_history(check_action->msg());
@@ -719,8 +738,8 @@ void gameplay_loop()
 	
 	
 	std::vector<std::string> tab_entries = { "Development", "Networking", "Infiltration" };
-	auto tab_selection = Menu(&tab_entries, &the_game.mode_index, MenuOption::HorizontalAnimated());
-	auto tab_content = Container::Tab({ dev, net, hack }, &the_game.mode_index);
+	auto tab_selection = Menu(&tab_entries, &GameState::get()->mode_index, MenuOption::HorizontalAnimated());
+	auto tab_content = Container::Tab({ dev, net, hack }, &GameState::get()->mode_index);
 	
 	auto main_container = Container::Vertical({
 		tab_selection,
@@ -731,7 +750,7 @@ void gameplay_loop()
 	
 	auto renderer = Renderer(main_container, [&] {
 		Elements cmds;
-		for (std::string& cmd : the_game.cmd_history) cmds.push_back(text(cmd));
+		for (std::string& cmd : GameState::get()->cmd_history) cmds.push_back(text(cmd));
 		
 		return vbox({
 			text("Automaton") | bold | hcenter,
@@ -748,7 +767,7 @@ void gameplay_loop()
 	
 	renderer |= CatchEvent([&](ftxui::Event event) {
 		if (event == ftxui::Event::Tab) {
-			Command cmd = parse(input_str, &the_game.agents[0]);
+			Command cmd = parse(input_str, &GameState::get()->agents[0]);
 			Result res = autocomplete(cmd);
 			if (0 != res.status) return false;
 			input_str = res.message;
@@ -756,13 +775,13 @@ void gameplay_loop()
 			return true;
 		}
 		else if (event == ftxui::Event::Escape) {
-			the_game.show_cmd_menu = !the_game.show_cmd_menu;
+			GameState::get()->show_cmd_menu = !GameState::get()->show_cmd_menu;
 			return true;
 		}
 		return false;
 	});
 	
-	screen.Loop(renderer | Modal(modal_component, &the_game.gameover) | Layer(cmd_palette, &the_game.show_cmd_menu));
+	screen.Loop(renderer | Modal(modal_component, &GameState::get()->gameover) | Layer(cmd_palette, &GameState::get()->show_cmd_menu));
 	
 	gui.join();
 };

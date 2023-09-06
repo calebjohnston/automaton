@@ -57,7 +57,7 @@ Result test_api_3(Command& cmd)
 // TODO: requires a method to render the output
 Result api_file_list(Command& cmd)
 {
-	the_game.mode_index = 0;
+	GameState::get()->mode_index = 0;
 
 	return { -1, "NOT IMPLEMENTED" };
 }
@@ -65,7 +65,15 @@ Result api_file_list(Command& cmd)
 // TODO: requires a method to render the output
 Result api_file_info(Command& cmd)
 {
-	the_game.mode_index = 0;
+	auto it = std::find_if(cmd.target->kernel.files.begin(), cmd.target->kernel.files.end(), [&](const File& f){
+		return f.name == cmd.arguments.back();
+	});
+	if (it != std::end(cmd.target->kernel.files)) {
+		GameState::get()->file_info = { it->name, it->description, it->version, it->size };
+		GameState::get()->view_index = 5;
+		GameState::get()->mode_index = 0;
+		return { 0, "Success" };
+	}
 	
 	return { -1, "NOT IMPLEMENTED" };
 }
@@ -73,32 +81,39 @@ Result api_file_info(Command& cmd)
 // TODO: requires a source and destination
 Result api_copy_file(Command& cmd)
 {
-	the_game.mode_index = 0;
+	GameState::get()->mode_index = 0;
 	
 	return { -1, "NOT IMPLEMENTED" };
 }
 
 Result api_delete_file(Command& cmd)
 {
-	the_game.mode_index = 0;
+	GameState::get()->mode_index = 0;
 	return delete_file(cmd.target->kernel, cmd.arguments.back());
 }
 
 Result api_uninstall_program(Command& cmd)
 {
-	the_game.mode_index = 0;
+	GameState::get()->mode_index = 0;
 	return uninstall_program(cmd.target->kernel, cmd.arguments.back());
 }
 
 Result api_install_program(Command& cmd)
 {
-	the_game.mode_index = 0;
+	GameState::get()->mode_index = 0;
 	return install_program(cmd.target->kernel, cmd.arguments.back());
 }
 
 Result api_not_implemented(Command& cmd)
 {
 	return { -1, "NOT IMPLEMENTED" };
+}
+
+Result api_not_implemented_2(Command& cmd)
+{
+	GameState::get()->mode_index = 2;
+	
+	return { 0, "Success" };
 }
 
 #pragma transformation functions
