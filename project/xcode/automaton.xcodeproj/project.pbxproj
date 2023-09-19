@@ -7,6 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3C04A9A52ABA3FF500DF6D13 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C04A9A42ABA3FF500DF6D13 /* main.cpp */; };
+		3C04A9AD2ABA414500DF6D13 /* test_collection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C04A9AB2ABA414500DF6D13 /* test_collection.cpp */; };
+		3C04A9AE2ABA414500DF6D13 /* test_placeholder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C04A9AC2ABA414500DF6D13 /* test_placeholder.cpp */; };
+		3C04A9AF2ABA41FD00DF6D13 /* api.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CE8F8E82A9A750000003915 /* api.cpp */; };
+		3C04A9B92ABA41FD00DF6D13 /* model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C7CD8C62A91BC4E004525F2 /* model.cpp */; };
+		3C04A9BA2ABA41FD00DF6D13 /* tree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CCC70522A985A3100597E00 /* tree.cpp */; };
+		3C04A9BB2ABA427D00DF6D13 /* AnimatedBackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C91704B2A88726900BA0885 /* AnimatedBackground.cpp */; };
+		3C04A9BC2ABA427D00DF6D13 /* AnimatedText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C8F0B742A85D6C80006AAD0 /* AnimatedText.cpp */; };
+		3C04A9BD2ABA427D00DF6D13 /* CommandPalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C7CD8BD2A911DFD004525F2 /* CommandPalette.cpp */; };
+		3C04A9BE2ABA427D00DF6D13 /* CompoundButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CD0BE412A83F84D00FD4F40 /* CompoundButton.cpp */; };
+		3C04A9BF2ABA427D00DF6D13 /* game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C7CD8C42A91BAAC004525F2 /* game.cpp */; };
+		3C04A9C02ABA427D00DF6D13 /* Layer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C7CD8C12A919F2E004525F2 /* Layer.cpp */; };
+		3C04A9C12ABA437100DF6D13 /* libftxui-component.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CC78D5F2A7616010053CF4E /* libftxui-component.a */; };
+		3C04A9C22ABA437400DF6D13 /* libftxui-dom.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CC78D612A7616010053CF4E /* libftxui-dom.a */; };
+		3C04A9C32ABA437600DF6D13 /* libftxui-screen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CC78D602A7616010053CF4E /* libftxui-screen.a */; };
+		3C04A9D72ABA4BEC00DF6D13 /* libgtest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C04A9D22ABA4B5000DF6D13 /* libgtest.a */; };
 		3C7CD8BE2A911DFD004525F2 /* CommandPalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C7CD8BD2A911DFD004525F2 /* CommandPalette.cpp */; };
 		3C7CD8C22A919F2E004525F2 /* Layer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C7CD8C12A919F2E004525F2 /* Layer.cpp */; };
 		3C7CD8C52A91BAAC004525F2 /* game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3C7CD8C42A91BAAC004525F2 /* game.cpp */; };
@@ -30,8 +46,50 @@
 		3CE8F8E92A9A750000003915 /* api.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3CE8F8E82A9A750000003915 /* api.cpp */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		3C04A9D12ABA4B5000DF6D13 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3C04A9C82ABA4B5000DF6D13 /* gtest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7EE0E688F477411BA62D2D2F;
+			remoteInfo = gtest;
+		};
+		3C04A9D32ABA4B5000DF6D13 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3C04A9C82ABA4B5000DF6D13 /* gtest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 749AF11363F8456D91592605;
+			remoteInfo = gtest_main;
+		};
+		3C04A9D52ABA4B6900DF6D13 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3C04A9C82ABA4B5000DF6D13 /* gtest.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 312D837DD48E4EA4AD2C30D1;
+			remoteInfo = gtest;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3C04A9A02ABA3FF500DF6D13 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		3C04A9A22ABA3FF500DF6D13 /* automaton_tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = automaton_tests; sourceTree = BUILT_PRODUCTS_DIR; };
+		3C04A9A42ABA3FF500DF6D13 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		3C04A9AB2ABA414500DF6D13 /* test_collection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_collection.cpp; path = test/test_collection.cpp; sourceTree = SOURCE_ROOT; };
+		3C04A9AC2ABA414500DF6D13 /* test_placeholder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test_placeholder.cpp; path = test/test_placeholder.cpp; sourceTree = SOURCE_ROOT; };
+		3C04A9C82ABA4B5000DF6D13 /* gtest.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = gtest.xcodeproj; path = lib/googletest/build/googletest/gtest.xcodeproj; sourceTree = SOURCE_ROOT; };
 		3C43743E2A744B78009C7263 /* node.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = node.h; path = include/node.h; sourceTree = "<group>"; };
+		3C5C3F5B2AA90BB000634E35 /* collection.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = collection.hpp; path = include/collection.hpp; sourceTree = "<group>"; };
 		3C7CD8BD2A911DFD004525F2 /* CommandPalette.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CommandPalette.cpp; path = src/CommandPalette.cpp; sourceTree = "<group>"; };
 		3C7CD8C12A919F2E004525F2 /* Layer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Layer.cpp; path = src/Layer.cpp; sourceTree = "<group>"; };
 		3C7CD8C32A91BA98004525F2 /* game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = game.h; path = include/game.h; sourceTree = "<group>"; };
@@ -70,6 +128,17 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3C04A99F2ABA3FF500DF6D13 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3C04A9C12ABA437100DF6D13 /* libftxui-component.a in Frameworks */,
+				3C04A9C22ABA437400DF6D13 /* libftxui-dom.a in Frameworks */,
+				3C04A9C32ABA437600DF6D13 /* libftxui-screen.a in Frameworks */,
+				3C04A9D72ABA4BEC00DF6D13 /* libgtest.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A91D8F0E56CC47C0A79B7103 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -88,9 +157,31 @@
 			children = (
 				3CBE1FD927D7941600529C38 /* Headers */,
 				3CBE1FD827D793FD00529C38 /* Sources */,
+				3C04A9A32ABA3FF500DF6D13 /* automaton_tests */,
 				458202B530F848C8B22FEA05 /* Products */,
 				B070ECFBFB6B405D91408B89 /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		3C04A9A32ABA3FF500DF6D13 /* automaton_tests */ = {
+			isa = PBXGroup;
+			children = (
+				3C04A9AB2ABA414500DF6D13 /* test_collection.cpp */,
+				3C04A9AC2ABA414500DF6D13 /* test_placeholder.cpp */,
+				3C04A9A42ABA3FF500DF6D13 /* main.cpp */,
+				3C04A9C82ABA4B5000DF6D13 /* gtest.xcodeproj */,
+			);
+			name = automaton_tests;
+			path = project/xcode/automaton_tests;
+			sourceTree = "<group>";
+		};
+		3C04A9C92ABA4B5000DF6D13 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3C04A9D22ABA4B5000DF6D13 /* libgtest.a */,
+				3C04A9D42ABA4B5000DF6D13 /* libgtest_main.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		3CBE1FD827D793FD00529C38 /* Sources */ = {
@@ -123,6 +214,7 @@
 			children = (
 				3CAF3E0A27D7C78200E4D5CA /* agent.h */,
 				3CE8F8EA2A9A750700003915 /* api.h */,
+				3C5C3F5B2AA90BB000634E35 /* collection.hpp */,
 				3CA95A9427DD2EB20015AB3C /* command.h */,
 				3CBE200B27D7968B00529C38 /* component.h */,
 				3CAF3E0C27D7FAB400E4D5CA /* computer.h */,
@@ -143,6 +235,7 @@
 			isa = PBXGroup;
 			children = (
 				E5D4017F8C2E497BA365ACC7 /* automaton */,
+				3C04A9A22ABA3FF500DF6D13 /* automaton_tests */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -176,6 +269,24 @@
 			productReference = E5D4017F8C2E497BA365ACC7 /* automaton */;
 			productType = "com.apple.product-type.tool";
 		};
+		3C04A9A12ABA3FF500DF6D13 /* automaton_tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3C04A9AA2ABA3FF500DF6D13 /* Build configuration list for PBXNativeTarget "automaton_tests" */;
+			buildPhases = (
+				3C04A99E2ABA3FF500DF6D13 /* Sources */,
+				3C04A99F2ABA3FF500DF6D13 /* Frameworks */,
+				3C04A9A02ABA3FF500DF6D13 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3C04A9D62ABA4B6900DF6D13 /* PBXTargetDependency */,
+			);
+			name = automaton_tests;
+			productName = automaton_tests;
+			productReference = 3C04A9A22ABA3FF500DF6D13 /* automaton_tests */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -184,6 +295,12 @@
 			attributes = {
 				DefaultBuildSystemTypeForWorkspace = Latest;
 				LastUpgradeCheck = 1230;
+				TargetAttributes = {
+					3C04A9A12ABA3FF500DF6D13 = {
+						CreatedOnToolsVersion = 14.3;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = 2BACB3F1D6804D69A43B8306 /* Build configuration list for PBXProject "automaton" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -195,14 +312,57 @@
 			);
 			mainGroup = 23EBDEC433474227B1F800ED;
 			projectDirPath = ../../;
+			projectReferences = (
+				{
+					ProductGroup = 3C04A9C92ABA4B5000DF6D13 /* Products */;
+					ProjectRef = 3C04A9C82ABA4B5000DF6D13 /* gtest.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				0E55C042F0B742B8B5661793 /* automaton */,
+				3C04A9A12ABA3FF500DF6D13 /* automaton_tests */,
 			);
 		};
 /* End PBXProject section */
 
+/* Begin PBXReferenceProxy section */
+		3C04A9D22ABA4B5000DF6D13 /* libgtest.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libgtest.a;
+			remoteRef = 3C04A9D12ABA4B5000DF6D13 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3C04A9D42ABA4B5000DF6D13 /* libgtest_main.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libgtest_main.a;
+			remoteRef = 3C04A9D32ABA4B5000DF6D13 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
 /* Begin PBXSourcesBuildPhase section */
+		3C04A99E2ABA3FF500DF6D13 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3C04A9BB2ABA427D00DF6D13 /* AnimatedBackground.cpp in Sources */,
+				3C04A9BC2ABA427D00DF6D13 /* AnimatedText.cpp in Sources */,
+				3C04A9BD2ABA427D00DF6D13 /* CommandPalette.cpp in Sources */,
+				3C04A9BE2ABA427D00DF6D13 /* CompoundButton.cpp in Sources */,
+				3C04A9BF2ABA427D00DF6D13 /* game.cpp in Sources */,
+				3C04A9C02ABA427D00DF6D13 /* Layer.cpp in Sources */,
+				3C04A9AF2ABA41FD00DF6D13 /* api.cpp in Sources */,
+				3C04A9B92ABA41FD00DF6D13 /* model.cpp in Sources */,
+				3C04A9BA2ABA41FD00DF6D13 /* tree.cpp in Sources */,
+				3C04A9A52ABA3FF500DF6D13 /* main.cpp in Sources */,
+				3C04A9AD2ABA414500DF6D13 /* test_collection.cpp in Sources */,
+				3C04A9AE2ABA414500DF6D13 /* test_placeholder.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CFB564151A8D4D75810ACCC0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -230,6 +390,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		3C04A9D62ABA4B6900DF6D13 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = gtest;
+			targetProxy = 3C04A9D52ABA4B6900DF6D13 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		13E7EB78050E4D83A812DAFC /* MinSizeRel */ = {
 			isa = XCBuildConfiguration;
@@ -244,6 +412,244 @@
 				SYMROOT = "${SOURCE_ROOT}/project/xcode/build";
 			};
 			name = MinSizeRel;
+		};
+		3C04A9A62ABA3FF500DF6D13 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"${SOURCE_ROOT}/include",
+					"${SOURCE_ROOT}/lib/googletest/googletest/include",
+					"${SOURCE_ROOT}/lib/FTXUI/include",
+				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/lib/FTXUI/build";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		3C04A9A72ABA3FF500DF6D13 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"${SOURCE_ROOT}/include",
+					"${SOURCE_ROOT}/lib/googletest/googletest/include",
+					"${SOURCE_ROOT}/lib/FTXUI/include",
+				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/lib/FTXUI/build";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		3C04A9A82ABA3FF500DF6D13 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"${SOURCE_ROOT}/include",
+					"${SOURCE_ROOT}/lib/googletest/googletest/include",
+					"${SOURCE_ROOT}/lib/FTXUI/include",
+				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/lib/FTXUI/build";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = MinSizeRel;
+		};
+		3C04A9A92ABA3FF500DF6D13 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"${SOURCE_ROOT}/include",
+					"${SOURCE_ROOT}/lib/googletest/googletest/include",
+					"${SOURCE_ROOT}/lib/FTXUI/include",
+				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/lib/FTXUI/build";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = RelWithDebInfo;
 		};
 		3D2F99FCE3CA469B8C383F60 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -465,6 +871,17 @@
 				88EE58AC25274F63B6A6E120 /* Release */,
 				13E7EB78050E4D83A812DAFC /* MinSizeRel */,
 				E9B117C9B81F405BA05DA2C0 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		3C04A9AA2ABA3FF500DF6D13 /* Build configuration list for PBXNativeTarget "automaton_tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3C04A9A62ABA3FF500DF6D13 /* Debug */,
+				3C04A9A72ABA3FF500DF6D13 /* Release */,
+				3C04A9A82ABA3FF500DF6D13 /* MinSizeRel */,
+				3C04A9A92ABA3FF500DF6D13 /* RelWithDebInfo */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

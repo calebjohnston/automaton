@@ -12,6 +12,7 @@ option(BUILD_GMOCK OFF)
 option(INSTALL_GTEST OFF)
 
 set( tests_SRCS 
+  test_collection.cpp
   test_placeholder.cpp
   ${PROJECT_SOURCE_DIR}/src/tree.cpp
 )

@@ -79,6 +79,7 @@ Node NodeBase::find(const string& str)
 				}
 			}
 		}
+		return false;
 	});
 	return iter == std::end(children_) ? nullptr : *iter;
 }

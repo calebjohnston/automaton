@@ -8,6 +8,17 @@ __pycache__
 build
 xcuserdata
 project/xcode/src/
+project/xcode/bin/
+project/xcode/CMakeFiles/
+project/xcode/fxtui/
+project/xcode/eventpp/
+project/xcode/test/
+project/xcode/lib/
+project/xcode/cmake_install.*
+CMakeCache.txt
+CMakeDoxy*
+CPack*
+project/xcode/Makefile
 
 # Prerequisites
 *.d

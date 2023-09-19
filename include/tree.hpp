@@ -223,6 +223,8 @@ static CommandNode command_tree(Node node, Kernel& player, CommandNode root_node
 		root_node->reset("{root}", cmds);
 		return root_node;
 	}
+	
+	return root_node;
 }
 
 }	// namespace Auto
