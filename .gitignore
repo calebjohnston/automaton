@@ -15,7 +15,6 @@ project/xcode/eventpp/
 project/xcode/test/
 project/xcode/lib/
 project/xcode/cmake_install.*
-Caleb.xcuserdatad
 CMakeCache.txt
 CMakeDoxy*
 CPack*
