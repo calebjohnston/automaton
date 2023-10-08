@@ -18,8 +18,8 @@
 namespace Auto {
 
 /**
- * struct sprite_tag{};
- * typedef ID<sprite_tag, SpriteImpl*, nullptr> sprite_id;
+ * struct type_tag {};
+ * typedef ID<type_tag, instance_ptr*, nullptr> instance_id;
  */
 
 template<class Tag, typename T, T default_value>
@@ -28,17 +28,17 @@ public:
 	static ID invalid() { return ID(); }
 	
 	// Defaults to ID::invalid()
-	ID() : _val(default_value) { }
+	ID() : _val(default_value) {}
 	
 	// Explicit constructor:
-	explicit ID(T val) : _val(val) { }
+	explicit ID(T val) : _val(val) {}
 	
 	// Explicit conversion to get back the T:
 	T value() const { return _val; }
 	explicit operator T() const { return _val; }
 	
-	friend bool operator==(ID a, ID b) { return a.m_val == b._val; }
-	friend bool operator!=(ID a, ID b) { return a.m_val != b._val; }
+	friend bool operator==(ID a, ID b) { return a._val == b._val; }
+	friend bool operator!=(ID a, ID b) { return a._val != b._val; }
 	
 private:
 	T _val;
@@ -47,12 +47,20 @@ private:
 template<class Tag, typename T>
 class Collection {
 public:
-	typedef ID<Tag, T, nullptr> Handle;
+	typedef ID<Tag, T*, nullptr> Handle;
 	
 public:
-	Handle add(T new_val) {
+	Handle add(T* new_val) {
 		_storage.push_back(new_val);
 		Handle handle_id(new_val);
+		return handle_id;
+	}
+	
+	template<typename... Args>
+	Handle make(Args&&... params) {
+		T* t = new T(std::forward<Args>(params)...);
+		_storage.push_back(t);
+		Handle handle_id(t);
 		return handle_id;
 	}
 	
@@ -85,11 +93,22 @@ public:
 		return _storage.size();
 	}
 	
+	size_t clean() {
+		size_t count = 0;
+		
+		// TODO: update implementation so that all deletions are asynchronous
+		// TODO: both remove functions would need to mark a validated entry as being deleted
+		// TODO: require the owner to use this function to deallocate all removed entries
+		// TODO: somehow update all the handles that were vended???
+		
+		return count;
+	}
+	
 private:
-	std::vector<T> _storage;
+	std::vector<T*> _storage;
 };
 
 struct program {};
-typedef Collection<program, Software*> ProgramCollection;
+typedef Collection<program, Software> ProgramCollection;
 
 }

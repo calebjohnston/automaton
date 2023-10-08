@@ -137,6 +137,16 @@ static std::string to_str(Class c) {
 
 class File {
 public:
+	File() = default;
+	File(std::string pname,
+		 std::string pdesc,
+		 int pver,
+		 int psize)
+	  :	name(pname),
+		description(pdesc),
+		version(pver),
+		size(psize) {}
+	
 	std::string name;
 	std::string description;
 	int version;
@@ -145,6 +155,21 @@ public:
 
 class Software : public File {
 public:
+	Software() = default;
+	Software(std::string pname,
+			 std::string pdesc,
+			 int pver,
+			 int psize,
+			 int pcycles,
+			 Packet pdata,
+			 Binary pexec,
+			 Encryption pcrypto)
+	  :	File(pname, pdesc, pver, psize),
+		cycles(pcycles),
+		data_type(pdata),
+		exec_type(pexec),
+		crypto(pcrypto) {}
+	
 	int cycles;
 	Packet data_type;
 	Binary exec_type;

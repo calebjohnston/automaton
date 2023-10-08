@@ -16,8 +16,11 @@ TEST(CollectionTests, Construction)
 	ProgramCollection programs;
 	
 	Software sw = { "ping", "ICMP network control", 10, 1, 1, Packet::Ping, Binary::Program, Encryption::Kerberos };
-	ProgramCollection::Handle program_id = programs.add(&sw);
+	ProgramCollection::Handle program_1 = programs.add(&sw);
 	EXPECT_TRUE(programs.size() == 1);
-	bool result = programs.remove(program_id);
-	EXPECT_TRUE(result);
+	ProgramCollection::Handle program_2 = programs.make("xfer", "Network transfer", 10, 1, 1, Packet::Ping, Binary::Program, Encryption::Kerberos);
+	EXPECT_TRUE(programs.size() == 2);
+	
+	EXPECT_TRUE(programs.remove(program_1));
+	EXPECT_TRUE(programs.remove(program_2));
 }
